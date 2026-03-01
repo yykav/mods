@@ -55,17 +55,25 @@
 ---ok = is.table({})          --> true
 ---```
 ---
----> [!NOTE]
+--->[!NOTE]
 --->
----> Function names exist in both lowercase and capitalized forms, and `is` is
----> also callable as `is(v, tp)`.
+--->Function names are case-insensitive.
 --->
----> ```lua
----> is.table({})          --> true
----> is.Table({})          --> true
----> is("hello", "string") --> true
----> is("hello", "String") --> true
----> ```
+--->```lua
+--->is.table({})  --> true
+--->is.Table({})  --> true
+--->is.tAbLe({})  --> true
+--->```
+---
+---## `is()`
+---
+---`is` is also callable as `is(value, type)` to check if a value is of a given type.
+---
+---```lua
+---is("hello", "string") --> true
+---is("hello", "String") --> true
+---is("hello", "STRING") --> true
+---```
 ---
 ---@class mods.is
 ---@overload fun(v:any, tp:modsIsType):boolean
@@ -85,8 +93,8 @@ local M = {}
 ---is.boolean(true)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.boolean = function(v) end
 M.Boolean = M.boolean
@@ -98,11 +106,11 @@ M.Boolean = M.boolean
 ---is.Function(function() end)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
+M["function"] = function(v) end
 M.Function = function(v) end
-M["function"] = M.Function
 
 ---
 ---Returns `true` when `v` is `nil`.
@@ -111,11 +119,11 @@ M["function"] = M.Function
 ---is.Nil(nil)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
-M.Nil = function(v) end
-M["nil"] = M.Nil
+M["nil"] = function(v) end
+M.Nil = M["nil"]
 
 ---
 ---Returns `true` when `v` is a number.
@@ -124,8 +132,8 @@ M["nil"] = M.Nil
 ---is.number(3.14)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.number = function(v) end
 M.Number = M.number
@@ -137,8 +145,8 @@ M.Number = M.number
 ---is.string("hello")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.string = function(v) end
 M.String = M.string
@@ -150,8 +158,8 @@ M.String = M.string
 ---is.table({})
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.table = function(v) end
 M.Table = M.table
@@ -163,8 +171,8 @@ M.Table = M.table
 ---is.thread(coroutine.create(function() end))
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.thread = function(v) end
 M.Thread = M.thread
@@ -176,8 +184,8 @@ M.Thread = M.thread
 ---is.userdata(io.stdout)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.userdata = function(v) end
 M.Userdata = M.userdata
@@ -196,11 +204,11 @@ M.Userdata = M.userdata
 ---is.False(false)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
-M.False = function(v) end
-M["false"] = M.False
+M["false"] = function(v) end
+M.False = M["false"]
 
 ---
 ---Returns `true` when `v` is exactly `true`.
@@ -209,11 +217,11 @@ M["false"] = M.False
 ---is.True(true)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
-M.True = function(v) end
-M["true"] = M.True
+M["true"] = function(v) end
+M.True = M["true"]
 
 ---
 ---Returns `true` when `v` is falsy.
@@ -222,8 +230,8 @@ M["true"] = M.True
 ---is.falsy(false)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.falsy = function(v) end
 M.Falsy = M.falsy
@@ -235,8 +243,8 @@ M.Falsy = M.falsy
 ---is.callable(function() end)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.callable = function(v) end
 M.Callable = M.callable
@@ -248,8 +256,8 @@ M.Callable = M.callable
 ---is.integer(42)
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.integer = function(v) end
 M.Integer = M.integer
@@ -261,8 +269,8 @@ M.Integer = M.integer
 ---is.truthy("non-empty")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.truthy = function(v) end
 M.Truthy = M.truthy
@@ -282,14 +290,12 @@ M.Truthy = M.truthy
 ---
 ---Returns `true` when `v` is a block device path.
 ---
----Raises an error if [`lfs`](https://github.com/lunarmodules/luafilesystem) is not installed.
----
 ---```lua
 ---is.block("/dev/sda")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.block = function(v) end
 M.Block = M.block
@@ -301,8 +307,8 @@ M.Block = M.block
 ---is.char("/dev/null")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.char = function(v) end
 M.Char = M.char
@@ -314,8 +320,8 @@ M.Char = M.char
 ---is.device("/dev/null")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.device = function(v) end
 M.Device = M.device
@@ -327,8 +333,8 @@ M.Device = M.device
 ---is.dir("/tmp")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.dir = function(v) end
 M.Dir = M.dir
@@ -340,8 +346,8 @@ M.Dir = M.dir
 ---is.fifo("/path/to/fifo")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.fifo = function(v) end
 M.Fifo = M.fifo
@@ -353,8 +359,8 @@ M.Fifo = M.fifo
 ---is.file("README.md")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.file = function(v) end
 M.File = M.file
@@ -366,8 +372,8 @@ M.File = M.file
 ---is.link("/path/to/link")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.link = function(v) end
 M.Link = M.link
@@ -379,8 +385,8 @@ M.Link = M.link
 ---is.socket("/path/to/socket")
 ---```
 ---
----@param v any
----@return boolean ok
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
 ---@nodiscard
 M.socket = function(v) end
 M.Socket = M.socket
