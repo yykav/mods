@@ -129,8 +129,12 @@ local function function_signature(item)
   return base .. "(" .. concat(params, ", ") .. ")"
 end
 
+local function function_ref_id(item)
+  return "fn-" .. heading_anchor(item.shortname or item.name or "")
+end
+
 local function trim(s)
-  return (s or ""):gsub("^%s+", ""):gsub("%s+$", "")
+  return ((s or ""):gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
 local function sanitize_param_name(name, idx)
@@ -144,18 +148,6 @@ local function sanitize_param_name(name, idx)
   n = n:gsub("%?$", ""):gsub("[^%w_]", "_")
   if n == "" then
     return "arg" .. tostring(idx)
-  end
-  return n
-end
-
-local function sanitize_file_stem(name, fallback)
-  local n = trim(name)
-  if n == "" then
-    return fallback or "example"
-  end
-  n = n:gsub("%?$", ""):gsub("[^%w_%-]", "_")
-  if n == "" then
-    return fallback or "example"
   end
   return n
 end
@@ -194,12 +186,27 @@ local function build_signature_lua(item)
   local params = tags.params or {}
   local returns = tags.returns or {}
   local fn_params = {}
+  local function hash_desc(desc)
+    local d = trim(desc or "")
+    if d == "" then
+      return ""
+    end
+    if d:sub(1, 1) == "#" then
+      return d
+    end
+    return "# " .. d
+  end
 
   for i, param in ipairs(params) do
     local pname = param and param.name or ("arg" .. tostring(i))
     local pview = param and param.view or "any"
+    local pdesc = hash_desc(param and param.desc or "")
     if pname ~= "self" then
-      insert(out, fmt("---@param %s %s", pname, pview))
+      if pdesc ~= "" then
+        insert(out, fmt("---@param %s %s %s", pname, pview, pdesc))
+      else
+        insert(out, fmt("---@param %s %s", pname, pview))
+      end
       insert(fn_params, sanitize_param_name(pname, i))
     end
   end
@@ -208,10 +215,19 @@ local function build_signature_lua(item)
     local rview = ret and ret.view
     if rview and rview ~= "" then
       local rname = ret and ret.name
+      local rdesc = hash_desc(ret and ret.desc or "")
       if rname and rname ~= "" then
-        insert(out, fmt("---@return %s %s", rview, rname))
+        if rdesc ~= "" then
+          insert(out, fmt("---@return %s %s %s", rview, rname, rdesc))
+        else
+          insert(out, fmt("---@return %s %s", rview, rname))
+        end
       else
-        insert(out, fmt("---@return %s", rview))
+        if rdesc ~= "" then
+          insert(out, fmt("---@return %s %s", rview, rdesc))
+        else
+          insert(out, fmt("---@return %s", rview))
+        end
       end
     end
   end
@@ -229,45 +245,97 @@ local function build_signature_lua(item)
   return concat(out, "\n")
 end
 
-local function extract_first_lua_example(desc)
-  if not desc or desc == "" then
-    return desc, nil
-  end
-  local before, code, after = desc:match("^(.-)```lua%s*\n(.-)\n```(.*)$")
-  if not code then
-    return desc, nil
-  end
-
-  local merged = trim((before or "") .. "\n" .. (after or ""))
-  return merged ~= "" and merged or nil, trim(code)
+local function normalize_api_desc(desc)
+  local d = trim(desc or "")
+  d = d:gsub("^#%s*", "")
+  return d
 end
 
-local function append_function_code_group(doc, item)
-  local desc_text, example = extract_first_lua_example(item.desc)
-  if desc_text then
-    insert(doc, desc_text)
-  end
+local function append_function_api_contract(doc, item)
+  local tags = item.tags or {}
+  local params = tags.params or {}
+  local returns = tags.returns or {}
+  local has_params = false
+  local has_returns = false
 
-  local signature_lua = build_signature_lua(item)
-  if example and example ~= "" then
-    local example_name = sanitize_file_stem(item.shortname or item.name or "", "example") .. ".lua"
-    insert(doc, "::: code-group")
-    insert(doc, "")
-    insert(doc, fmt("```lua [%s]", example_name))
-    insert(doc, example)
-    insert(doc, "```")
-    insert(doc, "")
-    insert(doc, "```lua [signature.lua]")
-    insert(doc, signature_lua)
-    insert(doc, "```")
-    insert(doc, "")
-    insert(doc, ":::")
+  for _, param in ipairs(params) do
+    local pname = param and param.name or ""
+    if pname ~= "" and pname ~= "self" then
+      has_params = true
+      break
+    end
+  end
+  has_returns = #returns > 0
+
+  if not has_params and not has_returns then
     return
   end
 
-  insert(doc, "```lua [signature.lua]")
-  insert(doc, signature_lua)
-  insert(doc, "```")
+  if has_params then
+    insert(doc, "**Parameters**:")
+    for _, param in ipairs(params) do
+      local pname = param and param.name or ""
+      local pview = param and param.view or "any"
+      local pdesc = normalize_api_desc(param and param.desc or "")
+      if pname ~= "" and pname ~= "self" then
+        if pdesc ~= "" then
+          insert(doc, fmt("- **%s** (`%s`): %s", pname, pview, pdesc))
+        else
+          insert(doc, fmt("- **%s** (`%s`)", pname, pview))
+        end
+      end
+    end
+  end
+
+  if has_returns then
+    insert(doc, "")
+    insert(doc, "**Returns**:")
+    for _, ret in ipairs(returns) do
+      local rname = ret and ret.name or ""
+      local rview = ret and ret.view or "any"
+      local rdesc = normalize_api_desc(ret and ret.desc or "")
+      local label = rname ~= "" and ("**" .. rname .. "**") or "**value**"
+      if rdesc ~= "" then
+        insert(doc, fmt("- %s (`%s`): %s", label, rview, rdesc))
+      else
+        insert(doc, fmt("- %s (`%s`)", label, rview))
+      end
+    end
+  end
+
+  insert(doc, "")
+end
+
+local function append_function_signature_details(doc, item)
+  local desc = item.desc or ""
+  local before, code, after = desc:match("^(.-)```lua[^\n]*\n(.-)\n```(.*)$")
+
+  if code then
+    local pre = trim(before or "")
+    if pre ~= "" then
+      insert(doc, pre)
+      insert(doc, "")
+    end
+  else
+    if desc ~= "" then
+      insert(doc, desc)
+    end
+  end
+
+  append_function_api_contract(doc, item)
+
+  if code then
+    insert(doc, "**Example**:")
+    insert(doc, "```lua")
+    insert(doc, trim(code))
+    insert(doc, "```")
+    local post = trim(after or "")
+    if post ~= "" then
+      insert(doc, "")
+      insert(doc, post)
+    end
+    insert(doc, "")
+  end
 end
 
 ---Append a quick reference markdown table for function rows.
@@ -289,13 +357,14 @@ local function append_fields_table(doc, fields)
     return
   end
 
-  insert(doc, "Field | Type | Description")
-  insert(doc, "---- | ---- | ----")
+  insert(doc, "Field | Description")
+  insert(doc, "---- | ----")
   for _, field in ipairs(fields) do
-    local name = esc_table_cell(field.name or "")
-    local view = esc_table_cell(field.view or "")
+    local name = field.name or ""
+    local anchor = heading_anchor(name)
+    local link = fmt("[`%s`](#%s)", esc_table_cell(name), anchor)
     local desc = esc_table_cell(first_paragraph(field.desc))
-    insert(doc, fmt("`%s` | `%s` | %s", name, view, desc))
+    insert(doc, fmt("%s | %s", link, desc))
   end
 end
 
@@ -371,9 +440,10 @@ local function build_markdown(items)
     elseif has_functions and item.kind == "function" then
       function_count = function_count + 1
       local signature = function_signature(item)
+      local ref_id = function_ref_id(item)
       local row = {
         signature = signature,
-        anchor = heading_anchor(signature),
+        anchor = ref_id,
         desc = first_paragraph(item.desc),
       }
       if section_fields then
@@ -390,8 +460,9 @@ local function build_markdown(items)
         insert(quick_ref, row)
       end
 
+      insert(details, fmt('<a id="%s"></a>', ref_id))
       insert(details, fmt("%s `%s`", function_heading_level, signature))
-      append_function_code_group(details, item)
+      append_function_signature_details(details, item)
     end
   end
 
