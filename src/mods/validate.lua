@@ -1,248 +1,80 @@
-local is = require("mods.is")
-local quote = require("mods.utils").quote
+local mods = require("mods")
 
-local gsub = string.gsub
-local sub = string.sub
+local is = mods.is
+local template = mods.template
 local lower = string.lower
 local tostring = tostring
 local type = type
-
-local is_tmpl, not_tmpl = {}, {}
-local is_checks, isnot_checks = {}, {}
-local on_fail
+local quote = mods.utils.quote
 
 ---@type mods.validate
 ---@diagnostic disable-next-line: missing-fields
-local M = {
-  is = is_checks,
-  messages = { positive = is_tmpl, negative = not_tmpl },
-}
+local M = {}
 
-local function render_msg(expected, actual, v, is_expected)
-  local tmpl
-  if is_expected then
-    tmpl = is_tmpl[expected] or "expected {{expected}}, got {{got}}"
-  else
-    tmpl = not_tmpl[expected] or "expected not {{expected}}"
-  end
+local messages = {}
+local validators = {}
 
-  local msg = (
-    gsub(tmpl, "{{(.-)}}", function(k)
-      if k == "expected" then
-        return tostring(expected)
-      elseif k == "got" then
-        return actual
-      elseif k == "value" then
-        return type(v) == "string" and quote(v) or tostring(v)
-      end
-      return "{{" .. k .. "}}"
-    end)
-  )
+M.messages = messages
 
-  -- Intentional: only truthy hook returns override the message; nil/false fall back.
-  return on_fail and on_fail(msg) or msg
+local function render_msg(expected, got_kind, value, template_msg)
+  template_msg = template_msg or messages[expected] or "expected {{expected}}, got {{got}}"
+  value = type(value) == "string" and quote(value) or tostring(value)
+
+  return template(template_msg, {
+    expected = tostring(expected),
+    got = got_kind == "nil" and "no value" or got_kind,
+    value = value == "nil" and "no value" or value,
+  })
 end
 
---------------------------------------------------------------------------------
----------------------------------- Type checks ---------------------------------
---------------------------------------------------------------------------------
+function M.register(name, check, template_msg)
+  local key = lower(name)
 
-local function type_check(v, tp, is_expected)
-  local ok = is[tp](v)
-  if (is_expected and ok) or (not is_expected and not ok) then
-    return true
+  if template_msg ~= nil then
+    messages[key] = template_msg
   end
-  return false, render_msg(tp, type(v), v, is_expected)
-end
 
-gsub("boolean function nil number string table thread userdata", "%S+", function(k)
-  is_checks[k] = function(v)
-    return type_check(v, k, true)
-  end
-  isnot_checks[k] = function(v)
-    return type_check(v, k, false)
-  end
-end)
-
---------------------------------------------------------------------------------
---------------------------------- Value checks ---------------------------------
---------------------------------------------------------------------------------
-
-is_tmpl.integer = "expected integer, got {{value}}"
-not_tmpl.integer = "expected non-integer, got {{value}}"
-
-local function value_check(v, expected, check, is_expected)
-  if is_expected then
-    if check(v) then
+  local wrapped = function(value, override_msg)
+    if check(value) then
       return true
     end
-  elseif not check(v) then
-    return true
+    return false, render_msg(key, type(value), value, override_msg)
   end
 
-  local actual
-  if expected == "false" or expected == "true" then
-    actual = tostring(v)
-  else
-    actual = type(v)
-  end
-
-  return false, render_msg(expected, actual, v, is_expected)
+  validators[key] = wrapped
+  M[key] = wrapped
 end
 
-local value_checks = {
-  ["false"] = is.False,
-  ["true"] = is.True,
-  falsy = is.falsy,
-  truthy = is.truthy,
-  integer = is.integer,
-  callable = is.callable,
-}
-
-for k, check in pairs(value_checks) do
-  is_checks[k] = function(v)
-    return value_check(v, k, check, true)
-  end
-  isnot_checks[k] = function(v)
-    return value_check(v, k, check, false)
-  end
+for fname in ("boolean function nil number string table thread userdata"):gmatch("%S+") do
+  M.register(fname, is[fname], "expected {{expected}}, got {{got}}")
 end
 
---------------------------------------------------------------------------------
---------------------------------- Path checks ----------------------------------
---------------------------------------------------------------------------------
-
-is_tmpl.link = "{{value}} is not a valid {{expected}} path"
-
-local function path_check(v, expected_label, check)
-  if check(v) then
-    return true
-  end
-  return false, render_msg(expected_label, "invalid path", v, true)
+for fname in ("false true falsy truthy integer callable"):gmatch("%S+") do
+  M.register(fname, is[fname], "expected {{expected}} value, got {{value}}")
 end
 
-for _, k in ipairs({ "block", "char", "device", "dir", "fifo", "file", "socket" }) do
-  is_tmpl[k] = "{{value}} is not a valid {{expected}} path"
-  is_checks[k] = function(v)
-    return path_check(v, k, is[k])
-  end
+for fname in ("block char device dir fifo file socket link"):gmatch("%S+") do
+  M.register(fname, is[fname], "{{value}} is not a valid {{expected}} path")
 end
 
-is_checks.link = function(v)
-  return path_check(v, "link", is.link)
-end
-
---------------------------------------------------------------------------------
--------------------------- Dispatch and alias lookup ---------------------------
---------------------------------------------------------------------------------
-
----@diagnostic disable-next-line: invisible
-M._name, is_checks._name, isnot_checks._name = "is", "is", "isnot"
-
-local function call_validator(self, v, tp)
-  tp = tp == nil and "nil" or tp
-  local fn = (self._name == "isnot" and isnot_checks or is_checks)[tp]
-  if fn then
-    return fn(v)
-  end
-  local actual = type(v)
-  if self._name == "isnot" then
-    if actual ~= tp then
-      return true
-    end
-  elseif actual == tp then
-    return true
-  end
-  return false, render_msg(tostring(tp), actual, v, self._name == "is")
-end
-
-local function strip_prefix(s, prefix)
-  if sub(s, 1, #prefix) == prefix then
-    return sub(s, #prefix + 1), true
-  end
-  return s, false
-end
-
-setmetatable(M, {
-  __call = call_validator,
-  __newindex = function(t, k, v)
-    if k == "on_fail" then
-      if v ~= nil and type(v) ~= "function" then
-        error("validate.on_fail must be a function", 2)
-      end
-      on_fail = v
-      return
-    end
-    rawset(t, k, v)
-  end,
+return setmetatable(M, {
   __index = function(_, k)
-    if type(k) ~= "string" then
-      return nil
-    end
-
-    if k == "on_fail" then
-      return on_fail
-    end
-    local key = lower(k):gsub("_", "")
-
-    if key == "is" then
-      return is_checks
-    end
-
-    local v = rawget(is_checks, key)
-    if v then
-      return v
-    end
-
-    key = strip_prefix(key, "is")
-    if key == "" then
-      return is_checks
-    end
-
-    v = rawget(is_checks, key)
-    if v then
-      return v
-    end
-
-    key, v = strip_prefix(key, "not")
-    if v then
-      return key == "" and isnot_checks or isnot_checks[key]
+    if type(k) == "string" then
+      return validators[lower(k)]
     end
   end,
-})
+  __call = function(_, value, check_name, override_msg)
+    check_name = check_name or "truthy"
 
-setmetatable(is_checks, {
-  __call = call_validator,
-  __index = function(t, k)
-    if type(k) ~= "string" then
-      return
-    end
-    local key = lower(k)
-
-    local v = rawget(t, key)
-    if v then
-      return v
+    local validator = validators[check_name]
+    if validator then
+      return validator(value, override_msg)
     end
 
-    key = strip_prefix(key, "is")
-    return key == "not" and isnot_checks or rawget(t, key)
+    local got_kind = type(value)
+    if got_kind == check_name then
+      return true
+    end
+    return false, render_msg(check_name, got_kind, value, override_msg)
   end,
 })
-
-setmetatable(isnot_checks, {
-  __call = call_validator,
-  __index = function(t, k)
-    if type(k) ~= "string" then
-      return nil
-    end
-
-    local key = lower(k)
-    local v = rawget(t, key)
-    if v then
-      return v
-    end
-    return rawget(t, strip_prefix(key, "not"))
-  end,
-})
-
-return M
