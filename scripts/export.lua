@@ -1,3 +1,8 @@
+------------------------------------------------------------
+--- 💡 This script was originally created manually and later
+---    updated with AI assistance.
+------------------------------------------------------------
+
 local concat = table.concat
 local fmt = string.format
 local insert = table.insert
@@ -106,6 +111,165 @@ local function heading_anchor(s)
   return (s or ""):lower():gsub("_+", "-"):gsub("[^%w-]+", ""):gsub("^%-+", ""):gsub("%-+$", "")
 end
 
+local function function_signature(item)
+  local base = item.shortname or item.name or ""
+  local params = {}
+  local tag_params = item.tags and item.tags.params
+  if type(tag_params) == "table" then
+    for _, param in ipairs(tag_params) do
+      local name = param and param.name
+      if name and name ~= "" and name ~= "self" then
+        insert(params, name)
+      end
+    end
+  end
+  if #params == 0 then
+    return base .. "()"
+  end
+  return base .. "(" .. concat(params, ", ") .. ")"
+end
+
+local function trim(s)
+  return (s or ""):gsub("^%s+", ""):gsub("%s+$", "")
+end
+
+local function sanitize_param_name(name, idx)
+  local n = trim(name)
+  if n == "" then
+    return "arg" .. tostring(idx)
+  end
+  if n == "..." then
+    return "..."
+  end
+  n = n:gsub("%?$", ""):gsub("[^%w_]", "_")
+  if n == "" then
+    return "arg" .. tostring(idx)
+  end
+  return n
+end
+
+local function sanitize_file_stem(name, fallback)
+  local n = trim(name)
+  if n == "" then
+    return fallback or "example"
+  end
+  n = n:gsub("%?$", ""):gsub("[^%w_%-]", "_")
+  if n == "" then
+    return fallback or "example"
+  end
+  return n
+end
+
+local LUA_KEYWORDS = {
+  ["and"] = true,
+  ["break"] = true,
+  ["do"] = true,
+  ["else"] = true,
+  ["elseif"] = true,
+  ["end"] = true,
+  ["false"] = true,
+  ["for"] = true,
+  ["function"] = true,
+  ["if"] = true,
+  ["in"] = true,
+  ["local"] = true,
+  ["nil"] = true,
+  ["not"] = true,
+  ["or"] = true,
+  ["repeat"] = true,
+  ["return"] = true,
+  ["then"] = true,
+  ["true"] = true,
+  ["until"] = true,
+  ["while"] = true,
+}
+
+local function is_lua_identifier(name)
+  return type(name) == "string" and name:match("^[%a_][%w_]*$") and not LUA_KEYWORDS[name]
+end
+
+local function build_signature_lua(item)
+  local out = {}
+  local tags = item.tags or {}
+  local params = tags.params or {}
+  local returns = tags.returns or {}
+  local fn_params = {}
+
+  for i, param in ipairs(params) do
+    local pname = param and param.name or ("arg" .. tostring(i))
+    local pview = param and param.view or "any"
+    if pname ~= "self" then
+      insert(out, fmt("---@param %s %s", pname, pview))
+      insert(fn_params, sanitize_param_name(pname, i))
+    end
+  end
+
+  for _, ret in ipairs(returns) do
+    local rview = ret and ret.view
+    if rview and rview ~= "" then
+      local rname = ret and ret.name
+      if rname and rname ~= "" then
+        insert(out, fmt("---@return %s %s", rview, rname))
+      else
+        insert(out, fmt("---@return %s", rview))
+      end
+    end
+  end
+
+  if tags.nodiscard then
+    insert(out, "---@nodiscard")
+  end
+
+  local fname = item.shortname or item.name or "fn"
+  if is_lua_identifier(fname) then
+    insert(out, fmt("function %s(%s) end", fname, concat(fn_params, ", ")))
+  else
+    insert(out, fmt("M[%q] = function(%s) end", fname, concat(fn_params, ", ")))
+  end
+  return concat(out, "\n")
+end
+
+local function extract_first_lua_example(desc)
+  if not desc or desc == "" then
+    return desc, nil
+  end
+  local before, code, after = desc:match("^(.-)```lua%s*\n(.-)\n```(.*)$")
+  if not code then
+    return desc, nil
+  end
+
+  local merged = trim((before or "") .. "\n" .. (after or ""))
+  return merged ~= "" and merged or nil, trim(code)
+end
+
+local function append_function_code_group(doc, item)
+  local desc_text, example = extract_first_lua_example(item.desc)
+  if desc_text then
+    insert(doc, desc_text)
+  end
+
+  local signature_lua = build_signature_lua(item)
+  if example and example ~= "" then
+    local example_name = sanitize_file_stem(item.shortname or item.name or "", "example") .. ".lua"
+    insert(doc, "::: code-group")
+    insert(doc, "")
+    insert(doc, fmt("```lua [%s]", example_name))
+    insert(doc, example)
+    insert(doc, "```")
+    insert(doc, "")
+    insert(doc, "```lua [signature.lua]")
+    insert(doc, signature_lua)
+    insert(doc, "```")
+    insert(doc, "")
+    insert(doc, ":::")
+    return
+  end
+
+  insert(doc, "```lua [signature.lua]")
+  insert(doc, signature_lua)
+  insert(doc, "```")
+end
+
 ---Append a quick reference markdown table for function rows.
 local function append_quick_ref_table(doc, rows)
   if not rows or #rows == 0 then
@@ -115,8 +279,7 @@ local function append_quick_ref_table(doc, rows)
   insert(doc, "Function | Description")
   insert(doc, "---- | ----")
   for _, row in ipairs(rows) do
-    local anchor = heading_anchor(row.shortname)
-    local link = fmt("[`%s`](#%s)", esc_table_cell(row.shortname), anchor)
+    local link = fmt("[`%s`](#%s)", esc_table_cell(row.signature), row.anchor)
     insert(doc, fmt("%s | %s", link, esc_table_cell(row.desc)))
   end
 end
@@ -207,8 +370,10 @@ local function build_markdown(items)
       end
     elseif has_functions and item.kind == "function" then
       function_count = function_count + 1
+      local signature = function_signature(item)
       local row = {
-        shortname = item.shortname or "",
+        signature = signature,
+        anchor = heading_anchor(signature),
         desc = first_paragraph(item.desc),
       }
       if section_fields then
@@ -225,10 +390,8 @@ local function build_markdown(items)
         insert(quick_ref, row)
       end
 
-      insert(details, fmt("%s `%s`", function_heading_level, item.shortname))
-      if item.desc then
-        insert(details, item.desc)
-      end
+      insert(details, fmt("%s `%s`", function_heading_level, signature))
+      append_function_code_group(details, item)
     end
   end
 
