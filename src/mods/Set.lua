@@ -1,3 +1,5 @@
+---@diagnostic disable: invisible
+
 local tbl = require("mods.tbl")
 
 local next = next
@@ -6,10 +8,6 @@ local pairs = pairs
 ---@type mods.Set
 local Set = {}
 Set.__index = Set
-
-local function new()
-  return setmetatable({}, Set)
-end
 
 function Set:add(v)
   self[v] = true
@@ -24,7 +22,7 @@ function Set:clear()
 end
 
 function Set:copy()
-  local set = new()
+  local set = setmetatable({}, Set)
   for k in pairs(self) do
     set[k] = true
   end
@@ -93,7 +91,7 @@ function Set:contains(v)
 end
 
 function Set:map(fn)
-  local set = new()
+  local set = setmetatable({}, Set)
   for k in pairs(self) do
     set[fn(k)] = true
   end
@@ -145,7 +143,7 @@ Set.__sub = Set.difference
 
 return setmetatable(Set, {
   __call = function(_, t)
-    local set = new()
+    local set = setmetatable({}, Set)
     if t == nil then
       return set
     end
