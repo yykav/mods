@@ -2,6 +2,9 @@ local type = type
 local getmt = getmetatable
 local lfs
 
+---@alias mods.lfs.attributes fun(filepath:string, request_name?:LuaFileSystem.AttributeName):(string|integer|LuaFileSystem.AttributeMode)
+---@alias mods.lfs.symlinkattributes fun(filepath:string, request_name?:LuaFileSystem.AttributeName):LuaFileSystem.Attributes
+
 local function get_lfs()
   if lfs then
     return lfs
@@ -16,14 +19,16 @@ local function get_lfs()
   return mod
 end
 
-local function attrs(path, field)
+---@type mods.lfs.attributes
+local function attrs(filepath, request_name)
   attrs = get_lfs().attributes
-  return attrs(path, field)
+  return attrs(filepath, request_name)
 end
 
-local function slattrs(path, field)
-  slattrs = get_lfs().symlinkattributes
-  return slattrs(path, field)
+---@type mods.lfs.symlinkattributes
+local function symlinkattrs(filepath, request_name)
+  symlinkattrs = get_lfs().symlinkattributes
+  return symlinkattrs(filepath, request_name)
 end
 
 ---@type mods.is
@@ -82,13 +87,13 @@ function M.device(v)
 end
 
 -- stylua: ignore start
-function M.block(v)  return type(v) == "string" and attrs(v, "mode")   == "block device" end
-function M.char(v)   return type(v) == "string" and attrs(v, "mode")   == "char device"  end
-function M.dir(v)    return type(v) == "string" and attrs(v, "mode")   == "directory"    end
-function M.fifo(v)   return type(v) == "string" and attrs(v, "mode")   == "named pipe"   end
-function M.file(v)   return type(v) == "string" and attrs(v, "mode")   == "file"         end
-function M.socket(v) return type(v) == "string" and attrs(v, "mode")   == "socket"       end
-function M.link(v)   return type(v) == "string" and slattrs(v, "mode") == "link"         end
+function M.block(v)  return type(v) == "string" and attrs(v, "mode")        == "block device" end
+function M.char(v)   return type(v) == "string" and attrs(v, "mode")        == "char device"  end
+function M.dir(v)    return type(v) == "string" and attrs(v, "mode")        == "directory"    end
+function M.fifo(v)   return type(v) == "string" and attrs(v, "mode")        == "named pipe"   end
+function M.file(v)   return type(v) == "string" and attrs(v, "mode")        == "file"         end
+function M.socket(v) return type(v) == "string" and attrs(v, "mode")        == "socket"       end
+function M.link(v)   return type(v) == "string" and symlinkattrs(v, "mode") == "link"         end
 -- stylua: ignore end
 
 --------------------------------
