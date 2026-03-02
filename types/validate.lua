@@ -40,15 +40,15 @@
 ---ok, err = validate(123, "number") --> true, nil
 ---```
 ---
----## Callable Behavior
----> `validate(v, tp)` dispatches to the registered validator `tp`.
----> If `tp` is omitted, it defaults to `"truthy"`.
---->
----> ```lua
----> validate()         --> false, "expected truthy value, got no value"
----> validate(1)        --> true, nil
----> validate(1, "nil") --> false, "expected nil, got number"
----> ```
+---## `validate()`
+---`validate(v, tp)` dispatches to the registered validator `tp`.
+---If `tp` is omitted, it defaults to `"truthy"`.
+---
+---```lua
+---validate()         --> false, "expected truthy value, got no value"
+---validate(1)        --> true, nil
+---validate(1, "nil") --> false, "expected nil, got number"
+---```
 ---
 ---## Validator Names
 ---
@@ -66,17 +66,20 @@
 ---validate(1, "NuMbEr") --> false, "expected NuMbEr, got number"
 --- ```
 ---
----## Custom Messages
+---@class mods.validate
+---@field [string] fun(...):(ok:boolean,errmsg:string?)
 ---
----Customize validator error messages through `validate.messages`.
----Keys are validator names (for example: `number`, `truthy`, `file`, ...).
+---Custom error-message templates for validator failures.
+---Set `validate.messages.<name>`, where `<name>` is a validator name
+---(for example: `number`, `truthy`, `file`).
+---The template is used only when validation fails and an error message is returned.
 ---
 ---```lua
 ---validate.messages.number = "need {{expected}}, got {{got}}"
 ---ok, err = validate.number("x") --> false, "need number, got string"
 ---```
 ---
----Available placeholders:
+---**Placeholders**:
 ---
 ---* <code v-pre>{{expected}}</code>: The check target (for example `number`,
 ---  `string`, `truthy`).
@@ -88,47 +91,21 @@
 ---> [!NOTE]
 --->
 ---> When the passed value is `nil`, rendered value text uses `no value`.
+--->
+---> ```lua
+---> validate.messages.truthy = "expected {{expected}} value, got {{value}}"
+---> validate.truthy(nil) --> false, "expected truthy value, got no value"
+---> ```
+---**Default Messages**:
 ---
----## Default Messages
----
----Defaults by category:
----
----* Type checks: `expected {{expected}}, got {{got}}`
----* Value checks: `expected {{expected}} value, got {{value}}`
----* Path checks: `{{value}} is not a valid {{expected}} path`
----
----@class mods.validate
----@field [string] fun(...):(ok:boolean,errmsg:string?)
----
----Validation checks for values and filesystem path types.
----entry to customize the error string returned by validators. Templates can
----use <code v-pre>{{expected}}</code>, <code v-pre>{{got}}</code>, and
----<code v-pre>{{value}}</code>.
+---* Type checks: <code v-pre>expected {{expected}}, got {{got}}</code>
+---* Value checks: <code v-pre>expected {{expected}} value, got {{value}}</code>
+---* Path checks: <code v-pre>{{value}} is not a valid {{expected}} path</code>
 ---
 ---@field messages modsValidateMessages
+---
 ---@overload fun(v:any, tp?:modsIsType|string):(boolean, string?)
 local M = {}
-
----
----Register or override a validator function by name.
----* If `msg` is provided, it becomes the default message template for that validator.
----* If `msg` is omitted, failures use: `expected {{expected}}, got {{got}}`.
----
----```lua
----validate.register("odd", function(v)
----  return type(v) == "number" and v % 2 == 1
----end, "{{value}} does not satisfy {{expected}}")
----
----ok, err = validate.odd(3)     --> true, nil
----ok, err = validate.odd("x")   --> false, '"x" does not satisfy odd'
----ok, err = validate(2, "odd")  --> false, "2 does not satisfy odd"
----```
----
----@param name string
----@param check fun(v: any):ok:boolean
----@param msg? string
----@return nil
-function M.register(name, check, msg) end
 
 --------------------------------------------------------------------------------
 ---------------------------------- Type Checks ---------------------------------
@@ -142,63 +119,59 @@ function M.register(name, check, msg) end
 ---message.
 ---
 ---```lua
----ok, err = validate.is.boolean(true) --> true, nil
----ok, err = validate.is.boolean(1)    --> false, "expected boolean, got number"
+---ok, err = validate.boolean(true) --> true, nil
+---ok, err = validate.boolean(1)    --> false, "expected boolean, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.boolean = function(v) end
 M.Boolean = M.boolean
 
----
----@name function
 ---
 ---Returns `true` when `v` is a function. Otherwise returns `false` and an error
 ---message.
 ---
 ---```lua
----ok, err = validate.is.Function(function() end) --> true, nil
----ok, err = validate.is.Function(1)
+---ok, err = validate.Function(function() end) --> true, nil
+---ok, err = validate.Function(1)
 -----> false, "expected function, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
-M.Function = function(v) end
-M["function"] = M.Function
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
+M["function"] = function(v) end
+M.Function = M["function"]
 
----
----@name nil
 ---
 ---Returns `true` when `v` is `nil`. Otherwise returns `false` and an error
 ---message.
 ---
 ---```lua
----ok, err = validate.is.Nil(nil) --> true, nil
----ok, err = validate.is.Nil(0)   --> false, "expected nil, got number"
+---ok, err = validate.Nil(nil) --> true, nil
+---ok, err = validate.Nil(0)   --> false, "expected nil, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
-M.Nil = function(v) end
-M["nil"] = M.Nil
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
+M["nil"] = function(v) end
+M.Nil = M["nil"]
 
 ---
 ---Returns `true` when `v` is a number. Otherwise returns `false` and an error
 ---message.
 ---
 ---```lua
----ok, err = validate.is.number(42)  --> true, nil
----ok, err = validate.is.number("x") --> false, "expected number, got string"
+---ok, err = validate.number(42)  --> true, nil
+---ok, err = validate.number("x") --> false, "expected number, got string"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.number = function(v) end
 M.Number = M.number
 
@@ -207,13 +180,13 @@ M.Number = M.number
 ---message.
 ---
 ---```lua
----ok, err = validate.is.string("hello") --> true, nil
----ok, err = validate.is.string(1)       --> false, "expected string, got number"
+---ok, err = validate.string("hello") --> true, nil
+---ok, err = validate.string(1)       --> false, "expected string, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.string = function(v) end
 M.String = M.string
 
@@ -222,13 +195,13 @@ M.String = M.string
 ---message.
 ---
 ---```lua
----ok, err = validate.is.table({}) --> true, nil
----ok, err = validate.is.table(1)  --> false, "expected table, got number"
+---ok, err = validate.table({}) --> true, nil
+---ok, err = validate.table(1)  --> false, "expected table, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.table = function(v) end
 M.Table = M.table
 
@@ -238,28 +211,28 @@ M.Table = M.table
 ---
 ---```lua
 ---co = coroutine.create(function() end)
----ok, err = validate.is.thread(co) --> true, nil
----ok, err = validate.is.thread(1)  --> false, "expected thread, got number"
+---ok, err = validate.thread(co) --> true, nil
+---ok, err = validate.thread(1)  --> false, "expected thread, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.thread = function(v) end
 M.Thread = M.thread
 
 ---
----Returns `true` when `v` is userdata. Otherwise returns `false` and an error
+---Returns `true` when `v` is a userdata value. Otherwise returns `false` and an error
 ---message.
 ---
 ---```lua
----ok, err = validate.is.userdata(io.stdout) --> true, nil
----ok, err = validate.is.userdata(1)         --> false, "expected userdata, got number"
+---ok, err = validate.userdata(io.stdout) --> true, nil
+---ok, err = validate.userdata(1)         --> false, "expected userdata, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.userdata = function(v) end
 M.Userdata = M.userdata
 
@@ -271,51 +244,47 @@ M.Userdata = M.userdata
 ---
 
 ---
----@name false
----
 ---Returns `true` when `v` is exactly `false`. Otherwise returns `false` and an
 ---error message.
 ---
 ---```lua
----ok, err = validate.is.False(false) --> true, nil
----ok, err = validate.is.False(true)  --> false, "expected false, got true"
+---ok, err = validate.False(false) --> true, nil
+---ok, err = validate.False(true)  --> false, "expected false, got true"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
-M.False = function(v) end
-M["false"] = M.False
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
+M["false"] = function(v) end
+M.False = M["false"]
 
----
----@name true
 ---
 ---Returns `true` when `v` is exactly `true`. Otherwise returns `false` and an
 ---error message.
 ---
 ---```lua
----ok, err = validate.is.True(true)  --> true, nil
----ok, err = validate.is.True(false) --> false, "expected true, got false"
+---ok, err = validate.True(true)  --> true, nil
+---ok, err = validate.True(false) --> false, "expected true, got false"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
-M.True = function(v) end
-M["true"] = M.True
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
+M["true"] = function(v) end
+M.True = M["true"]
 
 ---
 ---Returns `true` when `v` is falsy. Otherwise returns `false` and an error
 ---message.
 ---
 ---```lua
----ok, err = validate.is.falsy(false) --> true, nil
----ok, err = validate.is.falsy(1)     --> false, "expected falsy, got number"
+---ok, err = validate.falsy(false) --> true, nil
+---ok, err = validate.falsy(1)     --> false, "expected falsy, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.falsy = function(v) end
 M.Falsy = M.falsy
 
@@ -324,13 +293,13 @@ M.Falsy = M.falsy
 ---message.
 ---
 ---```lua
----ok, err = validate.is.callable(type) --> true, nil
----ok, err = validate.is.callable(1)    --> false, "expected callable, got number"
+---ok, err = validate.callable(type) --> true, nil
+---ok, err = validate.callable(1)    --> false, "expected callable, got number"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.callable = function(v) end
 M.Callable = M.callable
 
@@ -339,13 +308,13 @@ M.Callable = M.callable
 ---message.
 ---
 ---```lua
----ok, err = validate.is.integer(1)   --> true, nil
----ok, err = validate.is.integer(1.5) --> false, "expected integer, got 1.5"
+---ok, err = validate.integer(1)   --> true, nil
+---ok, err = validate.integer(1.5) --> false, "expected integer, got 1.5"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.integer = function(v) end
 M.Integer = M.integer
 
@@ -354,13 +323,13 @@ M.Integer = M.integer
 ---message.
 ---
 ---```lua
----ok, err = validate.is.truthy(1)     --> true, nil
----ok, err = validate.is.truthy(false) --> false, "expected truthy, got boolean"
+---ok, err = validate.truthy(1)     --> true, nil
+---ok, err = validate.truthy(false) --> false, "expected truthy, got boolean"
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.truthy = function(v) end
 M.Truthy = M.truthy
 
@@ -370,25 +339,23 @@ M.Truthy = M.truthy
 ---
 ---Filesystem path-kind validators backed by LuaFileSystem (`lfs`).
 ---
----Filesystem path kind checks.
----
 ---> [!IMPORTANT]
 --->
 ---> Path checks require **LuaFileSystem**
 ---> ([`lfs`](https://github.com/lunarmodules/luafilesystem))
----> and raise an error it is not installed.
+---> and raise an error if it is not installed.
 
 ---
 ---Returns `true` when `v` is a block device path. Otherwise returns `false`
---- and an error message.
+---and an error message.
 ---
 ---```lua
----ok, err = validate.is.block(".")
+---ok, err = validate.block(".")
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.block = function(v) end
 M.Block = M.block
 
@@ -397,12 +364,12 @@ M.Block = M.block
 ---an error message.
 ---
 ---```lua
----ok, err = validate.is.char(".")
+---ok, err = validate.char(".")
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.char = function(v) end
 M.Char = M.char
 
@@ -411,12 +378,12 @@ M.Char = M.char
 ---`false` and an error message.
 ---
 ---```lua
----ok, err = validate.is.device(".")
+---ok, err = validate.device(".")
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.device = function(v) end
 M.Device = M.device
 
@@ -425,12 +392,12 @@ M.Device = M.device
 ---error message.
 ---
 ---```lua
----ok, err = validate.is.dir(".")
+---ok, err = validate.dir(".")
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.dir = function(v) end
 M.Dir = M.dir
 
@@ -439,12 +406,12 @@ M.Dir = M.dir
 ---message.
 ---
 ---```lua
----ok, err = validate.is.fifo(".")
+---ok, err = validate.fifo(".")
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.fifo = function(v) end
 M.Fifo = M.fifo
 
@@ -453,12 +420,12 @@ M.Fifo = M.fifo
 ---message.
 ---
 ---```lua
----ok, err = validate.is.file(".")
+---ok, err = validate.file(".")
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.file = function(v) end
 M.File = M.file
 
@@ -467,12 +434,12 @@ M.File = M.file
 ---error message.
 ---
 ---```lua
----ok, err = validate.is.link(".")
+---ok, err = validate.link(".")
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.link = function(v) end
 M.Link = M.link
 
@@ -481,13 +448,41 @@ M.Link = M.link
 ---error message.
 ---
 ---```lua
----ok, err = validate.is.socket(".")
+---ok, err = validate.socket(".")
 ---```
 ---
----@param v any
----@return boolean ok
----@return string? err
+---@param v any Value to validate.
+---@return boolean ok Whether the check succeeds.
+---@return string? err Error message when the check fails.
 M.socket = function(v) end
 M.Socket = M.socket
+
+--------------------------------------------------------------------------------
+--------------------------------- Validator API --------------------------------
+--------------------------------------------------------------------------------
+
+---
+---Register or override a validator function by name.
+---
+---```lua
+---validate.register("odd", function(v)
+---  return type(v) == "number" and v % 2 == 1
+---end, "{{value}} does not satisfy {{expected}}")
+---
+---ok, err = validate.odd(3)     --> true, nil
+---ok, err = validate.odd("x")   --> false, '"x" does not satisfy odd'
+---ok, err = validate(2, "odd")  --> false, "2 does not satisfy odd"
+---```
+---
+---> [!NOTE]
+--->
+---> * If `msg` is provided, it becomes the default message template for that validator.
+---> * If `msg` is omitted, failures use: `expected {{expected}}, got {{got}}`.
+---
+---@param name string Validator name.
+---@param check fun(v:any):(ok:boolean) Validator function.
+---@param msg? string Optional default message template.
+---@return nil none
+function M.register(name, check, msg) end
 
 return M
