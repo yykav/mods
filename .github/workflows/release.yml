@@ -32,3 +32,4 @@ jobs:
     uses: ./.github/workflows/luarocks.yml
     with:
       tag_name: ${{ needs.release-please.outputs.tag_name }}
+    secrets: inherit
