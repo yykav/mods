@@ -14,6 +14,12 @@
 ---print(ls:index("b"))    --> 2
 ---```
 ---
+---> [!NOTE]
+--->
+---> `List(t)` wraps `t` with the `List` metatable in place. It does not copy or
+---> filter table values. `List(t):copy()` or `List.copy(t)` both copy only
+---> `1..#t` and wrap `t` as a List.
+---
 ---@class mods.List<T>:{[integer]:T}
 ---@operator add(mods.List):mods.List
 ---@operator mul(integer):mods.List
