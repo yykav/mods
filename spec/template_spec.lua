@@ -1,11 +1,16 @@
-local template = require("mods").template
+local mods = require("mods")
+local template = mods.template
+local repr = mods.repr
 local fmt = string.format
 
 describe("mods.template", function()
-  local function name_func()
-    return "Ada"
-  end
+  -- stylua: ignore start
+  local function name_func() return "Ada" end
+  local function table_func() return { x = 1 } end
+  local function nil_func() return nil end
+  -- stylua: ignore end
 
+  local tests
   local view = {
     achievement = "a new badge",
     count = 3,
@@ -21,7 +26,8 @@ describe("mods.template", function()
   }
 
   -- stylua: ignore
-  local tests = {
+  tests = {
+    ---------template-------------------------|------------expected-------------
     -- Basic values
     { "{{prize}} awaits you!"                 , "A free trip awaits you!"      },
     { "You’ve unlocked {{achievement}}!"      , "You’ve unlocked a new badge!" },
@@ -31,8 +37,9 @@ describe("mods.template", function()
     { "{{ prize }} is great"                  , "A free trip is great"         },
 
     -- Lookup
+    { "{{.}}"                                 , repr(view)                     },
+    { "{{user}}"                              , repr(view.user)                },
     { "{{user.name}}"                         , "Ada"                          },
-    { "{{.}}"                                 , tostring(view)                 },
     { "{{user.meta.role}}"                    , "Engineer"                     },
     { "{{user.missing}}"                      , ""                             },
     { "{{user.name_func}}"                    , "Ada"                          },
@@ -44,16 +51,49 @@ describe("mods.template", function()
     { "Count: {{count}}"                      , "Count: 3"                     },
     { "active: {{user.active}}"               , "active: false"                },
     { "admin: {{user.admin}}"                 , "admin: true"                  },
-
-    -- Edge cases
-    { "Empty {{}} tag"                        , "Empty  tag"                   },
-    { "Unclosed {{prize"                      , "Unclosed {{prize"             },
   }
+  -- stylua: ignore end
 
   for i = 1, #tests do
     local tmpl, expected = unpack(tests[i])
     it(fmt("template(%q, {...}) returns correct result", tmpl), function()
       local res = template(tmpl, view)
+      assert.are_equal(expected, res)
+    end)
+  end
+
+  ------------------
+  --- Edge cases ---
+  ------------------
+
+  -- stylua: ignore
+  tests = {
+    ---------template----|--------view---------|------expected-------
+    { ""                 , view                , ""                 },
+    { "{{ x"             , view                , "{{ x"             },
+    { "y }}"             , view                , "y }}"             },
+    { "{{...}}"          , view                , ""                 },
+    { "{{..}}"           , view                , ""                 },
+    { "{{.}}"            , nil                 , ""                 },
+    { "{{   }}"          , view                , ""                 },
+    { "{{}}"             , nil                 , ""                 },
+    { "{{fn}}"           , { fn = nil_func }   , ""                 },
+    { "{{fn}}"           , { fn = table_func } , repr({ x = 1 })    },
+    { "{{.name}}"        , view                , ""                 },
+    { "{{name}}"         , 123                 , ""                 },
+    { "{{user.}}"        , view                , ""                 },
+    { "{{.user}}"        , view                , ""                 },
+    { "{{user...}}"      , view                , ""                 },
+    { "{{user.name}}"    , { user = "x" }      , ""                 },
+    { "{{user..name}}"   , { user = "x" }      , ""                 },
+    { "Empty {{}} tag"   , view                , "Empty  tag"       },
+    { "Unclosed {{prize" , view                , "Unclosed {{prize" },
+  }
+
+  for i = 1, #tests do
+    local tmpl, v, expected = unpack(tests[i], 1, 3)
+    it(fmt("template(%q, %s) handles edge case", tmpl, inspect(v)), function()
+      local res = template(tmpl, v)
       assert.are_equal(expected, res)
     end)
   end
