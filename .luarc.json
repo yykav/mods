@@ -5,8 +5,9 @@
   },
   "workspace": {
     "library": [
-      "~/.cache/lua/luassert",
       "~/.cache/lua/busted",
+      "~/.cache/lua/luafilesystem",
+      "~/.cache/lua/luassert",
       "~/.cache/lua/pl"
     ]
   }
