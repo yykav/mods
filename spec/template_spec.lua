@@ -74,13 +74,11 @@ describe("mods.template", function()
     { "y }}"             , view                , "y }}"             },
     { "{{...}}"          , view                , ""                 },
     { "{{..}}"           , view                , ""                 },
-    { "{{.}}"            , nil                 , ""                 },
     { "{{   }}"          , view                , ""                 },
-    { "{{}}"             , nil                 , ""                 },
+    { "{{}}"             , view                , ""                 },
     { "{{fn}}"           , { fn = nil_func }   , ""                 },
     { "{{fn}}"           , { fn = table_func } , repr({ x = 1 })    },
     { "{{.name}}"        , view                , ""                 },
-    { "{{name}}"         , 123                 , ""                 },
     { "{{user.}}"        , view                , ""                 },
     { "{{.user}}"        , view                , ""                 },
     { "{{user...}}"      , view                , ""                 },
@@ -95,6 +93,26 @@ describe("mods.template", function()
     it(fmt("template(%q, %s) handles edge case", tmpl, inspect(v)), function()
       local res = template(tmpl, v)
       assert.are_equal(expected, res)
+    end)
+  end
+
+  -- stylua: ignore
+  tests = {
+    ---------params--------|-----------------------------errmsg------------------------------
+    { { "{{name}}", nil   }, "bad argument #2 to 'template' (expected table, got nil)"      },
+    { { "{{name}}", 123   }, "bad argument #2 to 'template' (expected table, got number)"   },
+    { { "{{name}}", false }, "bad argument #2 to 'template' (expected table, got boolean)"  },
+    { { nil       , {}    }, "bad argument #1 to 'template' (expected string, got nil)"     },
+    { { 123       , {}    }, "bad argument #1 to 'template' (expected string, got number)"  },
+    { { false     , {}    }, "bad argument #1 to 'template' (expected string, got boolean)" },
+  }
+
+  for i = 1, #tests do
+    local params, errmsg = unpack(tests[i], 1, 3)
+    it(fmt("template(%s) errors", args_repr(params)), function()
+      assert.has_error(function()
+        template(unpack(params)) ---@diagnostic disable-line: param-type-mismatch
+      end, errmsg --[[@as string]])
     end)
   end
 end)
