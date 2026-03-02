@@ -2,6 +2,7 @@ local mods = require("mods")
 local is = mods.is
 local Set = mods.Set
 local fmt = string.format
+local lfs = require("lfs")
 
 describe("mods.is", function()
   local f = function() end
@@ -63,4 +64,24 @@ describe("mods.is", function()
       assert.is_false(is(invalid, tp))
     end)
   end
+
+  it("link detects symlink paths when supported", function()
+    local root = os.tmpname()
+    os.remove(root)
+    assert.is_true(lfs.mkdir(root))
+
+    local target = root .. "/target.txt"
+    local link = root .. "/link.txt"
+    local f = assert(io.open(target, "w"))
+    f:close()
+
+    local ok = lfs.link(target, link, true)
+    if ok then
+      assert.is_true(is.link(link))
+      os.remove(link)
+    end
+
+    os.remove(target)
+    lfs.rmdir(root)
+  end)
 end)
