@@ -1,10 +1,12 @@
 ---@meta mods.stringcase
 
+---
 ---String case conversion helpers.
+---
 ---## Usage
 ---
 ---```lua
----sc = require "mods.stringcase"
+---stringcase = require "mods.stringcase"
 ---
 ---print(stringcase.snake("FooBar")) --> "foo_bar"
 ---```
@@ -15,6 +17,7 @@ local M = {}
 ------------------------------------- Basic ------------------------------------
 --------------------------------------------------------------------------------
 
+---
 ---Convert string to all lowercase.
 ---
 ---```lua
@@ -22,11 +25,12 @@ local M = {}
 ---lower("FooBar baz")  --> "foobar baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Lowercased string.
 ---@nodiscard
 function M.lower(s) end
 
+---
 ---Convert string to all uppercase.
 ---
 ---```lua
@@ -34,8 +38,8 @@ function M.lower(s) end
 ---upper("FooBar baz")  --> "FOOBAR BAZ"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Uppercased string.
 ---@nodiscard
 function M.upper(s) end
 
@@ -43,6 +47,7 @@ function M.upper(s) end
 ---------------------------------- Word Case -----------------------------------
 --------------------------------------------------------------------------------
 
+---
 ---Convert string to snake_case.
 ---
 ---```lua
@@ -50,11 +55,12 @@ function M.upper(s) end
 ---snake("FooBar baz")  --> "foo_bar_baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Snake-cased string.
 ---@nodiscard
 function M.snake(s) end
 
+---
 ---Convert string to camelCase.
 ---
 ---```lua
@@ -62,11 +68,12 @@ function M.snake(s) end
 ---camel("FooBar baz")  --> "fooBarBaz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Camel-cased string.
 ---@nodiscard
 function M.camel(s) end
 
+---
 ---Normalize to snake_case, then replace underscores with a separator.
 ---
 ---```lua
@@ -74,12 +81,13 @@ function M.camel(s) end
 ---replace("FooBar baz", "-")  --> "foo-bar-baz"
 ---```
 ---
----@param s string
----@param sep? string
----@return string
+---@param s string Input string.
+---@param sep? string Optional separator value (defaults to `""`).
+---@return string s String with underscores replaced by `sep`.
 ---@nodiscard
 function M.replace(s, sep) end
 
+---
 ---Get acronym of words in string (first letters only).
 ---
 ---```lua
@@ -87,11 +95,12 @@ function M.replace(s, sep) end
 ---acronym("FooBar baz")  --> "FBB"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Acronym string.
 ---@nodiscard
 function M.acronym(s) end
 
+---
 ---Convert string to Title Case (first letter of each word capitalized).
 ---
 ---```lua
@@ -99,11 +108,12 @@ function M.acronym(s) end
 ---title("FooBar baz")  --> "Foo Bar Baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Title-cased string.
 ---@nodiscard
 function M.title(s) end
 
+---
 ---Convert string to CONSTANT_CASE (uppercase snake_case).
 ---
 ---```lua
@@ -111,11 +121,12 @@ function M.title(s) end
 ---constant("FooBar baz")  --> "FOO_BAR_BAZ"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Constant-cased string.
 ---@nodiscard
 function M.constant(s) end
 
+---
 ---Convert string to PascalCase.
 ---
 ---```lua
@@ -123,11 +134,12 @@ function M.constant(s) end
 ---pascal("FooBar baz")  --> "FooBarBaz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Pascal-cased string.
 ---@nodiscard
 function M.pascal(s) end
 
+---
 ---Convert string to kebab-case.
 ---
 ---```lua
@@ -135,11 +147,12 @@ function M.pascal(s) end
 ---kebab("FooBar baz")  --> "foo-bar-baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Kebab-cased string.
 ---@nodiscard
 function M.kebab(s) end
 
+---
 ---Convert string to dot.case.
 ---
 ---```lua
@@ -147,11 +160,12 @@ function M.kebab(s) end
 ---dot("FooBar baz")  --> "foo.bar.baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Dot-cased string.
 ---@nodiscard
 function M.dot(s) end
 
+---
 ---Convert string to space case (spaces between words).
 ---
 ---```lua
@@ -159,11 +173,12 @@ function M.dot(s) end
 ---space("FooBar baz")  --> "foo bar baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Space-cased string.
 ---@nodiscard
 function M.space(s) end
 
+---
 ---Convert string to path/case (slashes between words).
 ---
 ---```lua
@@ -171,8 +186,8 @@ function M.space(s) end
 ---path("FooBar baz")  --> "foo/bar/baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Path-cased string.
 ---@nodiscard
 function M.path(s) end
 
@@ -180,6 +195,7 @@ function M.path(s) end
 ---------------------------------- Letter Case ---------------------------------
 --------------------------------------------------------------------------------
 
+---
 ---Swap case of each letter.
 ---
 ---```lua
@@ -187,11 +203,12 @@ function M.path(s) end
 ---swap("FooBar baz")  --> "fOObAR BAZ"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Swap-cased string.
 ---@nodiscard
 function M.swap(s) end
 
+---
 ---Capitalize the first letter and lowercase the rest.
 ---
 ---```lua
@@ -199,20 +216,21 @@ function M.swap(s) end
 ---capital("FooBar baz")  --> "Foobar baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Capitalized string.
 ---@nodiscard
 function M.capital(s) end
 
----Convert string to sentence case (first letter uppercase, rest lowercase).
+---
+---Convert string to sentence case (first letter uppercase, rest unchanged).
 ---
 ---```lua
 ---sentence("foo_bar-baz") --> "Foo_bar-baz"
 ---sentence("FooBar baz")  --> "FooBar baz"
 ---```
 ---
----@param s string
----@return string
+---@param s string Input string.
+---@return string s Sentence-cased string.
 ---@nodiscard
 function M.sentence(s) end
 
