@@ -6,13 +6,12 @@ local concat = table.concat
 local sort = table.sort
 local rep = string.rep
 local tostring = tostring
-local gmatch = string.gmatch
 local isidentifier = mods.keyword.isidentifier
 local quote = mods.utils.quote
 
 local INDENT = "  "
 local TYPE_RANK = { n = 0 }
-for type_name in gmatch("number string boolean table function userdata thread", "%S+") do
+for type_name in ("number string boolean table function userdata thread"):gmatch("%S+") do
   TYPE_RANK.n = TYPE_RANK.n + 1
   TYPE_RANK[type_name] = TYPE_RANK.n
 end
