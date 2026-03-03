@@ -42,4 +42,31 @@ function M.quote(v) end
 ---@nodiscard
 function M.keypath(...) end
 
+---
+---Assert argument value using
+---[`mods.validate`](https://luamod.github.io/mods/modules/validate)
+---and raise a Lua error on failure.
+---
+---```lua
+---utils.assert_arg(1, "ok", "string") --> "ok"
+---utils.assert_arg(2, 123, "string")
+-----> raises: bad argument #2 (expected string, got number)
+---utils.assert_arg(3, "x", "number", 2, "need {{expected}}, got {{got}}")
+-----> raises: bad argument #3 (need number, got string)
+---```
+---
+---> [!NOTE]
+--->
+---> When the caller function name is available, error text includes
+---> `to '<function>'` (Lua-style bad argument context).
+---
+---@generic T
+---@param argn integer Argument index for error context.
+---@param v T Value to check.
+---@param tp? modsIsType Validator name (defaults to `"truthy"`).
+---@param level? integer Optional error level for `error(...)` (defaults to `2`).
+---@param msg? string Optional override template passed to `mods.validate`.
+---@return T v Same input value on success.
+function M.assert_arg(argn, v, tp, level, msg) end
+
 return M
