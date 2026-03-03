@@ -24,7 +24,7 @@ inter-module dependencies, and support for Lua 5.1, 5.2, 5.3, 5.4, and LuaJIT.
 
 ## Contribute
 
-Have an idea or found a bug? Open an
+Found a 🐛 bug or want to suggest an ✨ improvement? Open an
 [issue](https://github.com/luamod/mods/issues), start a
 [discussion](https://github.com/luamod/mods/discussions), or submit a
 [pull request](https://github.com/luamod/mods/pulls).
