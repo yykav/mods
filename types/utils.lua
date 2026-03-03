@@ -43,9 +43,7 @@ function M.quote(v) end
 function M.keypath(...) end
 
 ---
----Assert argument value using
----[`mods.validate`](https://luamod.github.io/mods/modules/validate)
----and raise a Lua error on failure.
+---Assert argument value using `mods.validate` and raise a Lua error on failure.
 ---
 ---```lua
 ---utils.assert_arg(1, "ok", "string") --> "ok"

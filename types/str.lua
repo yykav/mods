@@ -117,8 +117,8 @@ function M.find(s, sub, start, stop) end
 ---
 ---> [!NOTE]
 --->
----> `format_map` is a lightweight `{key}` replacement helper. For richer
----> templating, use [`mods.template`](https://luamod.github.io/mods/modules/template).
+---> `format_map` is a lightweight `{key}` replacement helper.
+---> For richer templating, use `mods.template`.
 ---
 ---@param s string Template string with `{key}` placeholders.
 ---@param mapping table Values used to replace placeholder keys.

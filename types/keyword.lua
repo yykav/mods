@@ -42,7 +42,7 @@ function M.iskeyword(v) end
 function M.isidentifier(v) end
 
 ---
----Return Lua keywords as a [`mods.List`](https://luamod.github.io/mods/modules/list).
+---Return Lua keywords as a `mods.List`.
 ---
 ---```lua
 ---kw.kwlist():contains("and") --> true
@@ -53,7 +53,7 @@ function M.isidentifier(v) end
 function M.kwlist() end
 
 ---
----Return Lua keywords as a [`mods.Set`](https://luamod.github.io/mods/modules/set).
+---Return Lua keywords as a `mods.Set`.
 ---
 ---```lua
 ---kw.kwlset():contains("and") --> true
