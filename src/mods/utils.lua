@@ -20,9 +20,10 @@ local function validate(...)
   return validate(...)
 end
 
-local function caller_name()
-  for level = 3, 6 do
-    local info = debug.getinfo(level, "n")
+local function caller_name(level)
+  local base = (level or 2) + 1
+  for i = base, base + 3 do
+    local info = debug.getinfo(i, "n")
     local name = info and info.name
     if name and name ~= "" and not ignored_caller_names[name] then
       return name
@@ -60,17 +61,18 @@ function M.keypath(...)
   return concat(res)
 end
 
-function M.assert_arg(argn, v, tp, level, msg)
+function M.assert_arg(argn, v, tp, lvl, msg)
   local ok, err = validate(v, tp, msg)
   if not ok then
+    lvl = lvl or 2
     local message
-    local fname = caller_name()
+    local fname = caller_name(lvl)
     if fname then
       message = fmt("bad argument #%d to %q (%s)", argn, fname, err)
     else
       message = fmt("bad argument #%d (%s)", argn, err)
     end
-    error(message, level or 2)
+    error(message, lvl)
   end
   return v
 end
