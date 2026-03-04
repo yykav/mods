@@ -168,6 +168,9 @@ end
 
 local function function_signature(item)
   local base = item.shortname or item.name or ""
+  if item.kind == "alias" then
+    return base
+  end
   local params = {}
   local tag_params = item.tags and item.tags.params
   if type(tag_params) == "table" then
@@ -387,8 +390,13 @@ local function append_quick_ref_table(doc, rows)
   insert(doc, "Function | Description")
   insert(doc, "---- | ----")
   for _, row in ipairs(rows) do
-    local link = fmt("[`%s`](#%s)", esc_table_cell(row.signature), row.anchor)
-    insert(doc, fmt("%s | %s", link, esc_table_cell(row.desc)))
+    local label
+    if row.anchor and row.anchor ~= "" then
+      label = fmt("[`%s`](#%s)", esc_table_cell(row.signature), row.anchor)
+    else
+      label = fmt("`%s`", esc_table_cell(row.signature))
+    end
+    insert(doc, fmt("%s | %s", label, esc_table_cell(row.desc)))
   end
 end
 
@@ -511,12 +519,17 @@ local function build_markdown(items)
         insert(details, linkify_mods_refs(item.desc))
       end
     elseif has_functions and (item.kind == "function" or is_function_doc_item(item)) then
+      local alias_doc_item = is_function_doc_item(item)
       function_count = function_count + 1
       local signature = function_signature(item)
       local ref_id = function_ref_id(item)
+      local row_anchor = ref_id
+      if alias_doc_item then
+        row_anchor = nil
+      end
       local row = {
         signature = signature,
-        anchor = ref_id,
+        anchor = row_anchor,
         desc = first_paragraph(linkify_mods_refs(item.desc)),
       }
       if section_fields then
@@ -533,9 +546,11 @@ local function build_markdown(items)
         insert(quick_ref, row)
       end
 
-      insert(details, fmt('<a id="%s"></a>', ref_id))
-      insert(details, fmt("%s `%s`", function_heading_level, signature))
-      append_function_signature_details(details, item, alias_views)
+      if not alias_doc_item then
+        insert(details, fmt('<a id="%s"></a>', ref_id))
+        insert(details, fmt("%s `%s`", function_heading_level, signature))
+        append_function_signature_details(details, item, alias_views)
+      end
     end
   end
 
