@@ -193,6 +193,75 @@ local function trim(s)
   return ((s or ""):gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
+local function sanitize_alias_part(part)
+  local p = trim(part)
+  local dq, dq_rest = p:match('^("[^"]*")%s*(.*)$')
+  if dq then
+    return dq, trim(dq_rest or "")
+  end
+  local sq, sq_rest = p:match([[^('[^']*')%s*(.*)$]])
+  if sq then
+    return sq, trim(sq_rest or "")
+  end
+  return p, ""
+end
+
+local function alias_view_to_string(view)
+  if type(view) == "table" then
+    local out = {}
+    local alias_desc = nil
+    for _, part in ipairs(view) do
+      local p, extra = sanitize_alias_part(tostring(part))
+      if p ~= "" then
+        insert(out, p)
+      end
+      if extra ~= "" and not alias_desc then
+        alias_desc = extra
+      end
+    end
+    return concat(out, "|"), alias_desc
+  end
+  return trim(tostring(view or "")), nil
+end
+
+local function collect_alias_views(items)
+  local out = {}
+  for _, item in ipairs(items or {}) do
+    if item and item.kind == "alias" and item.view ~= nil then
+      local expanded, alias_desc = alias_view_to_string(item.view)
+      if expanded ~= "" then
+        local data = { view = expanded, desc = alias_desc }
+        if type(item.name) == "string" and item.name ~= "" then
+          out[item.name] = data
+        end
+        if type(item.shortname) == "string" and item.shortname ~= "" then
+          out[item.shortname] = data
+        end
+      end
+    end
+  end
+  return out
+end
+
+local function expand_type_view(view, alias_views, seen)
+  local v = trim(tostring(view or ""))
+  if v == "" then
+    return "any", nil
+  end
+  local mapped = alias_views and alias_views[v]
+  if not mapped then
+    return v, nil
+  end
+  seen = seen or {}
+  if seen[v] then
+    return v, mapped.desc
+  end
+  seen[v] = true
+  local out, nested_desc = expand_type_view(mapped.view, alias_views, seen)
+  seen[v] = nil
+  return out, mapped.desc or nested_desc
+end
+
 ---Turn inline code refs like `mods.path` into markdown links.
 local function linkify_mods_refs(s)
   if not s or s == "" then
@@ -215,7 +284,7 @@ local function normalize_api_desc(desc)
   return linkify_mods_refs(d)
 end
 
-local function append_function_api_contract(doc, item)
+local function append_function_api_contract(doc, item, alias_views)
   local tags = item.tags or {}
   local params = tags.params or {}
   local returns = tags.returns or {}
@@ -239,8 +308,11 @@ local function append_function_api_contract(doc, item)
     insert(doc, "**Parameters**:")
     for _, param in ipairs(params) do
       local pname = param and param.name or ""
-      local pview = param and param.view or "any"
+      local pview, alias_desc = expand_type_view(param and param.view or "any", alias_views)
       local pdesc = normalize_api_desc(param and param.desc or "")
+      if pdesc == "" and alias_desc and alias_desc ~= "" then
+        pdesc = normalize_api_desc(alias_desc)
+      end
       if pname ~= "" and pname ~= "self" then
         if pdesc ~= "" then
           insert(doc, fmt("- `%s` (`%s`): %s", pname, pview, pdesc))
@@ -256,8 +328,11 @@ local function append_function_api_contract(doc, item)
     insert(doc, "**Return**:")
     for _, ret in ipairs(returns) do
       local rname = ret and ret.name or ""
-      local rview = ret and ret.view or "any"
+      local rview, alias_desc = expand_type_view(ret and ret.view or "any", alias_views)
       local rdesc = normalize_api_desc(ret and ret.desc or "")
+      if rdesc == "" and alias_desc and alias_desc ~= "" then
+        rdesc = normalize_api_desc(alias_desc)
+      end
       local label = rname ~= "" and ("`" .. rname .. "`") or "**value**"
       if rdesc ~= "" then
         insert(doc, fmt("- %s (`%s`): %s", label, rview, rdesc))
@@ -270,7 +345,7 @@ local function append_function_api_contract(doc, item)
   insert(doc, "")
 end
 
-local function append_function_signature_details(doc, item)
+local function append_function_signature_details(doc, item, alias_views)
   local desc = item.desc or ""
   local before, code, after = desc:match("^(.-)```lua[^\n]*\n(.-)\n```(.*)$")
 
@@ -286,7 +361,7 @@ local function append_function_signature_details(doc, item)
     end
   end
 
-  append_function_api_contract(doc, item)
+  append_function_api_contract(doc, item, alias_views)
 
   if code then
     insert(doc, "**Example**:")
@@ -370,6 +445,7 @@ local function build_markdown(items)
   local include_blocks = collect_include_blocks(items)
   local frontmatter = render_frontmatter(module_desc)
   local section_fields = has_section_field(items)
+  local alias_views = collect_alias_views(items)
   local function_heading_level
   if section_fields then
     function_heading_level = "####"
@@ -447,7 +523,7 @@ local function build_markdown(items)
 
       insert(details, fmt('<a id="%s"></a>', ref_id))
       insert(details, fmt("%s `%s`", function_heading_level, signature))
-      append_function_signature_details(details, item)
+      append_function_signature_details(details, item, alias_views)
     end
   end
 
