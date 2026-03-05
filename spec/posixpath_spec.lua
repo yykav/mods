@@ -1,3 +1,11 @@
+--[[
+  Some test cases were ported from CPython's posixpath tests.
+  Adapted and ported to Lua/Busted for this project's API and conventions.
+  Source: https://github.com/python/cpython/blob/main/Lib/test/test_posixpath.py
+  License: Python Software Foundation License Version 2 (PSF-2.0).
+  Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
+]]
+
 local lfs = require("lfs")
 local mods = require("mods")
 local posixpath = mods.posixpath

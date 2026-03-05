@@ -1,3 +1,13 @@
+---@diagnostic disable: invisible
+
+--[[
+  Portions of this module are derived from CPython's posixpath.py.
+  Adapted and ported to Lua for this project's API and conventions.
+  Source: https://github.com/python/cpython/blob/main/Lib/posixpath.py
+  License: Python Software Foundation License Version 2 (PSF-2.0).
+  Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
+]]
+
 local splitext = require("mods.path")._splitext
 
 ---@type mods.posixpath
