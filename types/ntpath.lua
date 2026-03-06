@@ -3,6 +3,10 @@
 ---
 ---Lexical path operations for Windows/NT-style paths.
 ---
+---> [!NOTE]
+--->
+---> Python `ntpath`-style behavior, ported to Lua.
+---
 ---## Usage
 ---
 ---```lua
