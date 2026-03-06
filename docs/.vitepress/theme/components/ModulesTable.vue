@@ -5,7 +5,7 @@ import { useData } from "vitepress";
 type ModuleRow = {
   text: string;
   link: string;
-  desc: string;
+  description: string;
 };
 
 type SiteThemeConfig = {
@@ -33,7 +33,7 @@ const rows = computed(() => {
         <td>
           <a :href="row.link"><code>{{ row.text }}</code></a>
         </td>
-        <td>{{ row.desc }}</td>
+        <td>{{ row.description }}</td>
       </tr>
     </tbody>
   </table>

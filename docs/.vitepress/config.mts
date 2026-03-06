@@ -46,7 +46,7 @@ type ModuleNavItem = {
 type ModuleTableRow = {
   text: string;
   link: string;
-  desc: string;
+  description: string;
 };
 
 const moduleText = (name: string): string =>
@@ -57,14 +57,14 @@ const moduleText = (name: string): string =>
 const stripWrappingQuotes = (s: string): string =>
   s.replace(/^['"]|['"]$/g, "");
 
-const readFrontmatterDesc = (src: string): string => {
+const readFrontmatterDescription = (src: string): string => {
   const frontmatter = src.match(/^---\n([\s\S]*?)\n---\n?/);
   if (!frontmatter) return "";
 
   const lines = frontmatter[1].split("\n");
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    const match = line.match(/^desc:\s*(.*)$/);
+    const match = line.match(/^description:\s*(.*)$/);
     if (!match) continue;
 
     const inline = match[1].trim();
@@ -106,8 +106,8 @@ const moduleTableRows: ModuleTableRow[] = moduleNames.map((name) => {
   const file = path.join(modulesDir, `${name}.md`);
   const src = fs.readFileSync(file, "utf8");
   const title = readModuleTitle(src, moduleText(name));
-  const desc = readFrontmatterDesc(src);
-  return { text: title, link: `${assetBasePath}modules/${name}`, desc };
+  const description = readFrontmatterDescription(src);
+  return { text: title, link: `${assetBasePath}modules/${name}`, description };
 });
 
 const themeConfig: DefaultTheme.Config & { moduleTableRows: ModuleTableRow[] } =

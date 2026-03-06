@@ -144,7 +144,7 @@ local function render_frontmatter(desc)
   if not short_desc then
     return nil
   end
-  return fmt('---\ndesc: "%s"\n---', short_desc:gsub('"', '\\"'))
+  return fmt('---\ndescription: "%s"\n---', short_desc:gsub('"', '\\"'))
 end
 
 ---Extract and flatten the first paragraph from a longer description.
