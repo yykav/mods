@@ -89,7 +89,7 @@ describe("mods.utils", function()
 
     assert.has_error(function()
       needs_string(123)
-    end, 'bad argument #1 to "needs_string" (expected string, got number)')
+    end, "bad argument #1 to 'needs_string' (expected string, got number)")
   end)
 
   it("passes custom message template to validate when provided", function()

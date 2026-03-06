@@ -68,7 +68,7 @@ function M.assert_arg(argn, v, tp, lvl, msg)
     local message
     local fname = caller_name(lvl)
     if fname then
-      message = fmt("bad argument #%d to %q (%s)", argn, fname, err)
+      message = fmt("bad argument #%d to '%s' (%s)", argn, fname, err)
     else
       message = fmt("bad argument #%d (%s)", argn, err)
     end
