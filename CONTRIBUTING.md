@@ -143,6 +143,12 @@ If adding a module under [`src/mods/`](src/mods/), also update:
 
 - Docs are built with [VitePress](https://vitepress.dev/) and live in
   [`docs/`](docs/).
+- The module reference pages under [`docs/src/modules/`](docs/src/modules/) are
+  generated. Do not edit those `.md` files directly.
+- For API documentation changes, update the source annotations in
+  [`types/`](types/) instead of editing generated module pages directly.
+- Module reference pages under [`docs/src/modules/`](docs/src/modules/) are
+  generated automatically from those annotations.
 - For docs setup, build, preview, and local development commands, see
   [`docs/README.md`](docs/README.md).
 
