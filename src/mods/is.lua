@@ -2,8 +2,10 @@ local type = type
 local getmt = getmetatable
 local lfs
 
+-- luacheck: push ignore 631
 ---@alias mods.lfs.attributes fun(filepath:string, request_name?:LuaFileSystem.AttributeName):(string|integer|LuaFileSystem.AttributeMode)
 ---@alias mods.lfs.symlinkattributes fun(filepath:string, request_name?:LuaFileSystem.AttributeName):LuaFileSystem.Attributes
+-- luacheck: pop
 
 local function get_lfs()
   if lfs then
