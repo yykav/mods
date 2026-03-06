@@ -1,13 +1,14 @@
-local mods = require("mods")
+local mods = require "mods"
 
-local type = type
-local next = next
-local concat = table.concat
-local sort = table.sort
-local rep = string.rep
-local tostring = tostring
 local isidentifier = mods.keyword.isidentifier
 local quote = mods.utils.quote
+
+local concat = table.concat
+local next = next
+local rep = string.rep
+local sort = table.sort
+local tostring = tostring
+local type = type
 
 local INDENT = "  "
 local TYPE_RANK = { n = 0 }

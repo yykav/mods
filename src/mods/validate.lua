@@ -1,11 +1,12 @@
-local mods = require("mods")
+local mods = require "mods"
 
 local is = mods.is
+local quote = mods.utils.quote
 local template = mods.template
+
 local lower = string.lower
 local tostring = tostring
 local type = type
-local quote = mods.utils.quote
 
 ---@type mods.validate
 ---@diagnostic disable-next-line: missing-fields

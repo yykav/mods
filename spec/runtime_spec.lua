@@ -1,4 +1,4 @@
-local runtime = require("mods.runtime")
+local runtime = require "mods.runtime"
 
 describe("mods.runtime", function()
   it("exposes version metadata", function()

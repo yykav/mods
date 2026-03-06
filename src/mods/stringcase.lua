@@ -1,7 +1,7 @@
-local upper = string.upper
-local lower = string.lower
 local gsub = string.gsub
+local lower = string.lower
 local sub = string.sub
+local upper = string.upper
 
 ---Converts camelCase or mixed separators to underscores
 ---e.g. "fooBar-Baz qux" -> "foo_bar_baz_qux"

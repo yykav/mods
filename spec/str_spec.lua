@@ -1,8 +1,10 @@
 ---@diagnostic disable: param-type-mismatch
 
-local mods = require("mods")
+local mods = require "mods"
+
 local List = mods.List
 local str = mods.str
+
 local byte = string.byte
 local fmt = string.format
 

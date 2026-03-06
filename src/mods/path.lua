@@ -1,4 +1,8 @@
-local rfind = require("mods.str").rfind
+---@diagnostic disable: invisible
+
+local mods = require "mods"
+
+local rfind = mods.str.rfind
 
 local sub = string.sub
 

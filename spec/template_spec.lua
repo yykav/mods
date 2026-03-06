@@ -1,6 +1,8 @@
-local mods = require("mods")
-local template = mods.template
+local mods = require "mods"
+
 local repr = mods.repr
+local template = mods.template
+
 local fmt = string.format
 
 describe("mods.template", function()

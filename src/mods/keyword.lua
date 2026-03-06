@@ -1,4 +1,4 @@
-local mods = require("mods")
+local mods = require "mods"
 
 local gsub = string.gsub
 local match = string.match

@@ -1,4 +1,4 @@
-local mods = require("mods")
+local mods = require "mods"
 
 local byte = string.byte
 local char = string.char

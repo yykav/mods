@@ -1,17 +1,18 @@
 ---@diagnostic disable: invisible
 
-local mods = require("mods")
+local mods = require "mods"
 
-local insert = table.insert
-local sort = table.sort
-local remove = table.remove
+local keypath = mods.utils.keypath
+local quote = mods.utils.quote
+
 local concat = table.concat
+local insert = table.insert
 local move = table.move
-local unpack = table.unpack or unpack
+local remove = table.remove
+local sort = table.sort
 local tostring = tostring
 local type = type
-local quote = mods.utils.quote
-local keypath = mods.utils.keypath
+local unpack = table.unpack or unpack
 
 ---@type mods.List
 local List = {}

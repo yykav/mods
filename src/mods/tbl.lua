@@ -1,4 +1,4 @@
-local List = require("mods.List")
+local List = require "mods.List"
 
 ---@type mods.tbl
 local M = {}

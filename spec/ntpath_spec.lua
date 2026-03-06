@@ -6,11 +6,13 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
-local lfs = require("lfs")
-local mods = require("mods")
+local lfs = require "lfs"
+local mods = require "mods"
+
 local ntpath = mods.ntpath
-local fmt = string.format
 local tbl_keys = mods.tbl.keys
+
+local fmt = string.format
 
 local function with_env(env, fn)
   stub(os, "getenv", function(name)

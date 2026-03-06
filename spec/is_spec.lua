@@ -1,8 +1,7 @@
-local mods = require("mods")
-local is = mods.is
-local Set = mods.Set
+local is = require "mods.is"
+local lfs = require "lfs"
+
 local fmt = string.format
-local lfs = require("lfs")
 
 describe("mods.is", function()
   local f = function() end

@@ -1,7 +1,7 @@
-local assert = require("luassert")
-local ins = require("inspect")
-local say = require("say")
-local callable = require("luassert.util").callable
+local assert = require "luassert"
+local ins = require "inspect"
+local say = require "say"
+local util = require "luassert.util"
 
 local remove_all_metatables = function(item, path)
   if path[#path] ~= ins.METATABLE then
@@ -25,7 +25,7 @@ say:set(positive_msg, "Expected object to be callable.\nPassed in:\n%s\nExpected
 say:set(negative_msg, "Expected object to not be callable.\nPassed in:\n%s\nDid not expect:\ncallable object")
 
 assert:register("assertion", "callable", function(_, args)
-  return callable(args[1])
+  return util.callable(args[1])
 end, positive_msg, negative_msg)
 
 return {}

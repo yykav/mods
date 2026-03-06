@@ -1,10 +1,10 @@
----@diagnostic disable: undefined-field, need-check-nil, inject-field
+local mods = require "mods"
 
-local mods = require("mods")
-local validate = mods.validate
 local capitalize = mods.stringcase.capital
-local fmt = string.format
 local quote = mods.utils.quote
+local validate = mods.validate
+
+local fmt = string.format
 
 local function render_value(v)
   return type(v) == "string" and quote(v) or tostring(v)
@@ -22,7 +22,7 @@ describe("mods.validate", function()
   end)
 
   it("is callable", function()
-    assert.Callable(validate)
+    assert.Callable(validate) ---@diagnostic disable-line: undefined-field
   end)
 
   it("defaults to truthy check when type is omitted", function()

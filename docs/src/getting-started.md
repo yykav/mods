@@ -42,7 +42,7 @@ Copy all files from src/mods/ to C:\Program Files\Lua\5.x\lua\mods\
 ## Basic Usage
 
 ```lua [example.lua]
-local mods = require("mods")
+local mods = require "mods"
 
 local l = mods.List({ "a", "b", "a" })
 local s = mods.Set({ "a", "b" })
@@ -53,5 +53,5 @@ local keys = mods.tbl.keys({ a = 1, b = 2 })
 
 > [!NOTE]
 >
-> Direct module imports such as `require("mods.str")` remain supported for
+> Direct module imports such as `require "mods.str"` remain supported for
 > compatibility.

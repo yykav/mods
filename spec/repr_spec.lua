@@ -1,6 +1,8 @@
-local mods = require("mods")
+local mods = require "mods"
+
 local kw = mods.keyword
 local repr = mods.repr
+
 local fmt = string.format
 
 describe("mods.repr", function()

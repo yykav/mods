@@ -6,11 +6,13 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
-local lfs = require("lfs")
-local mods = require("mods")
+local lfs = require "lfs"
+local mods = require "mods"
+
 local posixpath = mods.posixpath
-local fmt = string.format
 local tbl_keys = mods.tbl.keys
+
+local fmt = string.format
 
 describe("mods.posixpath", function()
   local cwd = lfs.currentdir()

@@ -8,11 +8,10 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
-local assert_arg = require("mods.utils").assert_arg
-local splitext = require("mods.path")._splitext
+local mods = require "mods"
 
----@type mods.posixpath
-local M = {}
+local assert_arg = mods.utils.assert_arg
+local splitext = mods.path._splitext
 
 local concat = table.concat
 local getenv = os.getenv
@@ -21,6 +20,9 @@ local gsub = string.gsub
 local match = string.match
 local min = math.min
 local sub = string.sub
+
+---@type mods.posixpath
+local M = {}
 
 local CURDIR = "."
 local EXTSEP = "."

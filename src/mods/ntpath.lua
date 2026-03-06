@@ -8,20 +8,22 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
-local assert_arg = require("mods.utils").assert_arg
-local splitext = require("mods.path")._splitext
-local tbl_count = require("mods.tbl").count
+local mods = require "mods"
+
+local assert_arg = mods.utils.assert_arg
+local splitext = mods.path._splitext
+local tbl_count = mods.tbl.count
 
 local byte = string.byte
+local concat = table.concat
 local find = string.find
 local gmatch = string.gmatch
 local gsub = string.gsub
 local lower = string.lower
 local match = string.match
+local min = math.min
 local sub = string.sub
 local upper = string.upper
-local concat = table.concat
-local min = math.min
 
 ---@type mods.ntpath
 local M = {}

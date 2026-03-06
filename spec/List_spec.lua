@@ -1,9 +1,11 @@
 ---@diagnostic disable: undefined-global
 
-local mods = require("mods")
+local mods = require "mods"
+
 local List = mods.List
 local Set = mods.Set
 local deepcopy = mods.tbl.deepcopy
+
 local fmt = string.format
 local upper = string.upper
 local len = string.len

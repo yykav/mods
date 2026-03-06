@@ -1,10 +1,12 @@
 ---@diagnostic disable: undefined-global, need-check-nil
 
-local mods = require("mods")
-local Set = mods.Set
+local mods = require "mods"
+
 local List = mods.List
-local runtime = mods.runtime
+local Set = mods.Set
 local deepcopy = mods.tbl.deepcopy
+local runtime = mods.runtime
+
 local upper = string.upper
 local fmt = string.format
 local load = loadstring or load

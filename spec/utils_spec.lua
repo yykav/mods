@@ -1,4 +1,5 @@
-local utils = require("mods.utils")
+local utils = require "mods.utils"
+
 local fmt = string.format
 
 describe("mods.utils", function()

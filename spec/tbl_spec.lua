@@ -1,7 +1,10 @@
-local deepcopy = require("pl.tablex").deepcopy
-local mods = require("mods")
-local tbl = mods.tbl
+local mods = require "mods"
+local tablex = require "pl.tablex"
+
 local List = mods.List
+local deepcopy = tablex.deepcopy
+local tbl = mods.tbl
+
 local fmt = string.format
 
 describe("mods.tbl", function()

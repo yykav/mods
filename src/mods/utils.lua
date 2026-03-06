@@ -1,4 +1,4 @@
-local mods = require("mods")
+local mods = require "mods"
 
 local concat = table.concat
 local find = string.find

@@ -1,6 +1,6 @@
 ---@diagnostic disable: invisible
 
-local tbl = require("mods.tbl")
+local tbl = require "mods.tbl"
 
 local next = next
 local pairs = pairs
@@ -40,8 +40,6 @@ function Set:difference(set)
   return self:copy():difference_update(set)
 end
 
-Set.equals = tbl.same
-
 function Set:intersection_update(set)
   for k in pairs(self) do
     if not set[k] then
@@ -64,8 +62,6 @@ function Set:isdisjoint(set)
   return true
 end
 
-Set.isempty = tbl.isempty
-
 function Set:issubset(set)
   for k in pairs(self) do
     if not set[k] then
@@ -83,8 +79,6 @@ function Set:issuperset(set)
   end
   return true
 end
-
-Set.len = tbl.count
 
 function Set:contains(v)
   return self[v] ~= nil
@@ -127,6 +121,9 @@ function Set:union(set)
   return self:copy():update(set)
 end
 
+Set.equals = tbl.same
+Set.isempty = tbl.isempty
+Set.len = tbl.count
 Set.update = tbl.update
 Set.values = tbl.keys
 

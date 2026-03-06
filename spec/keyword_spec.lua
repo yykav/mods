@@ -1,7 +1,9 @@
-local mods = require("mods")
+local mods = require "mods"
+
 local List = mods.List
 local Set = mods.Set
 local kw = mods.keyword
+
 local fmt = string.format
 local is_lua51 = _VERSION == "Lua 5.1"
 

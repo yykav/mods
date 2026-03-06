@@ -1,4 +1,5 @@
-local stringcase = require("mods").stringcase
+local stringcase = require "mods.stringcase"
+
 local fmt = string.format
 
 describe("mods.stringcase", function()
