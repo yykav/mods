@@ -3,12 +3,17 @@
 local repr ---@module "mods.repr"
 local template ---@module "mods.template"
 
----Entry point that exposes all modules under one table.
+---
+---Entry point that exposes all modules under one 💤 lazily loaded table.
+---
 ---@class mods
 ---@field is mods.is
 ---@field keyword mods.keyword
 ---@field List mods.List
+---@field ntpath mods.ntpath
 ---@field operator mods.operator
+---@field path mods.path
+---@field posixpath mods.posixpath
 ---@field runtime mods.runtime
 ---@field Set mods.Set
 ---@field str mods.str
