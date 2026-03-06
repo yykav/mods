@@ -8,6 +8,7 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
+local assert_arg = require("mods.utils").assert_arg
 local splitext = require("mods.path")._splitext
 
 ---@type mods.posixpath
@@ -20,6 +21,11 @@ local gsub = string.gsub
 local match = string.match
 local min = math.min
 local sub = string.sub
+
+local CURDIR = "."
+local EXTSEP = "."
+local SEP = "/"
+local PARDIR = ".."
 
 local function has_prefix(s, prefix)
   return sub(s, 1, #prefix) == prefix
@@ -63,7 +69,7 @@ local function getcwd()
   if ok and lfs and lfs.currentdir then
     return lfs.currentdir()
   end
-  return "."
+  return CURDIR
 end
 
 function M.normcase(s)
@@ -92,7 +98,7 @@ end
 M.split = splitpath
 
 function M.splitext(path)
-  return splitext(path, "/", nil, ".")
+  return splitext(path, "/", nil, EXTSEP)
 end
 
 function M.splitdrive(path)
@@ -129,7 +135,7 @@ end
 
 function M.normpath(path)
   if path == "" then
-    return "."
+    return CURDIR
   end
 
   local _, initial_slashes, tail = splitroot(path)
@@ -137,8 +143,8 @@ function M.normpath(path)
   local out = {}
   for i = 1, #comps do
     local comp = comps[i]
-    if comp ~= "" and comp ~= "." then
-      if comp ~= ".." or (initial_slashes == "" and #out == 0) or (#out > 0 and out[#out] == "..") then
+    if comp ~= "" and comp ~= CURDIR then
+      if comp ~= PARDIR or (initial_slashes == "" and #out == 0) or (#out > 0 and out[#out] == "..") then
         out[#out + 1] = comp
       elseif #out > 0 then
         out[#out] = nil
@@ -146,8 +152,8 @@ function M.normpath(path)
     end
   end
 
-  local res = initial_slashes .. concat(out, "/")
-  return res ~= "" and res or "."
+  local res = initial_slashes .. concat(out, SEP)
+  return res ~= "" and res or CURDIR
 end
 
 function M.abspath(path)
@@ -161,7 +167,7 @@ function M.relpath(path, start)
   if path == "" then
     error("no path specified", 2)
   end
-  start = start or "."
+  start = start or CURDIR
 
   local apath = M.abspath(path)
   local astart = M.abspath(start)
@@ -179,16 +185,18 @@ function M.relpath(path, start)
 
   local out = {}
   for _ = i, #sparts do
-    out[#out + 1] = ".."
+    out[#out + 1] = PARDIR
   end
   for j = i, #pparts do
     out[#out + 1] = pparts[j]
   end
 
-  return #out == 0 and "." or concat(out, "/")
+  return #out == 0 and CURDIR or concat(out, SEP)
 end
 
 function M.commonpath(paths)
+  assert_arg(1, paths, "table")
+
   if #paths == 0 then
     return ""
   end
@@ -196,8 +204,10 @@ function M.commonpath(paths)
   local normed = {}
   local first_abs = nil
   for i = 1, #paths do
-    local raw = paths[i]
-    local p = raw == "" and "" or M.normpath(raw)
+    local p = paths[i]
+    if p ~= "" then
+      p = M.normpath(p)
+    end
     normed[i] = p
     local abs = M.isabs(p)
     if first_abs == nil then
@@ -212,7 +222,7 @@ function M.commonpath(paths)
   for i = 2, #normed do
     local _, ri, ti = splitroot(normed[i])
     if ri ~= root then
-      return ""
+      root = "/"
     end
     local parts = split_components(ti)
     local maxn = min(#prefix, #parts)
