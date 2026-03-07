@@ -57,6 +57,13 @@
 ---@overload fun(v:any, tp:modsIsType):boolean
 local M = {}
 
+---@ignore
+---@private
+---
+---Names of filesystem path-check predicates shared by related modules/tests.
+---
+M._path_checks = { "block", "char", "dir", "fifo", "file", "link", "socket", "device" }
+
 --------------------------------------------------------------------------------
 ---------------------------------- Type Checks ---------------------------------
 --------------------------------------------------------------------------------

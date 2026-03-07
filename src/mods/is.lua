@@ -80,6 +80,9 @@ end
 --- Path checks ---
 -------------------
 
+---@diagnostic disable-next-line: invisible
+M._path_checks = { "block", "char", "dir", "fifo", "file", "link", "socket", "device" }
+
 function M.device(v)
   if type(v) ~= "string" then
     return false
