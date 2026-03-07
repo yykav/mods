@@ -6,11 +6,15 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
-local lfs = require "lfs"
-local mods = require "mods"
+local runtime = require "mods.runtime"
+runtime.is_windows = true -- Make mods.path use mods.ntpath.
 
-local ntpath = mods.ntpath
-local tbl_keys = mods.tbl.keys
+local lfs = require "lfs"
+local ntpath = require "mods.ntpath"
+local path = require "mods.path"
+local tbl = require "mods.tbl"
+
+local tbl_keys = tbl.keys
 
 local fmt = string.format
 
@@ -23,9 +27,15 @@ local function with_env(env, fn)
 end
 
 describe("mods.ntpath", function()
-  it("is exposed from mods", function()
-    assert.is_table(ntpath)
-  end)
+  local lfs_map = tbl_keys(path._lfs_map) ---@diagnostic disable-line: undefined-field
+  path._lfs_map = nil ---@diagnostic disable-line: inject-field
+
+  for _, fname in ipairs(tbl_keys(path) + lfs_map) do
+    it(fmt("ntpath.%s is a function and equals path.%s", fname, fname), function()
+      assert.is_function(ntpath[fname])
+      assert.are_equal(ntpath[fname], path[fname])
+    end)
+  end
 
   -- stylua: ignore
   local tests = {

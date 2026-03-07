@@ -6,16 +6,29 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
+local runtime = require "mods.runtime"
+runtime.is_windows = false -- Make mods.path use mods.posixpath.
+
 local lfs = require "lfs"
-local mods = require "mods"
+local path = require "mods.path"
+local posixpath = require "mods.posixpath"
+local tbl = require "mods.tbl"
 
-local posixpath = mods.posixpath
-local tbl_keys = mods.tbl.keys
-
+local tbl_keys = tbl.keys
 local fmt = string.format
 
 describe("mods.posixpath", function()
   local cwd = lfs.currentdir()
+  local lfs_map = tbl_keys(path._lfs_map) ---@diagnostic disable-line: undefined-field
+  path._lfs_map = nil ---@diagnostic disable-line: inject-field
+
+  for _, fname in ipairs(tbl_keys(path) + lfs_map) do
+    it(fmt("posixpath.%s is a function and equals path.%s", fname, fname), function()
+      assert.is_function(posixpath[fname])
+      assert.are_equal(posixpath[fname], path[fname])
+    end)
+  end
+
   -- stylua: ignore
   local tests = {
     abspath = {
