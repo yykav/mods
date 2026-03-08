@@ -1,6 +1,7 @@
 local mods = {}
 
 local module_names = {
+  "fs",
   "is",
   "keyword",
   "List",
