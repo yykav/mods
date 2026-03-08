@@ -3,7 +3,6 @@ import type { DefaultTheme } from "vitepress";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { tabsMarkdownPlugin } from "vitepress-plugin-tabs";
 import {
   groupIconMdPlugin,
   groupIconVitePlugin,
@@ -190,7 +189,6 @@ export default defineConfig({
   markdown: {
     config(md) {
       md.use(groupIconMdPlugin);
-      md.use(tabsMarkdownPlugin);
       md.use(copyOrDownloadAsMarkdownButtons);
     },
   },
