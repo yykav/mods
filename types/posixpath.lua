@@ -15,7 +15,7 @@
 ---print(posixpath.splitext("archive.tar.gz"))        --> "archive.tar", ".gz"
 ---print(posixpath.relpath("/usr/local/bin", "/usr")) --> "local/bin"
 ---```
-------
+---
 --->✨ Same API as `mods.path`, but with POSIX path semantics.
 ---
 ---@class mods.posixpath:mods.path

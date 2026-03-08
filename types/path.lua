@@ -1,7 +1,7 @@
 ---@meta mods.path
 
----@module "lfs"
-local lfs
+local lfs ---@module "lfs"
+local is ---@module "mods.is"
 
 ---
 ---Generic cross-platform path API.
@@ -12,21 +12,17 @@ local lfs
 ---path = require "mods.path"
 ---
 ---print(path.join("src", "mods", "path.lua")) --> "src/mods/path.lua"
----print(path.normpath("a//b/./c")) --> "a/b/c"
----print(path.splitext("archive.tar.gz")) --> "archive.tar", ".gz"
+---print(path.normpath("a//b/./c"))            --> "a/b/c"
+---print(path.splitext("archive.tar.gz"))      --> "archive.tar", ".gz"
 ---```
 ---
 ---@class mods.path
 local M = {}
 
----@ignore
 ---
 ---Split extension from a path.
 ---
----```lua
----local root, ext = path._splitext("archive.tar.gz", "/", nil, ".")
----print(root, ext) --> "archive.tar", ".gz"
----```
+---@ignore
 ---@param path string
 ---@param sep string
 ---@param altsep? string
@@ -64,7 +60,7 @@ function M.normcase(s) end
 ---> Single input is returned as-is.
 ---
 ---```lua
----path.join("/usr", "bin") --> "/usr/bin"
+---path.join("/usr", "bin")   --> "/usr/bin"
 ---path.join([[C:\a]], [[b]]) --> [[C:\a\b]]
 ---```
 ---
@@ -78,7 +74,7 @@ function M.join(path, ...) end
 ---Normalize separators and dot segments.
 ---
 ---```lua
----path.normpath("/a//./b/..") --> "/a"
+---path.normpath("/a//./b/..")   --> "/a"
 ---path.normpath([[A/foo/../B]]) --> [[A\B]]
 ---```
 ---
@@ -99,29 +95,29 @@ function M.normpath(path) end
 ---@nodiscard
 function M.isabs(path) end
 
----
----Return `true` when `path` points to a mount root.
----
----```lua
----path.ismount([[C:\]]) --> true
----```
----
----@param path string Path to inspect.
----@return boolean value `true` if the path resolves to a mount root.
----@nodiscard
-function M.ismount(path) end
+---Alias of `mods.is.block`
+M.isblock = is.block
 
----
----Return `true` when `path` contains a reserved NT filename.
----
----```lua
----path.isreserved([[a\CON.txt]]) --> true
----```
----
----@param path string Path to inspect.
----@return boolean value `true` if any component is NT-reserved.
----@nodiscard
-function M.isreserved(path) end
+---Alias of `mods.is.char`
+M.ischar = is.char
+
+---Alias of `mods.is.device`
+M.isdevice = is.device
+
+---Alias of `mods.is.dir`
+M.isdir = is.dir
+
+---Alias of `mods.is.fifo`
+M.isfifo = is.fifo
+
+---Alias of `mods.is.file`
+M.isfile = is.file
+
+---Alias of `mods.is.link`
+M.islink = is.link
+
+---Alias of `mods.is.socket`
+M.issocket = is.socket
 
 --------------------------------------------------------------------------------
 ------------------------------ Path Decomposition ------------------------------
