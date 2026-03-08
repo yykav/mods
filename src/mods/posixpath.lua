@@ -8,7 +8,6 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
--- local str = require "mods.str"
 local utils = require "mods.utils"
 
 local assert_arg = utils.assert_arg
@@ -35,6 +34,11 @@ local M = {}
 local CURDIR = "."
 local SEP = "/"
 local PARDIR = ".."
+
+local function getcwd()
+  getcwd = require("mods.fs").getcwd
+  return getcwd()
+end
 
 local function has_prefix(s, prefix)
   return sub(s, 1, #prefix) == prefix
@@ -112,13 +116,21 @@ function M.dirname(p)
   return (M.split(p))
 end
 
+function M.home()
+  local home = getenv("HOME")
+  if not home or home == "" then
+    return nil, "home directory is not set"
+  end
+  return home
+end
+
 function M.expanduser(p)
   if not has_prefix(p, "~") then
     return p
   end
-  local home = getenv("HOME")
-  if not home or home == "" then
-    return p
+  local home, err = M.home()
+  if not home then
+    return nil, err
   end
   if p == "~" then
     return home
@@ -153,7 +165,7 @@ function M.normpath(p)
 end
 
 function M.abspath(p)
-  return M.normpath(M.join(path.getcwd(), p))
+  return M.normpath(M.join(getcwd(), p))
 end
 
 function M.relpath(p, start)

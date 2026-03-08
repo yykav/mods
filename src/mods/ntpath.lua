@@ -51,6 +51,11 @@ for i = 1, 9 do
   reserved_names:add("COM" .. i):add("LPT" .. i)
 end
 
+local function getcwd()
+  getcwd = require("mods.fs").getcwd
+  return getcwd()
+end
+
 local function starts_with(s, prefix)
   return sub(s, 1, #prefix) == prefix
 end
@@ -242,6 +247,20 @@ function M.isreserved(p)
   return false
 end
 
+function M.home()
+  local userhome = os.getenv("USERPROFILE")
+  if userhome and userhome ~= "" then
+    return userhome
+  end
+
+  local homepath = os.getenv("HOMEPATH")
+  if not homepath or homepath == "" then
+    return nil, "home directory is not set"
+  end
+
+  return M.join(os.getenv("HOMEDRIVE") or "", homepath)
+end
+
 function M.expanduser(p)
   if not starts_with(p, "~") then
     return p
@@ -253,13 +272,9 @@ function M.expanduser(p)
     i = i + 1
   end
 
-  local userhome = os.getenv("USERPROFILE")
-  if not userhome or userhome == "" then
-    local homepath = os.getenv("HOMEPATH")
-    if not homepath or homepath == "" then
-      return p
-    end
-    userhome = M.join(os.getenv("HOMEDRIVE") or "", homepath)
+  local userhome, err = M.home()
+  if not userhome then
+    return nil, err
   end
 
   if i ~= 2 then
@@ -268,7 +283,7 @@ function M.expanduser(p)
 
     if target_user ~= current_user then
       if current_user ~= M.basename(userhome) then
-        return p
+        return nil, "home directory for user is not set"
       end
       userhome = M.join(M.dirname(userhome), target_user)
     end
@@ -310,7 +325,7 @@ end
 
 function M.abspath(p)
   if not M.isabs(p) then
-    p = M.join(path.getcwd(), p)
+    p = M.join(getcwd(), p)
   end
   return M.normpath(p)
 end

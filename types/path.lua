@@ -193,9 +193,22 @@ function M.dirname(path) end
 ---```
 ---
 ---@param path string Path that may begin with `~`.
----@return string value Path with the home segment expanded when available.
+---@return string? value Path with the home segment expanded when available.
+---@return string? err Error message when `~` expansion cannot be resolved.
 ---@nodiscard
 function M.expanduser(path) end
+
+---
+---Return the current user's home directory path.
+---
+---```lua
+---path.home()
+---```
+---
+---@return string? value Home directory path when available.
+---@return string? err Error message when the home directory cannot be resolved.
+---@nodiscard
+function M.home() end
 
 --------------------------------------------------------------------------------
 ------------------------------- Derived Paths ----------------------------------

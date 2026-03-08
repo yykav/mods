@@ -27,10 +27,7 @@ local function with_env(env, fn)
 end
 
 describe("mods.ntpath", function()
-  local lfs_map = tbl_keys(path._lfs_map) ---@diagnostic disable-line: undefined-field
-  path._lfs_map = nil ---@diagnostic disable-line: inject-field
-
-  for _, fname in ipairs(tbl_keys(path) + lfs_map) do
+  for _, fname in ipairs(tbl_keys(path)) do
     it(fmt("ntpath.%s is a function and equals path.%s", fname, fname), function()
       assert.is_function(ntpath[fname])
       assert.are_equal(ntpath[fname], path[fname])
@@ -129,10 +126,10 @@ describe("mods.ntpath", function()
     expanduser = {
       {{ "test"            }, { "test"            }},
       {{ [[C:\Users\eric]] }, { [[C:\Users\eric]] }},
-      {{ "~"               }, { "~"               }},
-      {{ [[~\foo\bar]]     }, { [[~\foo\bar]]     }},
-      {{ "~test"           }, { "~test"           }},
-      {{ [[~test\foo\bar]] }, { [[~test\foo\bar]] }},
+      {{ "~"               }, { nil, "home directory is not set" }},
+      {{ [[~\foo\bar]]     }, { nil, "home directory is not set" }},
+      {{ "~test"           }, { nil, "home directory is not set" }},
+      {{ [[~test\foo\bar]] }, { nil, "home directory is not set" }},
     },
     isabs = {
       {{ [[foo\bar]]             }, { false }},
@@ -505,7 +502,9 @@ describe("mods.ntpath", function()
     assert.are_equal("test", ntpath.expanduser("test"))
 
     with_env({}, function()
-      assert.are_equal("~test", ntpath.expanduser("~test"))
+      local value, err = ntpath.expanduser("~test")
+      assert.is_nil(value)
+      assert.is_string(err)
     end)
 
     with_env({
@@ -550,8 +549,37 @@ describe("mods.ntpath", function()
       USERPROFILE = [[C:\Users\eric]],
       USERNAME = "idle",
     }, function()
-      assert.are_equal("~test", ntpath.expanduser("~test"))
+      local value, err = ntpath.expanduser("~test")
+      assert.is_nil(value)
+      assert.is_string(err)
       assert.are_equal([[C:\Users\eric]], ntpath.expanduser("~"))
+    end)
+  end)
+
+  it("home()", function()
+    with_env({}, function()
+      local value, err = ntpath.home()
+      assert.is_nil(value)
+      assert.is_string(err)
+    end)
+
+    with_env({
+      HOMEDRIVE = [[C:\]],
+      HOMEPATH = [[Users\eric]],
+    }, function()
+      local value, err = ntpath.home()
+      assert.are_equal([[C:\Users\eric]], value)
+      assert.is_nil(err)
+    end)
+
+    with_env({
+      USERPROFILE = [[C:\Users\eric]],
+      HOMEDRIVE = [[Z:\]],
+      HOMEPATH = [[Users\ignored]],
+    }, function()
+      local value, err = ntpath.home()
+      assert.are_equal([[C:\Users\eric]], value)
+      assert.is_nil(err)
     end)
   end)
 end)

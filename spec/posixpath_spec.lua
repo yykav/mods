@@ -19,10 +19,8 @@ local fmt = string.format
 
 describe("mods.posixpath", function()
   local cwd = lfs.currentdir()
-  local lfs_map = tbl_keys(path._lfs_map) ---@diagnostic disable-line: undefined-field
-  path._lfs_map = nil ---@diagnostic disable-line: inject-field
 
-  for _, fname in ipairs(tbl_keys(path) + lfs_map) do
+  for _, fname in ipairs(tbl_keys(path)) do
     it(fmt("posixpath.%s is a function and equals path.%s", fname, fname), function()
       assert.is_function(posixpath[fname])
       assert.are_equal(posixpath[fname], path[fname])
@@ -244,6 +242,23 @@ describe("mods.posixpath", function()
     if home and home ~= "" then
       assert.are_equal(home, posixpath.expanduser("~"))
       assert.are_equal(home .. "/tmp", posixpath.expanduser("~/tmp"))
+    else
+      local value, err = posixpath.expanduser("~")
+      assert.is_nil(value)
+      assert.is_string(err)
+    end
+  end)
+
+  it("home()", function()
+    local home = os.getenv("HOME")
+    local value, err = posixpath.home()
+
+    if home and home ~= "" then
+      assert.are_equal(home, value)
+      assert.is_nil(err)
+    else
+      assert.is_nil(value)
+      assert.is_string(err)
     end
   end)
 
