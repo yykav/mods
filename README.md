@@ -1,7 +1,7 @@
 # Mods
 
-**Mods** is a pure Lua utility library with predictable APIs, 💤 lazy-loaded
-inter-module dependencies, and support for Lua 5.1, 5.2, 5.3, 5.4, and LuaJIT.
+**Mods** is a pure Lua utility library with predictable APIs and support for Lua
+5.1, 5.2, 5.3, 5.4, and LuaJIT.
 
 > [!IMPORTANT]
 >
@@ -47,21 +47,25 @@ luarocks install mods
 
 ## Modules
 
-| Module         | Description                                                    |
-| -------------- | -------------------------------------------------------------- |
-| [`is`]         | Type predicates for Lua values and filesystem path types.      |
-| [`keyword`]    | Lua keyword helpers.                                           |
-| [`List`]       | Python-style list helpers for mapping, filtering, and slicing. |
-| [`operator`]   | Operator helpers as functions.                                 |
-| [`repr`]       | Render any Lua value as a readable string.                     |
-| [`runtime`]    | Exposes Lua runtime metadata and version compatibility flags.  |
-| [`Set`]        | Set operations and helpers for unique values.                  |
-| [`str`]        | String utility helpers modeled after Python's `str`.           |
-| [`stringcase`] | String case conversion helpers.                                |
-| [`tbl`]        | Utility functions for working with Lua tables.                 |
-| [`template`]   | Interpolate string placeholders of the form `{{...}}`.         |
-| [`utils`]      | Small shared utility helpers used by modules in this library.  |
-| [`validate`]   | Validation checks for values and filesystem path types.        |
+| Module         | Description                                                         |
+| -------------- | ------------------------------------------------------------------- |
+| [`fs`]         | Filesystem I/O and metadata operations.                             |
+| [`is`]         | Type predicates for Lua values and filesystem path types.           |
+| [`keyword`]    | Lua keyword helpers.                                                |
+| [`List`]       | A list class with common sequence operations.                       |
+| [`ntpath`]     | Lexical path operations for Windows/NT-style paths.                 |
+| [`operator`]   | Operator helpers as functions.                                      |
+| [`path`]       | Generic cross-platform path API.                                    |
+| [`posixpath`]  | Lexical path operations for POSIX-style paths.                      |
+| [`repr`]       | Render any Lua value as a readable string.                          |
+| [`runtime`]    | Exposes Lua runtime metadata and version compatibility flags.       |
+| [`Set`]        | A set class with common operations on unique values.                |
+| [`str`]        | String utility helpers modeled after Python's `str`.                |
+| [`stringcase`] | String case conversion helpers.                                     |
+| [`tbl`]        | Utility functions for working with Lua tables.                      |
+| [`template`]   | Interpolate string placeholders of the form `{{...}}`.              |
+| [`utils`]      | Small shared utility helpers used by modules in this library.       |
+| [`validate`]   | Validation checks for values and filesystem path types.             |
 
 > [!NOTE]
 >
@@ -76,10 +80,14 @@ Thanks to these Lua ecosystem projects:
   representation.
 - [busted](https://github.com/lunarmodules/busted) for test framework support.
 
+[`fs`]: https://luamod.github.io/mods/modules/fs
 [`is`]: https://luamod.github.io/mods/modules/is
 [`keyword`]: https://luamod.github.io/mods/modules/keyword
 [`List`]: https://luamod.github.io/mods/modules/list
+[`ntpath`]: https://luamod.github.io/mods/modules/ntpath
 [`operator`]: https://luamod.github.io/mods/modules/operator
+[`path`]: https://luamod.github.io/mods/modules/path
+[`posixpath`]: https://luamod.github.io/mods/modules/posixpath
 [`repr`]: https://luamod.github.io/mods/modules/repr
 [`runtime`]: https://luamod.github.io/mods/modules/runtime
 [`Set`]: https://luamod.github.io/mods/modules/set
