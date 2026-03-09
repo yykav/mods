@@ -49,7 +49,7 @@ List.__index = List
 ---
 ---@param self mods.List Current list instance.
 ---@param pred fun(v:any):boolean Predicate function.
----@return boolean ok Whether the condition is met.
+---@return boolean allMatch Whether the condition is met.
 ---@nodiscard
 function List:all(pred) end
 
@@ -63,7 +63,7 @@ function List:all(pred) end
 ---
 ---@param self mods.List Current list instance.
 ---@param pred fun(v:any):boolean Predicate function.
----@return boolean ok Whether the condition is met.
+---@return boolean anyMatch Whether the condition is met.
 ---@nodiscard
 function List:any(pred) end
 
@@ -107,7 +107,7 @@ function List:any(pred) end
 ---
 ---@param self mods.List Current list instance.
 ---@param ls mods.List|any[] Other list value.
----@return boolean ok Whether the condition is met.
+---@return boolean isEqual Whether the condition is met.
 ---@nodiscard
 function List:equals(ls) end
 
@@ -125,7 +125,7 @@ function List:equals(ls) end
 ---
 ---@param self mods.List Current list instance.
 ---@param ls mods.List|any[] Other list value.
----@return boolean ok Whether the condition is met.
+---@return boolean isLess Whether the condition is met.
 ---@nodiscard
 function List:lt(ls) end
 
@@ -143,7 +143,7 @@ function List:lt(ls) end
 ---
 ---@param self mods.List Current list instance.
 ---@param ls mods.List|any[] Other list value.
----@return boolean ok Whether the condition is met.
+---@return boolean isLessOrEqual Whether the condition is met.
 ---@nodiscard
 function List:le(ls) end
 
@@ -247,7 +247,7 @@ function List:insert(v) end
 ---```
 ---
 ---@param self mods.List Current list instance.
----@return any value Removed value.
+---@return any removedValue Removed value.
 function List:pop() end
 
 ---
@@ -260,7 +260,7 @@ function List:pop() end
 ---
 ---@param self mods.List Current list instance.
 ---@param pos integer Numeric value.
----@return any value Removed value.
+---@return any removedValue Removed value.
 function List:pop(pos) end
 
 ---
@@ -340,7 +340,7 @@ function List:copy() end
 ---
 ---@param self mods.List Current list instance.
 ---@param v any Value to validate.
----@return boolean ok Whether the condition is met.
+---@return boolean isPresent True when `v` is present in the list.
 ---@nodiscard
 function List:contains(v) end
 
@@ -415,7 +415,7 @@ function List:len() end
 ---```
 ---
 ---@param self mods.List Current list instance.
----@return any value First value, or `nil` if empty.
+---@return any firstValue First value, or `nil` if empty.
 ---@nodiscard
 function List:first() end
 
@@ -427,7 +427,7 @@ function List:first() end
 ---```
 ---
 ---@param self mods.List Current list instance.
----@return any value Last value, or `nil` if empty.
+---@return any lastValue Last value, or `nil` if empty.
 ---@nodiscard
 function List:last() end
 
@@ -569,7 +569,7 @@ function List:invert() end
 ---@param sep? string Optional separator value (defaults to `""`).
 ---@param i? integer Optional start index (defaults to `1`).
 ---@param j? integer Optional end index (defaults to `#self`).
----@return string s Concatenated string.
+---@return string concatenated Concatenated string.
 ---@nodiscard
 function List:concat(sep, i, j) end
 
@@ -589,7 +589,7 @@ function List:concat(sep, i, j) end
 ---@param self mods.List Current list instance.
 ---@param sep? string Optional separator value (defaults to `""`).
 ---@param quoted? boolean Optional boolean flag (defaults to `false`).
----@return string s Joined string.
+---@return string joined Joined string.
 ---@nodiscard
 function List:join(sep, quoted) end
 
@@ -605,7 +605,7 @@ function List:join(sep, quoted) end
 ---> `tostring(list)` calls `list:tostring()`.
 ---
 ---@param self mods.List Current list instance.
----@return string s Rendered list string.
+---@return string renderedList Rendered list string.
 ---@nodiscard
 function List:tostring() end
 
@@ -617,7 +617,7 @@ function List:tostring() end
 ---```
 ---
 ---@param self mods.List Current list instance.
----@return string s Key-path string.
+---@return string keyPath Key-path string.
 ---@nodiscard
 function List:keypath() end
 
@@ -668,7 +668,7 @@ function List:mul(n) end
 ---@param self mods.List Current list instance.
 ---@param fn fun(acc:any, v:any):any Reducer function.
 ---@param init? any Optional initial accumulator; for non-empty lists, `nil` or omitted uses the first item.
----@return any res Reduced value.
+---@return any reducedValue Reduced value.
 ---@nodiscard
 function List:reduce(fn, init) end
 
@@ -801,7 +801,7 @@ function List:zip(ls) end
 ---
 ---@param self mods.List Current list instance.
 ---@param ls mods.List|any[] Other list value.
----@return boolean ok Whether the condition is met.
+---@return boolean isEqual Whether the condition is met.
 ---@private
 function List.__eq(self, ls) end
 
@@ -818,7 +818,7 @@ function List.__eq(self, ls) end
 ---
 ---@param self mods.List Current list instance.
 ---@param ls mods.List|any[] Other list value.
----@return boolean ok Whether the condition is met.
+---@return boolean isLess Whether the condition is met.
 ---@private
 function List.__lt(self, ls) end
 
@@ -835,7 +835,7 @@ function List.__lt(self, ls) end
 ---
 ---@param self mods.List Current list instance.
 ---@param ls mods.List|any[] Other list value.
----@return boolean ok Whether the condition is met.
+---@return boolean isLessOrEqual Whether the condition is met.
 ---@private
 function List.__le(self, ls) end
 
@@ -908,7 +908,7 @@ function List.__sub(self, ls) end
 ---> `tostring(ls)` is equivalent to `:tostring()`.
 ---
 ---@param self mods.List Current list instance.
----@return string s Rendered list string.
+---@return string renderedList Rendered list string.
 ---@private
 function List.__tostring(self) end
 

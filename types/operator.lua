@@ -305,7 +305,7 @@ function M.len(a) end
 ---@generic T
 ---@param t table Source table.
 ---@param k T Key/index value.
----@return T value Value stored at `t[k]`.
+---@return T indexedValue Value stored at `t[k]`.
 ---@nodiscard
 function M.index(t, k) end
 
@@ -320,7 +320,7 @@ function M.index(t, k) end
 ---@param t table Target table.
 ---@param k any Key/index value.
 ---@param v T Value to set.
----@return T value Assigned value `v`.
+---@return T assignedValue Assigned value `v`.
 ---@nodiscard
 function M.setindex(t, k, v) end
 
@@ -334,7 +334,7 @@ function M.setindex(t, k, v) end
 ---@generic T1,T2
 ---@param f fun(...:T1):T2 Function to call.
 ---@param ... T1 Additional arguments.
----@return T2 result Return value(s) from `f(...)`.
+---@return T2 callResult Return value(s) from `f(...)`.
 ---@nodiscard
 function M.call(f, ...) end
 

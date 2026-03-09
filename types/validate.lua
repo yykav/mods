@@ -67,7 +67,7 @@
 --- ```
 ---
 ---@class mods.validate
----@field [string] fun(...):(ok:boolean,errmsg:string?)
+---@field [string] fun(...):(isValid:boolean,errmsg:string?)
 ---
 ---Custom error-message templates for validator failures.
 ---Set `validate.messages.<name>`, where `<name>` is a validator name
@@ -125,7 +125,7 @@ local M = {}
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.boolean = function(v) end
 M.Boolean = M.boolean
@@ -141,7 +141,7 @@ M.Boolean = M.boolean
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M["function"] = function(v) end
 M.Function = M["function"]
@@ -156,7 +156,7 @@ M.Function = M["function"]
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M["nil"] = function(v) end
 M.Nil = M["nil"]
@@ -171,7 +171,7 @@ M.Nil = M["nil"]
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.number = function(v) end
 M.Number = M.number
@@ -186,7 +186,7 @@ M.Number = M.number
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.string = function(v) end
 M.String = M.string
@@ -201,7 +201,7 @@ M.String = M.string
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.table = function(v) end
 M.Table = M.table
@@ -217,7 +217,7 @@ M.Table = M.table
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.thread = function(v) end
 M.Thread = M.thread
@@ -232,7 +232,7 @@ M.Thread = M.thread
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.userdata = function(v) end
 M.Userdata = M.userdata
@@ -254,7 +254,7 @@ M.Userdata = M.userdata
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M["false"] = function(v) end
 M.False = M["false"]
@@ -269,7 +269,7 @@ M.False = M["false"]
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M["true"] = function(v) end
 M.True = M["true"]
@@ -284,7 +284,7 @@ M.True = M["true"]
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.falsy = function(v) end
 M.Falsy = M.falsy
@@ -299,7 +299,7 @@ M.Falsy = M.falsy
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.callable = function(v) end
 M.Callable = M.callable
@@ -314,7 +314,7 @@ M.Callable = M.callable
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.integer = function(v) end
 M.Integer = M.integer
@@ -329,7 +329,7 @@ M.Integer = M.integer
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.truthy = function(v) end
 M.Truthy = M.truthy
@@ -355,7 +355,7 @@ M.Truthy = M.truthy
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.block = function(v) end
 M.Block = M.block
@@ -369,7 +369,7 @@ M.Block = M.block
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.char = function(v) end
 M.Char = M.char
@@ -383,7 +383,7 @@ M.Char = M.char
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.device = function(v) end
 M.Device = M.device
@@ -397,7 +397,7 @@ M.Device = M.device
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.dir = function(v) end
 M.Dir = M.dir
@@ -411,7 +411,7 @@ M.Dir = M.dir
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.fifo = function(v) end
 M.Fifo = M.fifo
@@ -425,7 +425,7 @@ M.Fifo = M.fifo
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.file = function(v) end
 M.File = M.file
@@ -439,7 +439,7 @@ M.File = M.file
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.link = function(v) end
 M.Link = M.link
@@ -453,7 +453,7 @@ M.Link = M.link
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.socket = function(v) end
 M.Socket = M.socket

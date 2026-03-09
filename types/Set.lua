@@ -90,7 +90,7 @@ function Set:intersection_update(set) end
 ---```
 ---
 ---@param self mods.Set|table<any,true> Current set instance.
----@return any value Removed value, or `nil` when the set is empty.
+---@return any removedValue Removed value, or `nil` when the set is empty.
 function Set:pop() end
 
 ---
@@ -240,7 +240,7 @@ function Set:union(set) end
 ---@generic T:mods.Set|table<any,true>
 ---@param self T Current set instance.
 ---@param set T Other set value.
----@return boolean ok True when sets have no elements in common.
+---@return boolean isDisjoint True when sets have no elements in common.
 ---@nodiscard
 function Set:isdisjoint(set) end
 
@@ -260,7 +260,7 @@ function Set:isdisjoint(set) end
 ---
 ---@param self mods.Set|table<any,true> Current set instance.
 ---@param set mods.Set|table<any,true> Other set value.
----@return boolean ok True when both sets contain the same members.
+---@return boolean isEqual True when both sets contain the same members.
 ---@nodiscard
 function Set:equals(set) end
 
@@ -272,7 +272,7 @@ function Set:equals(set) end
 ---```
 ---
 ---@param self mods.Set|table<any,true> Current set instance.
----@return boolean ok True when the set has no elements.
+---@return boolean isEmpty True when the set has no elements.
 ---@nodiscard
 function Set:isempty() end
 
@@ -290,7 +290,7 @@ function Set:isempty() end
 ---
 ---@param self mods.Set|table<any,true> Current set instance.
 ---@param set mods.Set|table<any,true> Other set value.
----@return boolean ok True when every element of `self` exists in `set`.
+---@return boolean isSubset True when every element of `self` exists in `set`.
 ---@nodiscard
 function Set:issubset(set) end
 
@@ -303,7 +303,7 @@ function Set:issubset(set) end
 ---
 ---@param self mods.Set|table<any,true> Current set instance.
 ---@param set mods.Set|table<any,true> Other set value.
----@return boolean ok True when `self` contains every element of `set`.
+---@return boolean isSuperset True when `self` contains every element of `set`.
 ---@nodiscard
 function Set:issuperset(set) end
 
@@ -324,7 +324,7 @@ function Set:issuperset(set) end
 ---
 ---@param self mods.Set|table<any,true> Current set instance.
 ---@param v any Value to check.
----@return boolean ok True when `v` is present in the set.
+---@return boolean isPresent True when `v` is present in the set.
 ---@nodiscard
 function Set:contains(v) end
 
@@ -465,7 +465,7 @@ function Set.__bxor(self, set) end
 ---
 ---@param self mods.Set Current set instance.
 ---@param set mods.Set|table<any,true> Other set value.
----@return boolean ok True when both sets contain the same members.
+---@return boolean isEqual True when both sets contain the same members.
 ---@private
 function Set.__eq(self, set) end
 
@@ -484,7 +484,7 @@ function Set.__eq(self, set) end
 ---
 ---@param self mods.Set Current set instance.
 ---@param set mods.Set|table<any,true> Other set value.
----@return boolean ok True when `self` is a subset of `set`.
+---@return boolean isSubset True when `self` is a subset of `set`.
 ---@private
 function Set.__le(self, set) end
 
@@ -499,7 +499,7 @@ function Set.__le(self, set) end
 ---
 ---@param self mods.Set Current set instance.
 ---@param set mods.Set|table<any,true> Other set value.
----@return boolean ok True when `self` is a proper subset of `set`.
+---@return boolean isProperSubset True when `self` is a proper subset of `set`.
 ---@private
 function Set.__lt(self, set) end
 

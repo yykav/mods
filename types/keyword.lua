@@ -24,7 +24,7 @@ local M = {}
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isKeyword Whether the check succeeds.
 ---@nodiscard
 function M.iskeyword(v) end
 
@@ -37,7 +37,7 @@ function M.iskeyword(v) end
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isIdentifier Whether the check succeeds.
 ---@nodiscard
 function M.isidentifier(v) end
 
@@ -71,7 +71,7 @@ function M.kwset() end
 ---```
 ---
 ---@param s string Input string.
----@return string ident Normalized Lua identifier.
+---@return string identifier Normalized Lua identifier.
 ---@nodiscard
 function M.normalize_identifier(s) end
 

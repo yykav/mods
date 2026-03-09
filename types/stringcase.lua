@@ -26,7 +26,7 @@ local M = {}
 ---```
 ---
 ---@param s string Input string.
----@return string s Lowercased string.
+---@return string lowercased Lowercased string.
 ---@nodiscard
 function M.lower(s) end
 
@@ -39,7 +39,7 @@ function M.lower(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Uppercased string.
+---@return string uppercased Uppercased string.
 ---@nodiscard
 function M.upper(s) end
 
@@ -56,7 +56,7 @@ function M.upper(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Snake-cased string.
+---@return string snakeCased Snake-cased string.
 ---@nodiscard
 function M.snake(s) end
 
@@ -69,7 +69,7 @@ function M.snake(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Camel-cased string.
+---@return string camelCased Camel-cased string.
 ---@nodiscard
 function M.camel(s) end
 
@@ -83,7 +83,7 @@ function M.camel(s) end
 ---
 ---@param s string Input string.
 ---@param sep? string Optional separator value (defaults to `""`).
----@return string s String with underscores replaced by `sep`.
+---@return string replaced String with underscores replaced by `sep`.
 ---@nodiscard
 function M.replace(s, sep) end
 
@@ -96,7 +96,7 @@ function M.replace(s, sep) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Acronym string.
+---@return string acronym Acronym string.
 ---@nodiscard
 function M.acronym(s) end
 
@@ -109,7 +109,7 @@ function M.acronym(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Title-cased string.
+---@return string titleCased Title-cased string.
 ---@nodiscard
 function M.title(s) end
 
@@ -122,7 +122,7 @@ function M.title(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Constant-cased string.
+---@return string constantCased Constant-cased string.
 ---@nodiscard
 function M.constant(s) end
 
@@ -135,7 +135,7 @@ function M.constant(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Pascal-cased string.
+---@return string pascalCased Pascal-cased string.
 ---@nodiscard
 function M.pascal(s) end
 
@@ -148,7 +148,7 @@ function M.pascal(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Kebab-cased string.
+---@return string kebabCased Kebab-cased string.
 ---@nodiscard
 function M.kebab(s) end
 
@@ -161,7 +161,7 @@ function M.kebab(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Dot-cased string.
+---@return string dotCased Dot-cased string.
 ---@nodiscard
 function M.dot(s) end
 
@@ -174,7 +174,7 @@ function M.dot(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Space-cased string.
+---@return string spaceCased Space-cased string.
 ---@nodiscard
 function M.space(s) end
 
@@ -187,7 +187,7 @@ function M.space(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Path-cased string.
+---@return string pathCased Path-cased string.
 ---@nodiscard
 function M.path(s) end
 
@@ -204,7 +204,7 @@ function M.path(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Swap-cased string.
+---@return string swapCased Swap-cased string.
 ---@nodiscard
 function M.swap(s) end
 
@@ -217,7 +217,7 @@ function M.swap(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Capitalized string.
+---@return string capitalized Capitalized string.
 ---@nodiscard
 function M.capital(s) end
 
@@ -230,7 +230,7 @@ function M.capital(s) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Sentence-cased string.
+---@return string sentenceCased Sentence-cased string.
 ---@nodiscard
 function M.sentence(s) end
 

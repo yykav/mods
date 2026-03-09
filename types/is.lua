@@ -79,7 +79,7 @@ M._path_checks = { "block", "char", "dir", "fifo", "file", "link", "socket", "de
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isBoolean Whether the check succeeds.
 ---@nodiscard
 M.boolean = function(v) end
 M.Boolean = M.boolean
@@ -92,7 +92,7 @@ M.Boolean = M.boolean
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isFunction Whether the check succeeds.
 ---@nodiscard
 M["function"] = function(v) end
 M.Function = function(v) end
@@ -105,7 +105,7 @@ M.Function = function(v) end
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isNil Whether the check succeeds.
 ---@nodiscard
 M["nil"] = function(v) end
 M.Nil = M["nil"]
@@ -118,7 +118,7 @@ M.Nil = M["nil"]
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isNumber Whether the check succeeds.
 ---@nodiscard
 M.number = function(v) end
 M.Number = M.number
@@ -131,7 +131,7 @@ M.Number = M.number
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isString Whether the check succeeds.
 ---@nodiscard
 M.string = function(v) end
 M.String = M.string
@@ -144,7 +144,7 @@ M.String = M.string
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isTable Whether the check succeeds.
 ---@nodiscard
 M.table = function(v) end
 M.Table = M.table
@@ -157,7 +157,7 @@ M.Table = M.table
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isThread Whether the check succeeds.
 ---@nodiscard
 M.thread = function(v) end
 M.Thread = M.thread
@@ -170,7 +170,7 @@ M.Thread = M.thread
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isUserdata Whether the check succeeds.
 ---@nodiscard
 M.userdata = function(v) end
 M.Userdata = M.userdata
@@ -190,7 +190,7 @@ M.Userdata = M.userdata
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isFalse Whether the check succeeds.
 ---@nodiscard
 M["false"] = function(v) end
 M.False = M["false"]
@@ -203,7 +203,7 @@ M.False = M["false"]
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isTrue Whether the check succeeds.
 ---@nodiscard
 M["true"] = function(v) end
 M.True = M["true"]
@@ -216,7 +216,7 @@ M.True = M["true"]
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isFalsy Whether the check succeeds.
 ---@nodiscard
 M.falsy = function(v) end
 M.Falsy = M.falsy
@@ -229,7 +229,7 @@ M.Falsy = M.falsy
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isCallable Whether the check succeeds.
 ---@nodiscard
 M.callable = function(v) end
 M.Callable = M.callable
@@ -242,7 +242,7 @@ M.Callable = M.callable
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isInteger Whether the check succeeds.
 ---@nodiscard
 M.integer = function(v) end
 M.Integer = M.integer
@@ -255,7 +255,7 @@ M.Integer = M.integer
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isTruthy Whether the check succeeds.
 ---@nodiscard
 M.truthy = function(v) end
 M.Truthy = M.truthy
@@ -280,7 +280,7 @@ M.Truthy = M.truthy
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isBlock Whether the check succeeds.
 ---@nodiscard
 M.block = function(v) end
 M.Block = M.block
@@ -293,7 +293,7 @@ M.Block = M.block
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isChar Whether the check succeeds.
 ---@nodiscard
 M.char = function(v) end
 M.Char = M.char
@@ -306,7 +306,7 @@ M.Char = M.char
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isDevice Whether the check succeeds.
 ---@nodiscard
 M.device = function(v) end
 M.Device = M.device
@@ -319,7 +319,7 @@ M.Device = M.device
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isDir Whether the check succeeds.
 ---@nodiscard
 M.dir = function(v) end
 M.Dir = M.dir
@@ -332,7 +332,7 @@ M.Dir = M.dir
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isFifo Whether the check succeeds.
 ---@nodiscard
 M.fifo = function(v) end
 M.Fifo = M.fifo
@@ -345,7 +345,7 @@ M.Fifo = M.fifo
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isFile Whether the check succeeds.
 ---@nodiscard
 M.file = function(v) end
 M.File = M.file
@@ -358,7 +358,7 @@ M.File = M.file
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isLink Whether the check succeeds.
 ---@nodiscard
 M.link = function(v) end
 M.Link = M.link
@@ -371,7 +371,7 @@ M.Link = M.link
 ---```
 ---
 ---@param v any Value to validate.
----@return boolean ok Whether the check succeeds.
+---@return boolean isSocket Whether the check succeeds.
 ---@nodiscard
 M.socket = function(v) end
 M.Socket = M.socket

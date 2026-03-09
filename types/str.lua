@@ -26,7 +26,7 @@ local M = {}
 ---```
 ---
 ---@param s string Input string.
----@return string s Computed string value.
+---@return string capitalized Capitalized string.
 ---@nodiscard
 function M.capitalize(s) end
 
@@ -40,7 +40,7 @@ function M.capitalize(s) end
 ---@param s string Input string.
 ---@param width integer Target width.
 ---@param fillchar? string Optional fill character.
----@return string s Computed string value.
+---@return string centered Centered string.
 ---@nodiscard
 function M.center(s, width, fillchar) end
 
@@ -57,7 +57,7 @@ function M.center(s, width, fillchar) end
 ---@param sub string Substring to search.
 ---@param start? integer Optional start index (defaults to `1`).
 ---@param stop? integer Optional exclusive end index (defaults to `#s + 1`).
----@return integer n Computed numeric value.
+---@return integer count Number of non-overlapping matches.
 ---@nodiscard
 function M.count(s, sub, start, stop) end
 
@@ -76,7 +76,7 @@ function M.count(s, sub, start, stop) end
 ---@param suffix string|string[] Suffix string.
 ---@param start? integer Optional start index (defaults to `1`).
 ---@param stop? integer Optional exclusive end index (defaults to `#s + 1`).
----@return boolean ok True when `s` ends with `suffix`.
+---@return boolean hasSuffix True when `s` ends with `suffix`.
 ---@nodiscard
 function M.endswith(s, suffix, start, stop) end
 
@@ -89,7 +89,7 @@ function M.endswith(s, suffix, start, stop) end
 ---
 ---@param s string Input string.
 ---@param tabsize? integer Optional tab width (defaults to `8`).
----@return string s Computed string value.
+---@return string expanded String with tabs expanded.
 ---@nodiscard
 function M.expandtabs(s, tabsize) end
 
@@ -122,7 +122,7 @@ function M.find(s, sub, start, stop) end
 ---
 ---@param s string Template string with `{key}` placeholders.
 ---@param mapping table Values used to replace placeholder keys.
----@return string s Formatted string with placeholders replaced.
+---@return string formatted Formatted string with placeholders replaced.
 ---@nodiscard
 function M.format_map(s, mapping) end
 
@@ -145,7 +145,7 @@ function M.format_map(s, mapping) end
 ---> isalnum("á1") --> false
 ---> ```
 ---@param s string Input string.
----@return boolean ok True when `s` is non-empty and all characters are alphanumeric.
+---@return boolean isAlnum True when `s` is non-empty and all characters are alphanumeric.
 ---@nodiscard
 function M.isalnum(s) end
 
@@ -164,7 +164,7 @@ function M.isalnum(s) end
 ---> isalpha("á") --> false
 ---> ```
 ---@param s string Input string.
----@return boolean ok True when `s` is non-empty and all characters are alphabetic.
+---@return boolean isAlpha True when `s` is non-empty and all characters are alphabetic.
 ---@nodiscard
 function M.isalpha(s) end
 
@@ -179,7 +179,7 @@ function M.isalpha(s) end
 --->
 ---> The empty string returns `true`.
 ---@param s string Input string.
----@return boolean ok True when all bytes in `s` are ASCII.
+---@return boolean isAscii True when all bytes in `s` are ASCII.
 ---@nodiscard
 function M.isascii(s) end
 
@@ -191,7 +191,7 @@ function M.isascii(s) end
 ---```
 ---
 ---@param s string Input string.
----@return boolean ok True when `s` is non-empty and all characters are decimal digits.
+---@return boolean isDecimal True when `s` is non-empty and all characters are decimal digits.
 ---@nodiscard
 function M.isdecimal(s) end
 
@@ -203,7 +203,7 @@ function M.isdecimal(s) end
 ---```
 ---
 ---@param s string Input string.
----@return boolean ok True when `s` is non-empty and all characters are digits.
+---@return boolean isDigit True when `s` is non-empty and all characters are digits.
 ---@nodiscard
 function M.isdigit(s) end
 
@@ -217,7 +217,7 @@ function M.isdigit(s) end
 ---```
 ---
 ---@param s string Input string.
----@return boolean ok True when `s` is a valid identifier and not a keyword.
+---@return boolean isIdentifier True when `s` is a valid identifier and not a keyword.
 ---@nodiscard
 function M.isidentifier(s) end
 
@@ -229,7 +229,7 @@ function M.isidentifier(s) end
 ---```
 ---
 ---@param s string Input string.
----@return boolean ok True when `s` has at least one cased character and all are lowercase.
+---@return boolean isLower True when `s` has at least one cased character and all are lowercase.
 ---@nodiscard
 function M.islower(s) end
 
@@ -241,7 +241,7 @@ function M.islower(s) end
 ---```
 ---
 ---@param s string Input string.
----@return boolean ok True when `s` is non-empty and all characters are numeric.
+---@return boolean isNumeric True when `s` is non-empty and all characters are numeric.
 ---@nodiscard
 function M.isnumeric(s) end
 
@@ -256,7 +256,7 @@ function M.isnumeric(s) end
 --->
 ---> The empty string returns `true`.
 ---@param s string Input string.
----@return boolean ok True when all bytes in `s` are printable ASCII.
+---@return boolean isPrintable True when all bytes in `s` are printable ASCII.
 ---@nodiscard
 function M.isprintable(s) end
 
@@ -268,7 +268,7 @@ function M.isprintable(s) end
 ---```
 ---
 ---@param s string Input string.
----@return boolean ok True when `s` is non-empty and all characters are whitespace.
+---@return boolean isSpace True when `s` is non-empty and all characters are whitespace.
 ---@nodiscard
 function M.isspace(s) end
 
@@ -280,7 +280,7 @@ function M.isspace(s) end
 ---```
 ---
 ---@param s string Input string.
----@return boolean ok True when `s` is titlecased.
+---@return boolean isTitle True when `s` is titlecased.
 ---@nodiscard
 function M.istitle(s) end
 
@@ -292,7 +292,7 @@ function M.istitle(s) end
 ---```
 ---
 ---@param s string Input string.
----@return boolean ok True when `s` has at least one cased character and all are uppercase.
+---@return boolean isUpper True when `s` has at least one cased character and all are uppercase.
 ---@nodiscard
 function M.isupper(s) end
 
@@ -309,7 +309,7 @@ function M.isupper(s) end
 ---
 ---@param sep string Separator value.
 ---@param ls string[] Table value.
----@return string s Computed string value.
+---@return string joined Joined string.
 ---@nodiscard
 function M.join(sep, ls) end
 
@@ -323,7 +323,7 @@ function M.join(sep, ls) end
 ---@param s string Input string.
 ---@param width integer Target width.
 ---@param fillchar? string Optional fill character.
----@return string s Computed string value.
+---@return string leftJustified Left-justified string.
 ---@nodiscard
 function M.ljust(s, width, fillchar) end
 
@@ -335,7 +335,7 @@ function M.ljust(s, width, fillchar) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Computed string value.
+---@return string lowercased Lowercased string.
 ---@nodiscard
 function M.lower(s) end
 
@@ -348,7 +348,7 @@ function M.lower(s) end
 ---
 ---@param s string Input string.
 ---@param chars? string Optional character set.
----@return string s Computed string value.
+---@return string leadingStripped String with leading characters removed.
 ---@nodiscard
 function M.lstrip(s, chars) end
 
@@ -361,7 +361,7 @@ function M.lstrip(s, chars) end
 ---
 ---@param s string Input string.
 ---@param chars? string Optional character set.
----@return string s Computed string value.
+---@return string trailingStripped String with trailing characters removed.
 ---@nodiscard
 function M.rstrip(s, chars) end
 
@@ -374,7 +374,7 @@ function M.rstrip(s, chars) end
 ---
 ---@param s string Input string.
 ---@param chars? string Optional character set.
----@return string s Computed string value.
+---@return string stripped String with leading and trailing characters removed.
 ---@nodiscard
 function M.strip(s, chars) end
 
@@ -392,7 +392,7 @@ function M.strip(s, chars) end
 ---@param s string Input string.
 ---@param sep string Separator value.
 ---@return string head Part before the separator.
----@return string sep_found Matched separator, or empty string when not found.
+---@return string separator Matched separator, or empty string when not found.
 ---@return string tail Part after the separator.
 ---@nodiscard
 function M.partition(s, sep) end
@@ -406,7 +406,7 @@ function M.partition(s, sep) end
 ---
 ---@param s string Input string.
 ---@param prefix string Prefix string.
----@return string s Computed string value.
+---@return string prefixRemoved String with prefix removed when present.
 ---@nodiscard
 function M.removeprefix(s, prefix) end
 
@@ -419,7 +419,7 @@ function M.removeprefix(s, prefix) end
 ---
 ---@param s string Input string.
 ---@param suffix string Suffix string.
----@return string s Computed string value.
+---@return string suffixRemoved String with suffix removed when present.
 ---@nodiscard
 function M.removesuffix(s, suffix) end
 
@@ -434,7 +434,7 @@ function M.removesuffix(s, suffix) end
 ---@param old string Substring to replace.
 ---@param new string Replacement string.
 ---@param count? integer Optional maximum replacement count.
----@return string s Computed string value.
+---@return string replaced String with replacements applied.
 ---@nodiscard
 function M.replace(s, old, new, count) end
 
@@ -464,7 +464,7 @@ function M.rfind(s, sub, start, stop) end
 ---@param sub string Substring to search.
 ---@param start? integer Optional start index (defaults to `1`).
 ---@param stop? integer Optional inclusive end index (defaults to `#s`).
----@return integer index Computed numeric value.
+---@return integer index Last match index.
 ---@nodiscard
 function M.rindex(s, sub, start, stop) end
 
@@ -478,7 +478,7 @@ function M.rindex(s, sub, start, stop) end
 ---@param s string Input string.
 ---@param width integer Target width.
 ---@param fillchar? string Optional fill character.
----@return string s Computed string value.
+---@return string rightJustified Right-justified string.
 ---@nodiscard
 function M.rjust(s, width, fillchar) end
 
@@ -492,7 +492,7 @@ function M.rjust(s, width, fillchar) end
 ---@param s string Input string.
 ---@param sep string Separator value.
 ---@return string head Part before the separator.
----@return string sep_found Matched separator, or empty string when not found.
+---@return string separator Matched separator, or empty string when not found.
 ---@return string tail Part after the separator.
 ---@nodiscard
 function M.rpartition(s, sep) end
@@ -550,7 +550,7 @@ function M.splitlines(s, keepends) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Computed string value.
+---@return string swappedCase String with alphabetic case swapped.
 ---@nodiscard
 function M.swapcase(s) end
 
@@ -569,7 +569,7 @@ function M.swapcase(s) end
 ---@param prefix string|string[] Prefix string.
 ---@param start? integer Optional start index (defaults to `1`).
 ---@param stop? integer Optional exclusive end index (defaults to `#s + 1`).
----@return boolean ok True when `s` starts with `prefix`.
+---@return boolean hasPrefix True when `s` starts with `prefix`.
 ---@nodiscard
 function M.startswith(s, prefix, start, stop) end
 
@@ -581,7 +581,7 @@ function M.startswith(s, prefix, start, stop) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Computed string value.
+---@return string titlecased Titlecased string.
 ---@nodiscard
 function M.title(s) end
 
@@ -595,7 +595,7 @@ function M.title(s) end
 ---
 ---@param s string Input string.
 ---@param table_map table Character translation map.
----@return string s Computed string value.
+---@return string translated Translated string.
 ---@nodiscard
 function M.translate(s, table_map) end
 
@@ -607,7 +607,7 @@ function M.translate(s, table_map) end
 ---```
 ---
 ---@param s string Input string.
----@return string s Computed string value.
+---@return string uppercased Uppercased string.
 ---@nodiscard
 function M.upper(s) end
 
@@ -620,7 +620,7 @@ function M.upper(s) end
 ---
 ---@param s string Input string.
 ---@param width integer Target width.
----@return string s Computed string value.
+---@return string zeroFilled Zero-padded string.
 ---@nodiscard
 function M.zfill(s, width) end
 

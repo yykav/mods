@@ -64,7 +64,7 @@ function M.keypath(...) end
 ---@param tp? modsIsType Validator name (defaults to `"truthy"`).
 ---@param level? integer Optional error level for `error(...)` (defaults to `2`).
 ---@param msg? string Optional override template passed to `mods.validate`.
----@return T v Same input value on success.
+---@return T validatedValue Same input value on success.
 function M.assert_arg(argn, v, tp, level, msg) end
 
 return M

@@ -80,7 +80,7 @@ function M.copy(t) end
 ---
 ---@generic T
 ---@param v T Input value.
----@return T copy Deep-copied value.
+---@return T copiedValue Deep-copied value.
 ---@nodiscard
 function M.deepcopy(v) end
 
@@ -130,7 +130,7 @@ function M.find(t, v) end
 ---
 ---@param a table Left table.
 ---@param b table Right table.
----@return boolean ok True when both tables have the same keys and values.
+---@return boolean isSame True when both tables have the same keys and values.
 ---@nodiscard
 function M.same(a, b) end
 
@@ -146,7 +146,7 @@ function M.same(a, b) end
 ---@generic T1,T2
 ---@param t table Input table.
 ---@param pred fun(v:T1,k:T2):boolean Predicate function.
----@return T1? v First matching value, or `nil` when not found.
+---@return T1? matchedValue First matching value, or `nil` when not found.
 ---@return T2? k Key for the first matching value, or `nil` when not found.
 ---@nodiscard
 function M.find_if(t, pred) end
@@ -166,7 +166,7 @@ function M.find_if(t, pred) end
 ---
 ---@param t table Root table.
 ---@param ... any Additional arguments.
----@return any value Nested value, or `nil` when any key is missing.
+---@return any nestedValue Nested value, or `nil` when any key is missing.
 ---@nodiscard
 function M.get(t, ...) end
 
@@ -198,7 +198,7 @@ function M.invert(t) end
 ---```
 ---
 ---@param t table Input table.
----@return boolean ok True when `t` has no entries.
+---@return boolean isEmpty True when `t` has no entries.
 ---@nodiscard
 function M.isempty(t) end
 
