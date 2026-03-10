@@ -179,10 +179,11 @@ function List:append(v) end
 function List:clear() end
 
 ---
----Extend the list with another list.
+---Extend the list with another list or set.
 ---
 ---```lua
----ls = List({ "a" }):extend({ "b", "c" }) --> { "a", "b", "c" }
+---ls = List({ "a" }):extend({ "b", "c" })      --> { "a", "b", "c" }
+---ls = List({ "a" }):extend(Set({ "b", "c" })) --> { "a", "b", "c" }
 ---```
 ---
 ---> [!NOTE]
@@ -191,9 +192,9 @@ function List:clear() end
 ---
 ---@generic T:mods.List|any[]
 ---@param self T Current list instance.
----@param ls any[] List values.
+---@param t mods.List|mods.Set|any[] Values to append.
 ---@return T self Current list instance.
-function List:extend(ls) end
+function List:extend(t) end
 
 ---
 ---Extract values matching the predicate and remove them from the list.
@@ -439,7 +440,7 @@ function List:last() end
 ---
 
 ---
----Return a new list with values not in the given list.
+---Return a new list with values not in the given list or set.
 ---
 ---```lua
 ---d = List({ "a", "b", "c" }):difference({ "b" }) --> { "a", "c" }
@@ -451,10 +452,10 @@ function List:last() end
 ---
 ---@generic T:mods.List|any[]
 ---@param self T Current list instance.
----@param ls mods.List|any[] Other list value.
+---@param t mods.List|mods.Set|any[] Values to remove.
 ---@return T ls New list.
 ---@nodiscard
-function List:difference(ls) end
+function List:difference(t) end
 
 ---
 ---Return a new list without the first n elements.
@@ -524,7 +525,7 @@ function List:foreach(fn) end
 function List:group_by(fn) end
 
 ---
----Return values that are also present in the given list.
+---Return values that are also present in the given list or set.
 ---
 ---```lua
 ---i = List({ "a", "b", "a", "c" }):intersection({ "a", "c" })
@@ -536,10 +537,10 @@ function List:group_by(fn) end
 ---> Order is preserved from the original list.
 ---
 ---@param self mods.List Current list instance.
----@param ls mods.List|any[] Other list value.
+---@param t mods.List|mods.Set|any[] Values to keep.
 ---@return mods.List ls New list.
 ---@nodiscard
-function List:intersection(ls) end
+function List:intersection(t) end
 
 ---
 ---Invert values to indices in a new table.
@@ -744,21 +745,22 @@ function List:take(n) end
 function List:uniq() end
 
 ---
----Zip two lists into a list of 2-element tables.
+---Zip two collections into a list of 2-element tables.
 ---
 ---```lua
----z = List({ "a", "b" }):zip({ 1, 2 }) --> { {"a",1}, {"b",2} }
+---z = List({ "a", "b" }):zip({ 1, 2 })      --> { {"a",1}, {"b",2} }
+---z = List({ "a", "b" }):zip(Set({ 1, 2 })) --> { {"a",1}, {"b",2} }
 ---```
 ---
 ---> [!NOTE]
 --->
----> Length is the minimum of both lists.
+---> Length is the minimum of both collections.
 ---
 ---@param self mods.List Current list instance.
----@param ls mods.List|any[] Other list value.
+---@param t mods.List|mods.Set|any[] Values to pair with.
 ---@return mods.List ls New list.
 ---@nodiscard
-function List:zip(ls) end
+function List:zip(t) end
 
 --------------------------------------------------------------------------------
 ---------------------------------- Metamethods ---------------------------------

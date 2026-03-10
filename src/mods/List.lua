@@ -29,13 +29,11 @@ end
 
 local function collect_by_lookup(self, lookup, include)
   local res = List()
-  local ri = 1
   for i = 1, #self do
     local v = self[i]
     local present = lookup[v] ~= nil
     if present == include then
-      res[ri] = v
-      ri = ri + 1
+      res[#res + 1] = v
     end
   end
   return res
@@ -128,7 +126,7 @@ function List:count(v)
 end
 
 function List:difference(ls)
-  local lookup = build_lookup(ls)
+  local lookup = getmetatable(ls) == mods.Set and ls or mods.Set(ls)
   return collect_by_lookup(self, lookup, false)
 end
 
@@ -158,6 +156,13 @@ function List:equals(ls)
 end
 
 function List:extend(ls)
+  if getmetatable(ls) == mods.Set then
+    for k in pairs(ls) do
+      self[#self + 1] = k
+    end
+    return self
+  end
+
   for i = 1, #ls do
     self[#self + 1] = ls[i]
   end
@@ -267,7 +272,7 @@ function List:insert(pos, v)
 end
 
 function List:intersection(ls)
-  local lookup = build_lookup(ls)
+  local lookup = getmetatable(ls) == mods.Set and ls or mods.Set(ls)
   return collect_by_lookup(self, lookup, true)
 end
 
@@ -455,6 +460,19 @@ function List:zip(other)
   if other == nil then
     return res
   end
+
+  if getmetatable(other) == mods.Set then
+    local limit = #self
+    for k in pairs(other) do
+      local i = #res + 1
+      if i > limit then
+        break
+      end
+      res[i] = { self[i], k }
+    end
+    return res
+  end
+
   local limit = #self
   if #other < limit then
     limit = #other
