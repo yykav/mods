@@ -54,7 +54,6 @@ for fname in ("false true falsy truthy integer callable"):gmatch("%S+") do
   M.register(fname, is[fname], "expected {{expected}} value, got {{value}}")
 end
 
----@diagnostic disable-next-line: invisible
 for _, fname in ipairs(is._path_checks) do
   M.register(fname, is[fname], "{{value}} is not a valid {{expected}} path")
 end
