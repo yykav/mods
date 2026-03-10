@@ -1,4 +1,6 @@
-local mods = require "mods"
+local List = require "mods.List"
+local Set = require "mods.Set"
+local runtime = require "mods.runtime"
 
 local gsub = string.gsub
 local match = string.match
@@ -7,40 +9,33 @@ local match = string.match
 local M = {}
 
 -- stylua: ignore
-local kwlist = {
+local kwlist = List({
   "and"   , "break" , "do"  , "else"    , "elseif",
   "end"   , "false" , "for" , "function", "if"    ,
   "in"    , "local" , "nil" , "not"     , "or"    ,
   "repeat", "return", "then", "true"    , "until" , "while",
-}
+})
 
-if _VERSION ~= "Lua 5.1" then
-  table.insert(kwlist, "goto")
-  table.sort(kwlist)
+if runtime.version_num > 501 then
+  kwlist:append("goto"):sort()
 end
 
--- Use a plain lookup table for hot-path membership checks; avoid Set overhead.
-local kwset = {}
-for i = 1, #kwlist do
-  kwset[kwlist[i]] = true
-end
+local kwset = kwlist:toset()
 
-local function iskeyword(s)
-  return kwset[s] ~= nil
+function M.iskeyword(s)
+  return kwset:contains(s)
 end
-
-M.iskeyword = iskeyword
 
 function M.isidentifier(s)
-  return type(s) == "string" and not iskeyword(s) and match(s, "^[%a_][%w_]*$") ~= nil
+  return type(s) == "string" and not M.iskeyword(s) and match(s, "^[%a_][%w_]*$") ~= nil
 end
 
 function M.kwlist()
-  return mods.List(kwlist):copy()
+  return List(kwlist):copy()
 end
 
 function M.kwset()
-  return mods.Set(kwlist)
+  return Set(kwlist)
 end
 
 function M.normalize_identifier(s)
@@ -58,7 +53,7 @@ function M.normalize_identifier(s)
     return "_"
   elseif match(out, "^%d") then
     out = "_" .. out
-  elseif iskeyword(out) then
+  elseif M.iskeyword(out) then
     out = out .. "_"
   end
 
