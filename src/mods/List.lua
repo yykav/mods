@@ -1,13 +1,13 @@
----@diagnostic disable: invisible
+local utils = require "mods.utils"
 
-local mods = require "mods"
-
-local keypath = mods.utils.keypath
-local quote = mods.utils.quote
+local keypath = utils.keypath
+local quote = utils.quote
 
 local concat = table.concat
+local getmetatable = getmetatable
 local insert = table.insert
 local move = table.move
+local pairs = pairs
 local remove = table.remove
 local sort = table.sort
 local tostring = tostring
@@ -18,21 +18,17 @@ local unpack = table.unpack or unpack
 local List = {}
 List.__index = List
 
--- Use a plain table (not `mods.Set`) for fast, low-overhead membership lookups.
-local function build_lookup(ls)
-  local lookup = {}
-  for i = 1, #ls do
-    lookup[ls[i]] = true
-  end
-  return lookup
+local function Set(t)
+  Set = require "mods.Set" ---@diagnostic disable-line: cast-local-type
+  return Set(t)
 end
 
-local function collect_by_lookup(self, lookup, include)
+local function collect_by_membership(ls, set, keep_if_present)
   local res = List()
-  for i = 1, #self do
-    local v = self[i]
-    local present = lookup[v] ~= nil
-    if present == include then
+  for i = 1, #ls do
+    local v = ls[i]
+    local present = set[v] ~= nil
+    if present == keep_if_present then
       res[#res + 1] = v
     end
   end
@@ -44,10 +40,8 @@ local function copy_range(self, start_i, end_i)
   if end_i < start_i then
     return res
   end
-  local ri = 1
   for i = start_i, end_i do
-    res[ri] = self[i]
-    ri = ri + 1
+    res[#res + 1] = self[i]
   end
   return res
 end
@@ -125,9 +119,9 @@ function List:count(v)
   return c
 end
 
-function List:difference(ls)
-  local lookup = getmetatable(ls) == mods.Set and ls or mods.Set(ls)
-  return collect_by_lookup(self, lookup, false)
+function List:difference(t)
+  local set = getmetatable(t) == Set and t or Set(t)
+  return collect_by_membership(self, set, false)
 end
 
 function List:drop(n)
@@ -155,16 +149,15 @@ function List:equals(ls)
   return true
 end
 
-function List:extend(ls)
-  if getmetatable(ls) == mods.Set then
-    for k in pairs(ls) do
+function List:extend(t)
+  if getmetatable(t) == Set then
+    for k in pairs(t) do
       self[#self + 1] = k
     end
     return self
   end
-
-  for i = 1, #ls do
-    self[#self + 1] = ls[i]
+  for i = 1, #t do
+    self[#self + 1] = t[i]
   end
   return self
 end
@@ -192,12 +185,10 @@ end
 
 function List:filter(pred)
   local res = List()
-  local ri = 1
   for i = 1, #self do
     local v = self[i]
     if pred(v) then
-      res[ri] = v
-      ri = ri + 1
+      res[#res + 1] = v
     end
   end
   return res
@@ -209,17 +200,14 @@ end
 
 function List:flatten()
   local res = List()
-  local ri = 1
   for i = 1, #self do
     local v = self[i]
     if type(v) == "table" then
       for j = 1, #v do
-        res[ri] = v[j]
-        ri = ri + 1
+        res[#res + 1] = v[j]
       end
     else
-      res[ri] = v
-      ri = ri + 1
+      res[#res + 1] = v
     end
   end
   return res
@@ -271,9 +259,9 @@ function List:insert(pos, v)
   return self
 end
 
-function List:intersection(ls)
-  local lookup = getmetatable(ls) == mods.Set and ls or mods.Set(ls)
-  return collect_by_lookup(self, lookup, true)
+function List:intersection(t)
+  local set = getmetatable(t) == Set and t or Set(t)
+  return collect_by_membership(self, set, true)
 end
 
 function List:invert()
@@ -283,8 +271,6 @@ function List:invert()
   end
   return res
 end
-
-List.concat = concat
 
 function List:join(sep, quoted)
   local out = {}
@@ -328,10 +314,8 @@ end
 
 function List:map(fn)
   local ls = List()
-  local ri = 1
   for i = 1, #self do
-    ls[ri] = fn(self[i])
-    ri = ri + 1
+    ls[#ls + 1] = fn(self[i])
   end
   return ls
 end
@@ -383,15 +367,11 @@ end
 
 function List:reverse()
   local res = List()
-  local ri = 1
   for i = #self, 1, -1 do
-    res[ri] = self[i]
-    ri = ri + 1
+    res[#res + 1] = self[i]
   end
   return res
 end
-
-List.pop = remove
 
 function List:slice(i, j)
   local len = #self
@@ -443,27 +423,22 @@ end
 function List:uniq()
   local res = List()
   local seen = {}
-  local ri = 1
   for i = 1, #self do
     local v = self[i]
     if not seen[v] then
       seen[v] = true
-      res[ri] = v
-      ri = ri + 1
+      res[#res + 1] = v
     end
   end
   return res
 end
 
-function List:zip(other)
+function List:zip(t)
   local res = List()
-  if other == nil then
-    return res
-  end
 
-  if getmetatable(other) == mods.Set then
+  if getmetatable(t) == Set then
     local limit = #self
-    for k in pairs(other) do
+    for k in pairs(t) do
       local i = #res + 1
       if i > limit then
         break
@@ -474,16 +449,18 @@ function List:zip(other)
   end
 
   local limit = #self
-  if #other < limit then
-    limit = #other
+  if #t < limit then
+    limit = #t
   end
-  local ri = 1
   for i = 1, limit do
-    res[ri] = { self[i], other[i] }
-    ri = ri + 1
+    res[#res + 1] = { self[i], t[i] }
   end
   return res
 end
+
+List.concat = concat
+List.pop = remove
+List.toset = Set
 
 List.__add = List.extend
 List.__eq = List.equals
@@ -497,13 +474,6 @@ List.__sub = List.difference
 List.__tostring = List.tostring
 
 return setmetatable(List, {
-  __index = function(t, k)
-    if k == "toset" then
-      local fn = mods.Set
-      rawset(t, k, fn)
-      return fn
-    end
-  end,
   __call = function(_, ls)
     return setmetatable(ls or {}, List)
   end,
