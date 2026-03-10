@@ -1,13 +1,12 @@
-local mods = require "mods"
-
-local List = mods.List
-local Set = mods.Set
-local kw = mods.keyword
+local List = require "mods.List"
+local Set = require "mods.Set"
+local kw = require "mods.keyword"
+local runtime = require "mods.runtime"
 
 local fmt = string.format
-local is_lua51 = _VERSION == "Lua 5.1"
 
 describe("mods.keyword", function()
+  local is_lua51 = runtime.is_lua51
   -- stylua: ignore
   local keywords = List({
     "and"   , "break" , "do"  , "else"    , "elseif",
