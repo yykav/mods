@@ -674,15 +674,14 @@ function List:mul(n) end
 function List:reduce(fn, init) end
 
 ---
----Return a new list with items reversed.
+---Reverse the list in place.
 ---
 ---```lua
 ---r = List({ "a", "b", "c" }):reverse() --> { "c", "b", "a" }
 ---```
 ---
 ---@param self mods.List Current list instance.
----@return mods.List ls New list.
----@nodiscard
+---@return mods.List ls Same list, reversed in place.
 function List:reverse() end
 
 ---

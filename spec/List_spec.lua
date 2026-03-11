@@ -118,7 +118,7 @@ describe("mods.List", function()
     { "reduce"       , _123_  , { add, 4     } , 10             ,       },
     { "remove"       , abc__  , {            } , abc__          , true  },
     { "remove"       , AZAZA  , { "A"        } , _ZAZA          , true  },
-    { "reverse"      , abcde  , {            } , edcba          , false },
+    { "reverse"      , abcde  , {            } , edcba          , true  },
     { "slice"        , abcde  , {            } , abcde          , false },
     { "slice"        , abcde  , { 2, 4       } , _bcd_          , false },
     { "sort"         , edcba  , {            } , abcde          , true  },

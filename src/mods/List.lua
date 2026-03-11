@@ -357,11 +357,12 @@ function List:remove(v)
 end
 
 function List:reverse()
-  local res = List()
-  for i = #self, 1, -1 do
-    res[#res + 1] = self[i]
+  local i, j = 1, #self
+  while i < j do
+    self[i], self[j] = self[j], self[i]
+    i, j = i + 1, j - 1
   end
-  return res
+  return self
 end
 
 function List:slice(i, j)
