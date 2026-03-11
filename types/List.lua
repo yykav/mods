@@ -601,10 +601,6 @@ function List:join(sep, quoted) end
 ---s = List({ "a", "b", 1 }):tostring() --> '{ "a", "b", 1 }'
 ---```
 ---
----> [!NOTE]
---->
----> `tostring(list)` calls `list:tostring()`.
----
 ---@param self mods.List Current list instance.
 ---@return string renderedList Rendered list string.
 ---@nodiscard
@@ -753,7 +749,7 @@ function List:uniq() end
 ---
 ---> [!NOTE]
 --->
----> Length is the minimum of both collections.
+---> Length is the minimum of both tables' lengths.
 ---
 ---@param self mods.List Current list instance.
 ---@param t mods.List|mods.Set|any[] Values to pair with.
@@ -903,10 +899,6 @@ function List.__sub(self, ls) end
 ---```lua
 ---s = tostring(List({ "a", "b", 1 })) --> '{ "a", "b", 1 }'
 ---```
----
----> [!NOTE]
---->
----> `tostring(ls)` is equivalent to `:tostring()`.
 ---
 ---@param self mods.List Current list instance.
 ---@return string renderedList Rendered list string.
