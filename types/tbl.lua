@@ -263,7 +263,6 @@ function M.pairmap(t, fn) end
 ---@param t1 T Target table.
 ---@param t2 table Source table.
 ---@return T t1 Updated `t1` table.
----@nodiscard
 function M.update(t1, t2) end
 
 ---
