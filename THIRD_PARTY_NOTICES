@@ -24,7 +24,7 @@ Derived from:
 
 Modifications:
 - Porting Python logic to Lua
-- Adapting behavior to this library's API and conventions
+- Adapting behavior and APIs to this library
 - Converting tests to Busted table-driven format
 
 posixpath
@@ -36,7 +36,21 @@ Derived from:
 
 Modifications:
 - Porting Python logic to Lua
-- Adapting behavior to this library's API and conventions
+- Adapting behavior and APIs to this library
+- Converting tests to Busted table-driven format
+
+path
+~~~~
+
+Derived from:
+- Lib/pathlib/__init__.py
+- Lib/test/test_pathlib/test_join.py
+- Lib/test/test_pathlib/test_join_windows.py
+- Lib/test/test_pathlib/test_pathlib.py
+
+Modifications:
+- Porting Python logic to Lua
+- Adapting behavior and APIs to this library
 - Converting tests to Busted table-driven format
 
 PSF-2.0 License Text
