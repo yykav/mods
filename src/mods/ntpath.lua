@@ -18,6 +18,7 @@ local char = string.char
 local concat = table.concat
 local find = string.find
 local fmt = string.format
+local getenv = os.getenv
 local gmatch = string.gmatch
 local gsub = string.gsub
 local lower = string.lower
@@ -298,17 +299,17 @@ function M.isreserved(p)
 end
 
 function M.home()
-  local userhome = os.getenv("USERPROFILE")
+  local userhome = getenv("USERPROFILE")
   if userhome and userhome ~= "" then
     return userhome
   end
 
-  local homepath = os.getenv("HOMEPATH")
+  local homepath = getenv("HOMEPATH")
   if not homepath or homepath == "" then
     return nil, "home directory is not set"
   end
 
-  return M.join(os.getenv("HOMEDRIVE") or "", homepath)
+  return M.join(getenv("HOMEDRIVE") or "", homepath)
 end
 
 function M.expanduser(p)
@@ -330,7 +331,7 @@ function M.expanduser(p)
 
   if i ~= 2 then
     local target_user = sub(p, 2, i - 1)
-    local current_user = os.getenv("USERNAME")
+    local current_user = getenv("USERNAME")
 
     if target_user ~= current_user then
       if current_user ~= M.basename(userhome) then
