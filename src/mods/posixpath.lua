@@ -293,10 +293,18 @@ function M.commonpath(paths)
   return root .. body
 end
 
-return setmetatable(M, {
+setmetatable(M, {
   __index = function(t, k)
     local v = path[k]
     t[k] = v
     return v
   end,
 })
+
+if _TEST then
+  getenv = function(name)
+    return os.getenv(name)
+  end
+end
+
+return M
