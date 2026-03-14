@@ -17,6 +17,14 @@ local tbl = require "mods.tbl"
 local tbl_keys = tbl.keys
 local fmt = string.format
 
+local function with_env(env, fn)
+  stub(os, "getenv", function(name)
+    return env[name]
+  end)
+  fn()
+  os.getenv:revert() ---@diagnostic disable-line: undefined-field
+end
+
 describe("mods.posixpath", function()
   local cwd = lfs.currentdir()
 
@@ -264,16 +272,15 @@ describe("mods.posixpath", function()
   end)
 
   it("home()", function()
-    local home = os.getenv("HOME")
-    local value, err = posixpath.home()
+    with_env({}, function()
+      local value, err = posixpath.home()
+      assert.are_same({ nil, err }, { value, err })
+    end)
 
-    if home and home ~= "" then
-      assert.are_equal(home, value)
-      assert.is_nil(err)
-    else
-      assert.is_nil(value)
-      assert.is_string(err)
-    end
+    with_env({ HOME = "/tmp" }, function()
+      local value, err = posixpath.home()
+      assert.are_same({ "/tmp", nil }, { value, err })
+    end)
   end)
 
   it("relpath()", function()
