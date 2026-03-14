@@ -162,7 +162,7 @@ function M.normpath(p)
   for i = 1, #comps do
     local comp = comps[i]
     if comp ~= "" and comp ~= CURDIR then
-      if comp ~= PARDIR or (initial_slashes == "" and #out == 0) or (#out > 0 and out[#out] == "..") then
+      if comp ~= PARDIR or (initial_slashes == "" and #out == 0) or (#out > 0 and out[#out] == PARDIR) then
         out[#out + 1] = comp
       elseif #out > 0 then
         out[#out] = nil
