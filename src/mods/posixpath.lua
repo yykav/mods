@@ -12,6 +12,7 @@ local assert_arg = mods.utils.assert_arg
 
 local concat = table.concat
 local getenv = os.getenv
+local char = string.char
 local gmatch = string.gmatch
 local gsub = string.gsub
 local match = string.match
@@ -212,6 +213,33 @@ function M.relpath(p, start)
   end
 
   return #out == 0 and CURDIR or concat(out, SEP)
+end
+
+function M.from_uri(uri)
+  assert_arg(1, uri, "string")
+
+  local body = match(uri, "^file://(.*)$")
+  if not body then
+    return nil, "invalid file uri"
+  end
+
+  local authority, rest = match(body, "^([^/]*)(/.*)$")
+  if authority then
+    if authority ~= "" and authority ~= "localhost" then
+      return nil, "unsupported file uri authority"
+    end
+    body = rest
+  end
+
+  body = gsub(body, "%%(%x%x)", function(hex)
+    return char(tonumber(hex, 16))
+  end)
+
+  if not M.isabs(body) then
+    return nil, "uri is not absolute"
+  end
+
+  return body
 end
 
 function M.commonpath(paths)

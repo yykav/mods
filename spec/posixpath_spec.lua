@@ -223,6 +223,20 @@ describe("mods.posixpath", function()
       {{ "\\/a/b"  }, { "", ""  , "\\/a/b" }},
       {{ "\\a\\b"  }, { "", ""  , "\\a\\b" }},
     },
+    from_uri = {
+      {{ "file:///foo/bar"                  }, { "/foo/bar"                            }},
+      {{ "file:////foo/bar"                 }, { "//foo/bar"                           }},
+      {{ "file:///foo/My%20File.txt"        }, { "/foo/My File.txt"                    }},
+      {{ "file://localhost/foo/bar"         }, { "/foo/bar"                            }},
+      {{ "file://localhost"                 }, { nil, "uri is not absolute"            }},
+      {{ "file:/foo/bar"                    }, { nil, "invalid file uri"               }},
+      {{ "file://foo/bar"                   }, { nil, "unsupported file uri authority" }},
+      {{ "foo/bar"                          }, { nil, "invalid file uri"               }},
+      {{ "/foo/bar"                         }, { nil, "invalid file uri"               }},
+      {{ "//foo/bar"                        }, { nil, "invalid file uri"               }},
+      {{ "file:foo/bar"                     }, { nil, "invalid file uri"               }},
+      {{ "http://foo/bar"                   }, { nil, "invalid file uri"               }},
+    },
   }
 
   for _, fname in ipairs(tbl_keys(tests)) do

@@ -14,6 +14,7 @@ local assert_arg = utils.assert_arg
 local tbl_count = mods.tbl.count
 
 local byte = string.byte
+local char = string.char
 local concat = table.concat
 local find = string.find
 local fmt = string.format
@@ -117,6 +118,43 @@ function M.isabs(p)
   assert_arg(1, p, "string")
   local s = norm_seps(sub(p, 1, 3))
   return sub(s, 2, 3) == DRIVE_SEP .. SEP or sub(s, 1, 2) == SEP .. SEP
+end
+
+function M.from_uri(uri)
+  assert_arg(1, uri, "string")
+
+  local body = match(uri, "^file:(.*)$")
+  if not body then
+    return nil, "invalid file uri"
+  end
+
+  local is_unc = match(body, "^//") ~= nil
+  local is_drive = match(body, "^/*[%a][:|]") ~= nil
+  if not is_unc and not is_drive then
+    return nil, "invalid file uri"
+  end
+
+  if is_unc then
+    local authority, rest = match(body, "^//([^/]*)(/.*)$")
+    if authority and (authority == "" or authority == "localhost") then
+      body = rest
+    end
+  end
+
+  body = gsub(body, "%%(%x%x)", function(hex)
+    return char(tonumber(hex, 16))
+  end)
+  body = gsub(body, "^/*([%a])[:|]", "%1:")
+  if match(body, "^///+") then
+    body = "//" .. gsub(body, "^/+", "")
+  end
+
+  body = gsub(body, ALT_SEP, SEP)
+  if not M.isabs(body) then
+    return nil, "uri is not absolute"
+  end
+
+  return body
 end
 
 function M.splitroot(p)
