@@ -31,6 +31,7 @@ path = setmetatable(path, {
 local M = {}
 
 local CURDIR = "."
+local EXT_SEP = "."
 local PARDIR = ".."
 local SEP = "/"
 
@@ -94,7 +95,7 @@ end
 
 function M.splitext(p)
   assert_arg(1, p, "string")
-  return path._splitext(p, SEP, nil, ".")
+  return path._splitext(p, SEP, nil, EXT_SEP)
 end
 
 function M.splitdrive(p)
