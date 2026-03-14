@@ -199,9 +199,9 @@ function M.join(p, ...)
   local result_drive, result_root, result_path = M.splitroot(p)
 
   for i = 1, select("#", ...) do
-    local p_ = select(i, ...)
-    assert_arg(i + 1, p_, "string")
-    local p_drive, p_root, p_path = M.splitroot(p_)
+    local part = select(i, ...)
+    assert_arg(i + 1, part, "string")
+    local p_drive, p_root, p_path = M.splitroot(part)
 
     if p_root ~= "" then
       if p_drive ~= "" or result_drive == "" then

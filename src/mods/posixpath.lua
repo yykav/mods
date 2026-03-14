@@ -64,14 +64,14 @@ end
 function M.join(p, ...)
   assert_arg(1, p, "string")
   for i = 1, select("#", ...) do
-    local b = select(i, ...)
-    assert_arg(i + 1, b, "string")
-    if has_prefix(b, SEP) or p == "" then
-      p = b
+    local part = select(i, ...)
+    assert_arg(i + 1, part, "string")
+    if has_prefix(part, SEP) or p == "" then
+      p = part
     elseif sub(p, -1) == SEP then
-      p = p .. b
+      p = p .. part
     else
-      p = p .. SEP .. b
+      p = p .. SEP .. part
     end
   end
   return p
