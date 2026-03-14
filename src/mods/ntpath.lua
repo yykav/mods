@@ -41,11 +41,12 @@ local ALT_SEP = "/"
 local CURDIR = "."
 local DRIVE_SEP = ":"
 local EXT_SEP = "."
+local PARDIR = ".."
+local reserved_char = Set({ '"', "*", ":", "<", ">", "?", "|", "/", "\\" })
+local reserved_names = Set({ "AUX", "CON", "CONIN$", "CONOUT$", "NUL", "PRN" })
 local SEP = "\\"
 local SEPS = "\\/"
 local UNC_PREFIX = "\\\\?\\UNC\\"
-local reserved_char = Set({ '"', "*", ":", "<", ">", "?", "|", "/", "\\" })
-local reserved_names = Set({ "AUX", "CON", "CONIN$", "CONOUT$", "NUL", "PRN" })
 
 for i = 1, 9 do
   reserved_names:add("COM" .. i):add("LPT" .. i)
@@ -93,7 +94,7 @@ local function is_reserved_name(name)
 
   local last = sub(name, -1)
   if last == EXT_SEP or last == " " then
-    return name ~= CURDIR and name ~= ".."
+    return name ~= CURDIR and name ~= PARDIR
   end
 
   for i = 1, #name do
@@ -357,9 +358,9 @@ function M.normpath(p)
   for i = 1, #comps do
     local comp = comps[i]
     if comp ~= "" and comp ~= CURDIR then
-      if comp ~= ".." then
+      if comp ~= PARDIR then
         out[#out + 1] = comp
-      elseif #out > 0 and out[#out] ~= ".." then
+      elseif #out > 0 and out[#out] ~= PARDIR then
         out[#out] = nil
       elseif root == "" then
         out[#out + 1] = comp
@@ -415,7 +416,7 @@ function M.relpath(p, start)
 
   local rel = {}
   for _ = i, #start_list do
-    rel[#rel + 1] = ".."
+    rel[#rel + 1] = PARDIR
   end
   for j = i, #path_list do
     rel[#rel + 1] = path_list[j]
