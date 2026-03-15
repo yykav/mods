@@ -6,16 +6,16 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
-local runtime = require "mods.runtime"
-runtime.is_windows = true -- Make mods.path use mods.ntpath.
-
 local lfs = require "lfs"
-local ntpath = require "mods.ntpath"
-local path = require "mods.path"
-local tbl = require "mods.tbl"
+local mods = require "mods"
+
+mods.runtime.is_windows = true -- Make mods.path use mods.ntpath.
+
+local ntpath = mods.ntpath
+local path = mods.path
+local tbl = mods.tbl
 
 local tbl_keys = tbl.keys
-
 local fmt = string.format
 
 local function with_env(env, fn)
@@ -27,6 +27,16 @@ local function with_env(env, fn)
 end
 
 describe("mods.ntpath", function()
+  local cwd = lfs.currentdir()
+
+  it("ismount() returns false for non-root temporary directories", function()
+    local root = os.tmpname()
+    os.remove(root)
+    assert.is_true(lfs.mkdir(root))
+    assert.is_false(ntpath.ismount(root))
+    lfs.rmdir(root)
+  end)
+
   for _, fname in ipairs(tbl_keys(path)) do
     it(fmt("ntpath.%s is a function and equals path.%s", fname, fname), function()
       assert.is_function(ntpath[fname])
@@ -37,42 +47,48 @@ describe("mods.ntpath", function()
   -- stylua: ignore
   local tests = {
     abspath = {
-      {{ [[C:\]]                         }, { [[C:\]]                   }},
-      {{ [[\\?\C:////spam////eggs. . .]] }, { [[\\?\C:\spam\eggs. . .]] }},
-      {{ [[\\.\C:////spam////eggs. . .]] }, { [[\\.\C:\spam\eggs. . .]] }},
-      {{ [[//spam//eggs. . .]]           }, { [[\\spam\\eggs. . .]]     }},
-      {{ [[\\spam\\eggs. . .]]           }, { [[\\spam\\eggs. . .]]     }},
-      {{ [[C:/spam. . .]]                }, { [[C:\spam. . .]]          }},
-      {{ [[C:\spam. . .]]                }, { [[C:\spam. . .]]          }},
-      {{ [[C:/nul]]                      }, { [[C:\nul]]                }},
-      {{ [[C:\nul]]                      }, { [[C:\nul]]                }},
-      {{ [[//..]]                        }, { [[\\..]]                  }},
-      {{ [[//../]]                       }, { [[\\..\]]                 }},
-      {{ [[//../..]]                     }, { [[\\..\..]]               }},
-      {{ [[//../../]]                    }, { [[\\..\..\]]              }},
-      {{ [[//../../../]]                 }, { [[\\..\..\]]              }},
-      {{ [[//../../../..]]               }, { [[\\..\..\]]              }},
-      {{ [[//../../../../]]              }, { [[\\..\..\]]              }},
-      {{ [[//server]]                    }, { [[\\server]]              }},
-      {{ [[//server/]]                   }, { [[\\server\]]             }},
-      {{ [[//server/..]]                 }, { [[\\server\..]]           }},
-      {{ [[//server/../]]                }, { [[\\server\..\]]          }},
-      {{ [[//server/../..]]              }, { [[\\server\..\]]          }},
-      {{ [[//server/../../]]             }, { [[\\server\..\]]          }},
-      {{ [[//server/../../..]]           }, { [[\\server\..\]]          }},
-      {{ [[//server/../../../]]          }, { [[\\server\..\]]          }},
-      {{ [[//server/share]]              }, { [[\\server\share]]        }},
-      {{ [[//server/share/]]             }, { [[\\server\share\]]       }},
-      {{ [[//server/share/..]]           }, { [[\\server\share\]]       }},
-      {{ [[//server/share/../]]          }, { [[\\server\share\]]       }},
-      {{ [[//server/share/../..]]        }, { [[\\server\share\]]       }},
-      {{ [[//server/share/../../]]       }, { [[\\server\share\]]       }},
-      {{ [[C:\nul. . .]]                 }, { [[C:\nul. . .]]           }},
-      {{ [[//... . .]]                   }, { [[\\... . .]]             }},
-      {{ [[//.. . . .]]                  }, { [[\\.. . . .]]            }},
-      {{ [[//../... . .]]                }, { [[\\..\... . .]]          }},
-      {{ [[//../.. . . .]]               }, { [[\\..\.. . . .]]         }},
-      {{ [[C:spam]]                      }, { [[C:spam]]                }},
+      {{ [[C:\]]                         }, { [[C:\]]                                }},
+      {{ [[\\?\C:////spam////eggs. . .]] }, { [[\\?\C:\spam\eggs. . .]]              }},
+      {{ [[\\.\C:////spam////eggs. . .]] }, { [[\\.\C:\spam\eggs. . .]]              }},
+      {{ [[//spam//eggs. . .]]           }, { [[\\spam\\eggs. . .]]                  }},
+      {{ [[\\spam\\eggs. . .]]           }, { [[\\spam\\eggs. . .]]                  }},
+      {{ [[C:/spam. . .]]                }, { [[C:\spam. . .]]                       }},
+      {{ [[C:\spam. . .]]                }, { [[C:\spam. . .]]                       }},
+      {{ [[C:/nul]]                      }, { [[C:\nul]]                             }},
+      {{ [[C:\nul]]                      }, { [[C:\nul]]                             }},
+      {{ [[//..]]                        }, { [[\\..]]                               }},
+      {{ [[//../]]                       }, { [[\\..\]]                              }},
+      {{ [[//../..]]                     }, { [[\\..\..]]                            }},
+      {{ [[//../../]]                    }, { [[\\..\..\]]                           }},
+      {{ [[//../../../]]                 }, { [[\\..\..\]]                           }},
+      {{ [[//../../../..]]               }, { [[\\..\..\]]                           }},
+      {{ [[//../../../../]]              }, { [[\\..\..\]]                           }},
+      {{ [[//server]]                    }, { [[\\server]]                           }},
+      {{ [[//server/]]                   }, { [[\\server\]]                          }},
+      {{ [[//server/..]]                 }, { [[\\server\..]]                        }},
+      {{ [[//server/../]]                }, { [[\\server\..\]]                       }},
+      {{ [[//server/../..]]              }, { [[\\server\..\]]                       }},
+      {{ [[//server/../../]]             }, { [[\\server\..\]]                       }},
+      {{ [[//server/../../..]]           }, { [[\\server\..\]]                       }},
+      {{ [[//server/../../../]]          }, { [[\\server\..\]]                       }},
+      {{ [[//server/share]]              }, { [[\\server\share]]                     }},
+      {{ [[//server/share/]]             }, { [[\\server\share\]]                    }},
+      {{ [[//server/share/..]]           }, { [[\\server\share\]]                    }},
+      {{ [[//server/share/../]]          }, { [[\\server\share\]]                    }},
+      {{ [[//server/share/../..]]        }, { [[\\server\share\]]                    }},
+      {{ [[//server/share/../../]]       }, { [[\\server\share\]]                    }},
+      {{ [[C:\nul. . .]]                 }, { [[C:\nul. . .]]                        }},
+      {{ [[//... . .]]                   }, { [[\\... . .]]                          }},
+      {{ [[//.. . . .]]                  }, { [[\\.. . . .]]                         }},
+      {{ [[//../... . .]]                }, { [[\\..\... . .]]                       }},
+      {{ [[//../.. . . .]]               }, { [[\\..\.. . . .]]                      }},
+      {{ [[C:spam]]                      }, { [[C:spam]]                             }},
+      {{ "c:\\fo\0o"                     }, { "c:\\fo\0o"                            }},
+      {{ "c:\\fo\0o\\..\\bar"            }, { "c:\\bar"                              }},
+      {{ ""                              }, { ntpath.normpath(ntpath.join(cwd, ""))  }},
+      {{ " "                             }, { ntpath.normpath(ntpath.join(cwd, " ")) }},
+      {{ "?"                             }, { ntpath.normpath(ntpath.join(cwd, "?")) }},
+      {{ "a"                             }, { ntpath.normpath(ntpath.join(cwd, "a")) }},
     },
     basename = {
       {{ [[c:\foo\bar]]                 }, { "bar" }},
@@ -86,31 +102,43 @@ describe("mods.ntpath", function()
       {{ ""                             }, { ""    }},
     },
     commonpath = {
-      {{{ [[C:\Foo]]                           }}, { [[C:\Foo]] }},
-      {{{ [[C:\Foo]]    , [[C:\Foo]]           }}, { [[C:\Foo]] }},
-      {{{ [[C:\Foo\]]   , [[C:\Foo]]           }}, { [[C:\Foo]] }},
-      {{{ [[C:\\Foo]]   , [[C:\Foo\\]]         }}, { [[C:\Foo]] }},
-      {{{ [[C:\.\Foo]]  , [[C:\Foo\.]]         }}, { [[C:\Foo]] }},
-      {{{ [[C:\]]       , [[C:\baz]]           }}, { [[C:\]]    }},
-      {{{ [[C:\Bar]]    , [[C:\baz]]           }}, { [[C:\]]    }},
-      {{{ [[C:\Foo]]    , [[C:\Foo\Baz]]       }}, { [[C:\Foo]] }},
-      {{{ [[C:\Foo\Bar]], [[C:\Foo\Baz]]       }}, { [[C:\Foo]] }},
-      {{{ [[C:\Bar]]    , [[C:\Baz]]           }}, { [[C:\]]    }},
-      {{{ [[C:\Bar\]]   , [[C:\Baz]]           }}, { [[C:\]]    }},
-      {{{ [[C:\Foo\Bar]], "C:/Foo/Baz"         }}, { [[C:\Foo]] }},
-      {{{ [[C:\Foo\Bar]], "c:/foo/baz"         }}, { [[C:\Foo]] }},
-      {{{ "c:/foo/bar"  , [[C:\Foo\Baz]]       }}, { [[c:\foo]] }},
-      {{{ "spam"                               }}, { "spam"     }},
-      {{{ "spam"        , "spam"               }}, { "spam"     }},
-      {{{ "spam"        , "alot"               }}, { ""         }},
-      {{{ [[and\jam]]   , [[and\spam]]         }}, { "and"      }},
-      {{{ [[and\\jam]]  , [[and\spam\\]]       }}, { "and"      }},
-      {{{ [[and\.\jam]] , [[.\and\spam]]       }}, { "and"      }},
-      {{{ [[and\jam]]   , [[and\spam]], "alot" }}, { ""         }},
-      {{{ [[and\jam]]   , [[and\spam]], "and"  }}, { "and"      }},
-      {{{ [[C:and\jam]] , [[C:and\spam]]       }}, { [[C:and]]  }},
-      {{{ ""                                   }}, { ""         }},
-      {{{ ""            , [[spam\alot]]        }}, { ""         }},
+      {{{ [[C:\Foo]]                           }}, { [[C:\Foo]]                                   }},
+      {{{ [[C:\Foo]]    , [[C:\Foo]]           }}, { [[C:\Foo]]                                   }},
+      {{{ [[C:\Foo\]]   , [[C:\Foo]]           }}, { [[C:\Foo]]                                   }},
+      {{{ [[C:\\Foo]]   , [[C:\Foo\\]]         }}, { [[C:\Foo]]                                   }},
+      {{{ [[C:\.\Foo]]  , [[C:\Foo\.]]         }}, { [[C:\Foo]]                                   }},
+      {{{ [[C:\]]       , [[C:\baz]]           }}, { [[C:\]]                                      }},
+      {{{ [[C:\Bar]]    , [[C:\baz]]           }}, { [[C:\]]                                      }},
+      {{{ [[C:\Foo]]    , [[C:\Foo\Baz]]       }}, { [[C:\Foo]]                                   }},
+      {{{ [[C:\Foo\Bar]], [[C:\Foo\Baz]]       }}, { [[C:\Foo]]                                   }},
+      {{{ [[C:\Bar]]    , [[C:\Baz]]           }}, { [[C:\]]                                      }},
+      {{{ [[C:\Bar\]]   , [[C:\Baz]]           }}, { [[C:\]]                                      }},
+      {{{ [[C:\Foo\Bar]], "C:/Foo/Baz"         }}, { [[C:\Foo]]                                   }},
+      {{{ [[C:\Foo\Bar]], "c:/foo/baz"         }}, { [[C:\Foo]]                                   }},
+      {{{ "c:/foo/bar"  , [[C:\Foo\Baz]]       }}, { [[c:\foo]]                                   }},
+      {{{ "spam"                               }}, { "spam"                                       }},
+      {{{ "spam"        , "spam"               }}, { "spam"                                       }},
+      {{{ "spam"        , "alot"               }}, { ""                                           }},
+      {{{ [[and\jam]]   , [[and\spam]]         }}, { "and"                                        }},
+      {{{ [[and\\jam]]  , [[and\spam\\]]       }}, { "and"                                        }},
+      {{{ [[and\.\jam]] , [[.\and\spam]]       }}, { "and"                                        }},
+      {{{ [[and\jam]]   , [[and\spam]], "alot" }}, { ""                                           }},
+      {{{ [[and\jam]]   , [[and\spam]], "and"  }}, { "and"                                        }},
+      {{{ [[C:and\jam]] , [[C:and\spam]]       }}, { [[C:and]]                                    }},
+      {{{ ""                                   }}, { ""                                           }},
+      {{{ ""            , [[spam\alot]]        }}, { ""                                           }},
+      {{{                                      }}, { nil, "paths list is empty"                   }},
+      {{{ [[\Foo]]      , [[Foo]]              }}, { nil, "can't mix rooted and not-rooted paths" }},
+      {{{ ""            , [[\spam/alot]]       }}, { nil, "can't mix rooted and not-rooted paths" }},
+      {{{ [[C:\a]]      , [[C:b]]              }}, { nil, "can't mix absolute and relative paths" }},
+      {{{ [[C:\Foo]]    , [[\Foo]]             }}, { nil, "paths don't have the same drive"       }},
+      {{{ [[C:\Foo]]    , "Foo"                }}, { nil, "paths don't have the same drive"       }},
+      {{{ [[C:Foo]]     , [[\Foo]]             }}, { nil, "paths don't have the same drive"       }},
+      {{{ [[C:Foo]]     , "Foo"                }}, { nil, "paths don't have the same drive"       }},
+      {{{ [[C:\Foo]]    , [[D:\Foo]]           }}, { nil, "paths don't have the same drive"       }},
+      {{{ [[C:\Foo]]    , [[D:Foo]]            }}, { nil, "paths don't have the same drive"       }},
+      {{{ [[C:Foo]]     , [[D:Foo]]            }}, { nil, "paths don't have the same drive"       }},
+      {{{ [[C:\a]]      , [[D:\b]]             }}, { nil, "paths don't have the same drive"       }},
     },
     dirname = {
       {{ [[c:\foo]]                     }, { [[c:\]]                    }},
@@ -183,38 +211,39 @@ describe("mods.ntpath", function()
       {{ "C:"                }, { false }},
     },
     isreserved = {
-      {{ ""               }, { false }},
-      {{ "."              }, { false }},
-      {{ ".."             }, { false }},
-      {{ "/"              }, { false }},
-      {{ "/foo/bar"       }, { false }},
-      {{ "foo."           }, { true  }},
-      {{ "foo "           }, { true  }},
-      {{ "foo*bar"        }, { true  }},
-      {{ "foo?bar"        }, { true  }},
-      {{ 'foo"bar'        }, { true  }},
-      {{ "foo<bar"        }, { true  }},
-      {{ "foo>bar"        }, { true  }},
-      {{ "foo:bar"        }, { true  }},
-      {{ "foo|bar"        }, { true  }},
-      {{ "nul"            }, { true  }},
-      {{ "aux"            }, { true  }},
-      {{ "prn"            }, { true  }},
-      {{ "con"            }, { true  }},
-      {{ "conin$"         }, { true  }},
-      {{ "conout$"        }, { true  }},
-      {{ "COM1"           }, { true  }},
-      {{ "LPT9"           }, { true  }},
-      {{ "NUL.txt"        }, { true  }},
-      {{ "PRN  "          }, { true  }},
-      {{ "AUX  .txt"      }, { true  }},
-      {{ "COM1:bar"       }, { true  }},
-      {{ "LPT9   :bar"    }, { true  }},
-      {{ "bar.com9"       }, { false }},
-      {{ "bar.lpt9"       }, { false }},
-      {{ "c:/bar/baz/NUL" }, { true  }},
-      {{ "c:/NUL/bar/baz" }, { true  }},
-      {{ "//./NUL"        }, { false }},
+      {{ ""                      }, { false }},
+      {{ "."                     }, { false }},
+      {{ ".."                    }, { false }},
+      {{ "/"                     }, { false }},
+      {{ "/foo/bar"              }, { false }},
+      {{ "foo."                  }, { true  }},
+      {{ "foo "                  }, { true  }},
+      {{ "foo*bar"               }, { true  }},
+      {{ "foo?bar"               }, { true  }},
+      {{ 'foo"bar'               }, { true  }},
+      {{ "foo<bar"               }, { true  }},
+      {{ "foo>bar"               }, { true  }},
+      {{ "foo:bar"               }, { true  }},
+      {{ "foo|bar"               }, { true  }},
+      {{ "nul"                   }, { true  }},
+      {{ "aux"                   }, { true  }},
+      {{ "prn"                   }, { true  }},
+      {{ "con"                   }, { true  }},
+      {{ "conin$"                }, { true  }},
+      {{ "conout$"               }, { true  }},
+      {{ "COM1"                  }, { true  }},
+      {{ "LPT9"                  }, { true  }},
+      {{ "NUL.txt"               }, { true  }},
+      {{ "PRN  "                 }, { true  }},
+      {{ "AUX  .txt"             }, { true  }},
+      {{ "COM1:bar"              }, { true  }},
+      {{ "LPT9   :bar"           }, { true  }},
+      {{ "bar.com9"              }, { false }},
+      {{ "bar.lpt9"              }, { false }},
+      {{ "c:/bar/baz/NUL"        }, { true  }},
+      {{ "c:/NUL/bar/baz"        }, { true  }},
+      {{ "//./NUL"               }, { false }},
+      {{ string.char(12) .. "oo" }, { true  }},
     },
     join = {
       {{ ""                              }, { ""                       }},
@@ -299,21 +328,24 @@ describe("mods.ntpath", function()
       {{ [[\\foo]]                           }, { [[\\foo]]                 }},
       {{ [[\\]]                              }, { [[\\]]                    }},
       {{ "//?/UNC/server/share/.."           }, { [[\\?\UNC\server\share\]] }},
+      {{ "//?/UNC/server/share/.."           }, { [[\\?\UNC\server\share\]] }},
     },
     relpath = {
-      {{ "a"                                                  }, { "a"                      }},
-      {{ "a/b"                                                }, { [[a\b]]                  }},
-      {{ "../a/b"                                             }, { [[..\a\b]]               }},
-      {{ "a"                     , "a"                        }, { "."                      }},
-      {{ [[c:/foo/bar/bat]]      , [[c:/x/y]]                 }, { [[..\..\foo\bar\bat]]    }},
-      {{ [[//conky/mountpoint/a]], [[//conky/mountpoint/b/c]] }, { [[..\..\a]]              }},
-      {{ "/foo/bar/bat"          , "/x/y/z"                   }, { [[..\..\..\foo\bar\bat]] }},
-      {{ "/foo/bar/bat"          , "/foo/bar"                 }, { "bat"                    }},
-      {{ "/foo/bar/bat"          , "/"                        }, { [[foo\bar\bat]]          }},
-      {{ "/"                     , "/foo/bar/bat"             }, { [[..\..\..]]             }},
-      {{ "/"                     , "/"                        }, { "."                      }},
-      {{ "/a/b"                  , "/a/b"                     }, { "."                      }},
-      {{ "c:/foo"                , "C:/FOO"                   }, { "."                      }},
+      {{ "a"                                                  }, { "a"                                               }},
+      {{ "a/b"                                                }, { [[a\b]]                                           }},
+      {{ "../a/b"                                             }, { [[..\a\b]]                                        }},
+      {{ "a"                     , "a"                        }, { "."                                               }},
+      {{ [[c:/foo/bar/bat]]      , [[c:/x/y]]                 }, { [[..\..\foo\bar\bat]]                             }},
+      {{ [[//conky/mountpoint/a]], [[//conky/mountpoint/b/c]] }, { [[..\..\a]]                                       }},
+      {{ "/foo/bar/bat"          , "/x/y/z"                   }, { [[..\..\..\foo\bar\bat]]                          }},
+      {{ "/foo/bar/bat"          , "/foo/bar"                 }, { "bat"                                             }},
+      {{ "/foo/bar/bat"          , "/"                        }, { [[foo\bar\bat]]                                   }},
+      {{ "/"                     , "/foo/bar/bat"             }, { [[..\..\..]]                                      }},
+      {{ "/"                     , "/"                        }, { "."                                               }},
+      {{ "/a/b"                  , "/a/b"                     }, { "."                                               }},
+      {{ "c:/foo"                , "C:/FOO"                   }, { "."                                               }},
+      {{ ""                                                   }, { nil, "no path specified"                          }},
+      {{ [[C:\a]]                , [[D:\a]]                   }, { nil, "path is on mount 'C:', start on mount 'D:'" }},
     },
     split = {
       {{ [[c:\foo\bar]]                   }, { [[c:\foo]]                , "bar" }},
@@ -431,180 +463,75 @@ describe("mods.ntpath", function()
     end
   end
 
-  it("supports abspath with cwd for relative paths", function()
-    local expected = ntpath.normpath(ntpath.join(lfs.currentdir(), "a"))
-    assert.are_equal(expected, ntpath.abspath("a"))
-    assert.are_equal(ntpath.normpath(ntpath.join(lfs.currentdir(), "")), ntpath.abspath(""))
-    assert.are_equal(ntpath.normpath(ntpath.join(lfs.currentdir(), " ")), ntpath.abspath(" "))
-    assert.are_equal(ntpath.normpath(ntpath.join(lfs.currentdir(), "?")), ntpath.abspath("?"))
-  end)
-
-  it("supports abspath for invalid-like path bytes", function()
-    assert.are_equal("c:\\fo\0o", ntpath.abspath("c:\\fo\0o"))
-    assert.are_equal("c:\\bar", ntpath.abspath("c:\\fo\0o\\..\\bar"))
-  end)
-
-  it("returns false for non-root temporary directories", function()
-    local root = os.tmpname()
-    os.remove(root)
-    assert.is_true(lfs.mkdir(root))
-
-    assert.is_false(ntpath.ismount(root))
-
-    lfs.rmdir(root)
-  end)
-
-  it("supports isreserved control-character detection", function()
-    assert.is_true(ntpath.isreserved(string.char(12) .. "oo"))
-  end)
-
-  it("validates relpath input", function()
-    local value, err = ntpath.relpath("")
-    assert.is_nil(value)
-    assert.are_equal("no path specified", err)
-
-    value, err = ntpath.relpath([[C:\a]], [[D:\a]])
-    assert.is_nil(value)
-    assert.are_equal("path is on mount 'C:', start on mount 'D:'", err)
-  end)
-
-  it("validates commonpath input", function()
-    assert.has_error(ntpath.commonpath, "bad argument #1 (expected table, got no value)")
-
-    local value, err = ntpath.commonpath({})
-    assert.is_nil(value)
-    assert.are_equal("paths list is empty", err)
-
-    value, err = ntpath.commonpath({ [[C:\a]], [[D:\b]] })
-    assert.is_nil(value)
-    assert.are_equal("paths don't have the same drive", err)
-
-    value, err = ntpath.commonpath({ [[C:\a]], [[C:b]] })
-    assert.is_nil(value)
-    assert.are_equal("can't mix absolute and relative paths", err)
-
-    local drive_mismatch_cases = {
-      { [[C:\Foo]], [[\Foo]] },
-      { [[C:\Foo]], "Foo" },
-      { [[C:Foo]], [[\Foo]] },
-      { [[C:Foo]], "Foo" },
-      { [[C:\Foo]], [[D:\Foo]] },
-      { [[C:\Foo]], [[D:Foo]] },
-      { [[C:Foo]], [[D:Foo]] },
+  -- stylua: ignore
+  local tests = {
+    home = {
+      {
+        env = {},
+        { nil, { nil, "home directory is not set" }},
+      },
+      {
+        env = { HOMEDRIVE = [[C:\]], HOMEPATH = [[Users\eric]] },
+        { nil, { [[C:\Users\eric]] }},
+      },
+      {
+        env = { USERPROFILE = [[C:\Users\eric]], HOMEDRIVE = [[Z:\]], HOMEPATH = [[Users\ignored]] },
+        { nil, { [[C:\Users\eric]] }},
+      },
+    },
+    expanduser = {
+      {
+        env = {},
+        { "test", { "test" }},
+      },
+      {
+        env = {},
+        { "~test", { nil, "home directory is not set" }},
+      },
+      {
+        env = { HOMEDRIVE = [[C:\]], HOMEPATH = [[Users\eric]], USERNAME = "eric" },
+        { "~test", { [[C:\Users\test]] }},
+        { "~"    , { [[C:\Users\eric]] }},
+      },
+      {
+        env = { HOMEPATH = [[Users\eric]], USERNAME = "eric" },
+        { "~test", { [[Users\test]] }},
+        { "~"    , { [[Users\eric]] }},
+      },
+      {
+        env = { USERPROFILE = [[C:\Users\eric]], USERNAME = "eric" },
+        { "~test"          , { [[C:\Users\test]]         }},
+        { "~"              , { [[C:\Users\eric]]         }},
+        { [[~test\foo\bar]], { [[C:\Users\test\foo\bar]] }},
+        { "~test/foo/bar"  , { [[C:\Users\test/foo/bar]] }},
+        { [[~\foo\bar]]    , { [[C:\Users\eric\foo\bar]] }},
+        { "~/foo/bar"      , { [[C:\Users\eric/foo/bar]] }},
+      },
+      {
+        env = { HOME = [[F:\]], USERPROFILE = [[C:\Users\eric]], USERNAME = "eric" },
+        { "~"    , { [[C:\Users\eric]] }},
+        { "~test", { [[C:\Users\test]] }},
+      },
+      {
+        env = { USERPROFILE = [[C:\Users\eric]], USERNAME = "idle" },
+        { "~"    , { [[C:\Users\eric]]                         }},
+        { "~test", { nil, "home directory for user is not set" }},
+      }
     }
+  }
 
-    for i = 1, #drive_mismatch_cases do
-      local paths = drive_mismatch_cases[i]
-
-      value, err = ntpath.commonpath(paths)
-      assert.is_nil(value)
-      assert.are_equal("paths don't have the same drive", err)
-
-      value, err = ntpath.commonpath({ paths[2], paths[1] })
-      assert.is_nil(value)
-      assert.are_equal("paths don't have the same drive", err)
+  for fname, entry in pairs(tests) do
+    for _, e in ipairs(entry) do
+      local env = e.env
+      for _, v in ipairs(e) do
+        local input, expected = v[1], v[2]
+        local input_repr = (input and ("'" .. input .. "'") or "")
+        it(fmt("%s(%s) with env %s", fname, input_repr, inspect(env)), function()
+          with_env(env, function()
+            assert.are_same(expected, { ntpath[fname](input) })
+          end)
+        end)
+      end
     end
-
-    local rooted_mismatch_cases = {
-      { [[\Foo]], "Foo" },
-      { "", [[\spam\alot]] },
-    }
-
-    for i = 1, #rooted_mismatch_cases do
-      local paths = rooted_mismatch_cases[i]
-
-      value, err = ntpath.commonpath(paths)
-      assert.is_nil(value)
-      assert.are_equal("can't mix rooted and not-rooted paths", err)
-
-      value, err = ntpath.commonpath({ paths[2], paths[1] })
-      assert.is_nil(value)
-      assert.are_equal("can't mix rooted and not-rooted paths", err)
-    end
-  end)
-
-  it("supports expanduser home expansion", function()
-    assert.are_equal("test", ntpath.expanduser("test"))
-
-    with_env({}, function()
-      local value, err = ntpath.expanduser("~test")
-      assert.is_nil(value)
-      assert.is_string(err)
-    end)
-
-    with_env({
-      HOMEDRIVE = [[C:\]],
-      HOMEPATH = [[Users\eric]],
-      USERNAME = "eric",
-    }, function()
-      assert.are_equal([[C:\Users\test]], ntpath.expanduser("~test"))
-      assert.are_equal([[C:\Users\eric]], ntpath.expanduser("~"))
-    end)
-
-    with_env({
-      HOMEPATH = [[Users\eric]],
-      USERNAME = "eric",
-    }, function()
-      assert.are_equal([[Users\test]], ntpath.expanduser("~test"))
-      assert.are_equal([[Users\eric]], ntpath.expanduser("~"))
-    end)
-
-    with_env({
-      USERPROFILE = [[C:\Users\eric]],
-      USERNAME = "eric",
-    }, function()
-      assert.are_equal([[C:\Users\test]], ntpath.expanduser("~test"))
-      assert.are_equal([[C:\Users\eric]], ntpath.expanduser("~"))
-      assert.are_equal([[C:\Users\test\foo\bar]], ntpath.expanduser([[~test\foo\bar]]))
-      assert.are_equal([[C:\Users\test/foo/bar]], ntpath.expanduser("~test/foo/bar"))
-      assert.are_equal([[C:\Users\eric\foo\bar]], ntpath.expanduser([[~\foo\bar]]))
-      assert.are_equal([[C:\Users\eric/foo/bar]], ntpath.expanduser("~/foo/bar"))
-    end)
-
-    with_env({
-      HOME = [[F:\]],
-      USERPROFILE = [[C:\Users\eric]],
-      USERNAME = "eric",
-    }, function()
-      assert.are_equal([[C:\Users\test]], ntpath.expanduser("~test"))
-      assert.are_equal([[C:\Users\eric]], ntpath.expanduser("~"))
-    end)
-
-    with_env({
-      USERPROFILE = [[C:\Users\eric]],
-      USERNAME = "idle",
-    }, function()
-      local value, err = ntpath.expanduser("~test")
-      assert.is_nil(value)
-      assert.is_string(err)
-      assert.are_equal([[C:\Users\eric]], ntpath.expanduser("~"))
-    end)
-  end)
-
-  it("home()", function()
-    with_env({}, function()
-      local value, err = ntpath.home()
-      assert.is_nil(value)
-      assert.is_string(err)
-    end)
-
-    with_env({
-      HOMEDRIVE = [[C:\]],
-      HOMEPATH = [[Users\eric]],
-    }, function()
-      local value, err = ntpath.home()
-      assert.are_equal([[C:\Users\eric]], value)
-      assert.is_nil(err)
-    end)
-
-    with_env({
-      USERPROFILE = [[C:\Users\eric]],
-      HOMEDRIVE = [[Z:\]],
-      HOMEPATH = [[Users\ignored]],
-    }, function()
-      local value, err = ntpath.home()
-      assert.are_equal([[C:\Users\eric]], value)
-      assert.is_nil(err)
-    end)
-  end)
+  end
 end)
