@@ -1,6 +1,6 @@
 {
   "diagnostics": {
-    "globals": ["_TEST", "inspect", "args_repr"],
+    "globals": ["_TEST", "inspect", "args_repr", "with_env"],
     "disable": ["deprecated", "invisible"]
   },
   "workspace": {
