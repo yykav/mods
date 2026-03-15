@@ -6,13 +6,14 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
-local runtime = require "mods.runtime"
-runtime.is_windows = false -- Make mods.path use mods.posixpath.
-
 local lfs = require "lfs"
-local path = require "mods.path"
-local posixpath = require "mods.posixpath"
-local tbl = require "mods.tbl"
+local mods = require "mods"
+
+mods.runtime.is_windows = false -- Make mods.path use mods.posixpath.
+
+local posixpath = mods.posixpath
+local path = mods.path
+local tbl = mods.tbl
 
 local tbl_keys = tbl.keys
 local fmt = string.format
@@ -58,28 +59,29 @@ describe("mods.posixpath", function()
       {{ "foo/"       }, { ""    }},
     },
     commonpath = {
-      {{{ "/a/b/c"    , "/a/b/d"         }}, { "/a/b"                     }},
-      {{{ "a/b"       , "a/c"            }}, { "a"                        }},
-      {{{ "//a/x"     , "/a/y"           }}, { "/a"                       }},
-      {{{ "/foo/bar"                     }}, { "/foo/bar"                 }},
-      {{{ "/foo/bar/" , "/foo/bar"       }}, { "/foo/bar"                 }},
-      {{{ "/foo/bar/" , "/foo/bar/"      }}, { "/foo/bar"                 }},
-      {{{ "/foo/./bar", "/./foo/bar"     }}, { "/foo/bar"                 }},
-      {{{ "/"         , "/foo"           }}, { "/"                        }},
-      {{{ "/foo"      , "/bar"           }}, { "/"                        }},
-      {{{ "/foo/bar/" , "/foo/bar/baz"   }}, { "/foo/bar"                 }},
-      {{{ "/foo/bar/" , "/foo/baz/"      }}, { "/foo"                     }},
-      {{{ "/foo/bar"  , "/foo/baz"       }}, { "/foo"                     }},
-      {{{ "/foo/bar/" , "/foo/baz"       }}, { "/foo"                     }},
-      {{{ "foo"                          }}, { "foo"                      }},
-      {{{ "foo"       , "foo"            }}, { "foo"                      }},
-      {{{ "foo/bar"   , "foo/baz"        }}, { "foo"                      }},
-      {{{ "foo//bar"  , "foo/baz//"      }}, { "foo"                      }},
-      {{{ "foo/./bar" , "./foo/baz"      }}, { "foo"                      }},
-      {{{ "foo/bar"   , "foo/baz", "foo" }}, { "foo"                      }},
-      {{{ ""                             }}, { ""                         }},
-      {{{ ""          , "foo/bar"        }}, { ""                         }},
-      {{{                                }}, { nil, "paths list is empty" }},
+      {{{ "/a/b/c"    , "/a/b/d"         }}, { "/a/b"                                       }},
+      {{{ "a/b"       , "a/c"            }}, { "a"                                          }},
+      {{{ "//a/x"     , "/a/y"           }}, { "/a"                                         }},
+      {{{ "/foo/bar"                     }}, { "/foo/bar"                                   }},
+      {{{ "/foo/bar/" , "/foo/bar"       }}, { "/foo/bar"                                   }},
+      {{{ "/foo/bar/" , "/foo/bar/"      }}, { "/foo/bar"                                   }},
+      {{{ "/foo/./bar", "/./foo/bar"     }}, { "/foo/bar"                                   }},
+      {{{ "/"         , "/foo"           }}, { "/"                                          }},
+      {{{ "/foo"      , "/bar"           }}, { "/"                                          }},
+      {{{ "/foo/bar/" , "/foo/bar/baz"   }}, { "/foo/bar"                                   }},
+      {{{ "/foo/bar/" , "/foo/baz/"      }}, { "/foo"                                       }},
+      {{{ "/foo/bar"  , "/foo/baz"       }}, { "/foo"                                       }},
+      {{{ "/foo/bar/" , "/foo/baz"       }}, { "/foo"                                       }},
+      {{{ "foo"                          }}, { "foo"                                        }},
+      {{{ "foo"       , "foo"            }}, { "foo"                                        }},
+      {{{ "foo/bar"   , "foo/baz"        }}, { "foo"                                        }},
+      {{{ "foo//bar"  , "foo/baz//"      }}, { "foo"                                        }},
+      {{{ "foo/./bar" , "./foo/baz"      }}, { "foo"                                        }},
+      {{{ "foo/bar"   , "foo/baz", "foo" }}, { "foo"                                        }},
+      {{{ ""                             }}, { ""                                           }},
+      {{{ ""          , "foo/bar"        }}, { ""                                           }},
+      {{{                                }}, { nil, "paths list is empty"                   }},
+      {{{ "/a", "b"                      }}, { nil, "can't mix absolute and relative paths" }},
     },
     dirname = {
       {{ "/"          }, { "/"     }},
@@ -172,19 +174,20 @@ describe("mods.posixpath", function()
       {{ "/////foo/.."                     }, { "/"              }},
     },
     relpath = {
-      {{ "/a/b/c"      , "/a"       }, { "b/c"                  }},
-      {{ "/a"          , "/a"       }, { "."                    }},
-      {{ "/a/b"        , "/a/b/c"   }, { ".."                   }},
-      {{ "/foo/bar/baz", "/foo/bar" }, { "baz"                  }},
-      {{ "/foo/bar/baz", "/"        }, { "foo/bar/baz"          }},
-      {{ "/"           , "/foo/bar" }, { "../.."                }},
-      {{ "/foo/bar/baz", "/x/y/z"   }, { "../../../foo/bar/baz" }},
-      {{ "a/b"         , "a"        }, { "b"                    }},
-      {{ "a"           , "a/b"      }, { ".."                   }},
-      {{ "a"           , "a"        }, { "."                    }},
-      {{ "foo/bar"     , "foo/baz"  }, { "../bar"               }},
-      {{ "foo"         , "."        }, { "foo"                  }},
-      {{ "."           , "foo/bar"  }, { "../.."                }},
+      {{ "/a/b/c"      , "/a"       }, { "b/c"                    }},
+      {{ "/a"          , "/a"       }, { "."                      }},
+      {{ "/a/b"        , "/a/b/c"   }, { ".."                     }},
+      {{ "/foo/bar/baz", "/foo/bar" }, { "baz"                    }},
+      {{ "/foo/bar/baz", "/"        }, { "foo/bar/baz"            }},
+      {{ "/"           , "/foo/bar" }, { "../.."                  }},
+      {{ "/foo/bar/baz", "/x/y/z"   }, { "../../../foo/bar/baz"   }},
+      {{ "a/b"         , "a"        }, { "b"                      }},
+      {{ "a"           , "a/b"      }, { ".."                     }},
+      {{ "a"           , "a"        }, { "."                      }},
+      {{ "foo/bar"     , "foo/baz"  }, { "../bar"                 }},
+      {{ "foo"         , "."        }, { "foo"                    }},
+      {{ "."           , "foo/bar"  }, { "../.."                  }},
+      {{ ""                         }, { nil, "no path specified" }},
     },
     split = {
       {{ "/a/b/c.txt" }, { "/a/b" , "c.txt" }},
@@ -258,44 +261,42 @@ describe("mods.posixpath", function()
     end
   end
 
-  it("expanduser()", function()
-    assert.are_equal("foo", posixpath.expanduser("foo"))
-    local home = os.getenv("HOME")
-    if home and home ~= "" then
-      assert.are_equal(home, posixpath.expanduser("~"))
-      assert.are_equal(home .. "/tmp", posixpath.expanduser("~/tmp"))
-    else
-      local value, err = posixpath.expanduser("~")
-      assert.is_nil(value)
-      assert.is_string(err)
+  -- stylua: ignore
+  local tests = {
+    home = {
+      {
+        env = {},
+        { nil, { nil, "home directory is not set" }},
+      },
+      {
+        env = { HOME = "/home/eric" },
+        { nil, { "/home/eric" }},
+      },
+    },
+    expanduser = {
+      {
+        env = {},
+        { "test", { "test" }},
+      },
+      {
+        env = { HOME = "/home/eric" },
+        { "~/test", { "/home/eric/test" }},
+      },
+    }
+  }
+
+  for fname, entry in pairs(tests) do
+    for _, e in ipairs(entry) do
+      local env = e.env
+      for _, v in ipairs(e) do
+        local input, expected = v[1], v[2]
+        local input_repr = (input and ("'" .. input .. "'") or "")
+        it(fmt("%s(%s) with env %s", fname, input_repr, inspect(env)), function()
+          with_env(env, function()
+            assert.are_same(expected, { posixpath[fname](input) })
+          end)
+        end)
+      end
     end
-  end)
-
-  it("home()", function()
-    with_env({}, function()
-      local value, err = posixpath.home()
-      assert.are_same({ nil, err }, { value, err })
-    end)
-
-    with_env({ HOME = "/tmp" }, function()
-      local value, err = posixpath.home()
-      assert.are_same({ "/tmp", nil }, { value, err })
-    end)
-  end)
-
-  it("relpath()", function()
-    local value, err = posixpath.relpath("")
-    assert.is_nil(value)
-    assert.are_equal("no path specified", err)
-  end)
-
-  it("commonpath()", function()
-    assert.has_error(posixpath.commonpath, "bad argument #1 (expected table, got no value)")
-    local value, err = posixpath.commonpath({})
-    assert.is_nil(value)
-    assert.are_equal("paths list is empty", err)
-    local value, err = posixpath.commonpath({ "/a", "b" })
-    assert.is_nil(value)
-    assert.are_equal("can't mix absolute and relative paths", err)
-  end)
+  end
 end)
