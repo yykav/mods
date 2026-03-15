@@ -14,9 +14,19 @@ _G.unpack = table.unpack or unpack
 _G.inspect = function(v)
   return ins(v, { process = remove_all_metatables })
 end
+
 _G.args_repr = function(v)
   -- Convert a table value to inspect output without the outer `{ ... }`.
   return inspect(v):gsub("^%s*{%s*", ""):gsub("%s*}%s*$", "")
+end
+
+_G.with_env = function(env, fn)
+  local getenv = os.getenv
+  rawset(os, "getenv", function(name)
+    return env[name]
+  end)
+  fn()
+  rawset(os, "getenv", getenv)
 end
 
 local positive_msg = "assertion.callable.positive"
