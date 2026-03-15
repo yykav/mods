@@ -285,6 +285,21 @@ function M.values(t) end
 ---Iterators and ordered traversal helpers.
 
 ---
+---Call a function for each value in the table.
+---
+---```lua
+---foreach({ a = 1, b = 2 }, function(v, k)
+---  print(k, v)
+---end)
+---```
+---
+---@generic T: table, K, V
+---@param t table<K, V> Input table.
+---@param fn fun(value:V, key:K) Function invoked for each entry.
+---@return nil none
+function M.foreach(t, fn) end
+
+---
 ---Iterate key-value pairs in sorted key order.
 ---
 ---```lua

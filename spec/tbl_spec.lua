@@ -107,6 +107,17 @@ describe("mods.tbl", function()
     assert.are_equal(List, getmetatable(res))
   end)
 
+  it("foreach() calls function for each entry", function()
+    local t = { a = 1, b = 2, c = 3 }
+    local keys, values = List(), List()
+    tbl.foreach(t, function(v, k)
+      keys:append(k)
+      values:append(v)
+    end)
+    assert.are_same(keys:sort(), keys:sort())
+    assert.are_same({ 1, 2, 3 }, values:sort())
+  end)
+
   it("spairs() iterates in sorted key order", function()
     local t = { b = 2, a = 1, c = 3 }
     local out = {}

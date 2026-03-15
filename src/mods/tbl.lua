@@ -145,6 +145,12 @@ function M.map(t, fn)
   return res
 end
 
+function M.foreach(t, fn)
+  for k, v in pairs(t) do
+    fn(v, k)
+  end
+end
+
 function M.pairmap(t, fn)
   local res = {}
   for k, v in pairs(t) do
