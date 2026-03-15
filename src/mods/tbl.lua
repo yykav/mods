@@ -127,6 +127,16 @@ function M.keys(t)
   return ls
 end
 
+function M.spairs(t)
+  local keys = M.keys(t):sort()
+  local i = 0
+  return function()
+    i = i + 1
+    local k = keys[i]
+    return k, t[k]
+  end
+end
+
 function M.map(t, fn)
   local res = {}
   for k, v in pairs(t) do

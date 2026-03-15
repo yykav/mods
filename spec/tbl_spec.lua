@@ -107,6 +107,15 @@ describe("mods.tbl", function()
     assert.are_equal(List, getmetatable(res))
   end)
 
+  it("spairs() iterates in sorted key order", function()
+    local t = { b = 2, a = 1, c = 3 }
+    local out = {}
+    for k, v in tbl.spairs(t) do
+      out[#out + 1] = k .. v
+    end
+    assert.are_same({ "a1", "b2", "c3" }, out)
+  end)
+
   describe("deepcopy()", function()
     it("should copy nested tables", function()
       local t = { a = { b = { c = 5 } } }
