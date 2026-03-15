@@ -216,21 +216,6 @@ function M.isempty(t) end
 function M.keys(t) end
 
 ---
----Iterate key-value pairs in sorted key order.
----
----```lua
----for k, v in spairs({ b = 2, a = 1 }) do
----  print(k, v)
----end
----```
----
----@generic T: table, K, V
----@param t T Input table.
----@return fun(table: table<K, V>, index?: K):(K, V) iterator Sorted pairs iterator.
----@return T
-function M.spairs(t) end
-
----
 ---Return a new table by mapping each value (keys preserved).
 ---
 ---```lua
@@ -292,5 +277,26 @@ function M.update(t1, t2) end
 ---@return mods.List<T> values List of values in `t`.
 ---@nodiscard
 function M.values(t) end
+
+--------------------------------------------------------------------------------
+----------------------------------- Iteration ----------------------------------
+--------------------------------------------------------------------------------
+---
+---Iterators and ordered traversal helpers.
+
+---
+---Iterate key-value pairs in sorted key order.
+---
+---```lua
+---for k, v in spairs({ b = 2, a = 1 }) do
+---  print(k, v)
+---end
+---```
+---
+---@generic T: table, K, V
+---@param t T Input table.
+---@return fun(table: table<K, V>, index?: K):(K, V) iterator Sorted pairs iterator.
+---@return T
+function M.spairs(t) end
 
 return M
