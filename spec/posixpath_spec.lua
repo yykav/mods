@@ -18,14 +18,6 @@ local tbl = mods.tbl
 local tbl_keys = tbl.keys
 local fmt = string.format
 
-local function with_env(env, fn)
-  stub(os, "getenv", function(name)
-    return env[name]
-  end)
-  fn()
-  os.getenv:revert() ---@diagnostic disable-line: undefined-field
-end
-
 describe("mods.posixpath", function()
   local cwd = lfs.currentdir()
 
