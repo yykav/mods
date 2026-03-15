@@ -25,7 +25,13 @@ for i = 1, #module_names do
   mods[name] = "mods." .. name
 end
 
-return setmetatable({}, {
+local M = {}
+
+if _TEST then
+  M._module_name = module_names
+end
+
+return setmetatable(M, {
   __index = function(t, k)
     local mod = mods[k]
     if mod then
