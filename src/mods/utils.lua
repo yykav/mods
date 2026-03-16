@@ -3,6 +3,7 @@ local mods = require "mods"
 local concat = table.concat
 local find = string.find
 local fmt = string.format
+local getinfo = debug.getinfo
 local gsub = string.gsub
 
 local ignored_caller_names = {
@@ -22,8 +23,8 @@ end
 
 local function caller_name(level)
   local base = (level or 2) + 1
-  for i = base, base + 3 do
-    local info = debug.getinfo(i, "n")
+  for i = base, base + 13 do
+    local info = getinfo(i, "n")
     local name = info and info.name
     if name and name ~= "" and name ~= "?" and not ignored_caller_names[name] then
       return name
