@@ -64,6 +64,8 @@ describe("mods.validate", function()
     { "file"     , "README.md" , "src"        , '"src" is not a valid file path'                        },
     { "file"     , "README.md" , false        , "false is not a valid file path"                        },
     { "file"     , "README.md" , "MISSING.md" , '"MISSING.md" is not a valid file path'                 },
+    { "path"     , "README.md" , "MISSING.md" , '"MISSING.md" is not a valid path'                      },
+    { "path"     , "README.md" , false        , "false is not a valid path"                             },
     { "dir"      , "src"       , "README.md"  , '"README.md" is not a valid dir path'                   },
     { "dir"      , "src"       , 123          , '123 is not a valid dir path'                           },
   }

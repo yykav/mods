@@ -58,6 +58,8 @@ for _, fname in ipairs(is._path_checks) do
   M.register(fname, is[fname], "{{value}} is not a valid {{expected}} path")
 end
 
+messages.path = "{{value}} is not a valid path"
+
 return setmetatable(M, {
   __index = function(_, k)
     if type(k) == "string" then

@@ -26,6 +26,7 @@
 ---@field fifo? string
 ---@field file? string
 ---@field link? string
+---@field path? string
 ---@field socket? string
 
 ---
@@ -345,6 +346,20 @@ M.Truthy = M.truthy
 ---> Path checks require **LuaFileSystem**
 ---> ([`lfs`](https://github.com/lunarmodules/luafilesystem))
 ---> and raise an error if it is not installed.
+
+---
+---Returns `true` when `v` is a valid filesystem path. Otherwise returns `false`
+---and an error message.
+---
+---```lua
+---ok, err = validate.path("README.md")
+---```
+---
+---@param v any Value to validate.
+---@return boolean isValid Whether the check succeeds.
+---@return string? err Error message when the check fails.
+M.path = function(v) end
+M.Path = M.path
 
 ---
 ---Returns `true` when `v` is a block device path. Otherwise returns `false`
