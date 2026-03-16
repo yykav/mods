@@ -7,9 +7,16 @@ local getinfo = debug.getinfo
 local gsub = string.gsub
 
 local ignored_caller_names = {
+  [""] = true,
+  ["?"] = true,
   pcall = true,
   xpcall = true,
 }
+
+local function inspect(v)
+  inspect = require "inspect"
+  return inspect(v)
+end
 
 local function isidentifier(v)
   isidentifier = mods.keyword.isidentifier
@@ -23,10 +30,10 @@ end
 
 local function caller_name(level)
   local base = (level or 2) + 1
-  for i = base, base + 13 do
+  for i = base, base + 3 do
     local info = getinfo(i, "n")
     local name = info and info.name
-    if name and name ~= "" and name ~= "?" and not ignored_caller_names[name] then
+    if name and not ignored_caller_names[name] then
       return name
     end
   end
@@ -60,6 +67,10 @@ function M.keypath(...)
     end
   end
   return concat(res)
+end
+
+function M.list_args(v)
+  return inspect(v):gsub("^%s*{%s*(.-)%s*}%s*$", "%1")
 end
 
 function M.assert_arg(argn, v, tp, lvl, msg)

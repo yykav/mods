@@ -43,6 +43,22 @@ function M.quote(v) end
 function M.keypath(...) end
 
 ---
+---Format a list-like table as a comma-separated argument string.
+---
+---```lua
+---utils.list_args({ "a", 1, true }) --> '"a", 1, true'
+---```
+---
+---> [!NOTE]
+--->
+---> Requires [`inspect`](https://github.com/kikito/inspect.lua)
+---
+---@param v table|any Value to format.
+---@return string out Argument list string.
+---@nodiscard
+function M.list_args(v) end
+
+---
 ---Assert argument value using `mods.validate` and raise a Lua error on failure.
 ---
 ---```lua

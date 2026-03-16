@@ -59,6 +59,25 @@ describe("mods.utils", function()
     end)
   end
 
+  -------------------
+  --- list_args() ---
+  -------------------
+
+  -- stylua: ignore
+  tests = {
+    ---------input----------|------expected--------
+    { {                   } , ""                  },
+    { { "a", 1, true      } , '"a", 1, true'      },
+    { { "x", "y", "z", {} } , '"x", "y", "z", {}' },
+  }
+
+  for i = 1, #tests do
+    local input, expected = unpack(tests[i], 1, 2)
+    it(fmt("list_args(%s) returns correct result", args_repr(input)), function()
+      assert.are_equal(expected, utils.list_args(input))
+    end)
+  end
+
   --------------------
   --- assert_arg() ---
   --------------------
