@@ -49,7 +49,7 @@ end
 -------------------
 --- Path checks ---
 -------------------
-M._path_checks = List({ "path", "block", "char", "dir", "fifo", "file", "link", "socket", "device" })
+M._path_validator_names = List({ "path", "block", "char", "dir", "fifo", "file", "link", "socket", "device" })
 
 local function islink(p)
   return lfs.symlinkattributes(p, "mode") == "link"

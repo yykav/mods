@@ -3,7 +3,7 @@ local mods = require "mods"
 local is = mods.is
 local quote = mods.utils.quote
 local template = mods.template
-local path_checks = is._path_checks:toset()
+local path_checks = is._path_validator_names:toset()
 local lower = string.lower
 local fmt = string.format
 
