@@ -2,32 +2,52 @@ local mods = require "mods"
 
 local is = mods.is
 local quote = mods.utils.quote
+local validate = mods.utils.validate
 local template = mods.template
-local validator_names = is._path_validator_names:toset()
 local lower = string.lower
 local fmt = string.format
 
 ---@type mods.validate
 ---@diagnostic disable-next-line: missing-fields
-local M = {}
+local M = { messages = {} }
 
 ---@type modsValidatorMessages
 local messages = {}
 local validators = {}
+local validator_names = is._path_validator_names:toset()
 
-M.messages = messages
+setmetatable(M.messages, {
+  __index = messages,
+  __newindex = function(_, k, v)
+    local path = { "validate", "messages", k }
+    validate(path, k, "string")
+    validate(path, v, "string")
+    messages[k] = v
+  end,
+})
+
+local function validate_template(argn, name, v)
+  if v == nil then
+    return
+  end
+
+  local vt = type(v)
+  if vt ~= "string" then
+    error(fmt("bad argument #%d to '%s' (expected string got %s)", argn, name, vt), 3)
+  end
+end
 
 ---@param tp type
 local function render_msg(expected, tp, v, tmpl)
   local vt = type(v)
   v = vt == "string" and quote(v) or tostring(v)
+  expected = tostring(expected)
 
   if not tmpl then
     if vt ~= "string" and validator_names[expected] then
       tmpl = messages.string
       expected = "string"
     else
-      expected = tostring(expected)
       tmpl = messages[expected] or "expected {{expected}}, got {{got}}"
     end
   end
@@ -42,13 +62,19 @@ end
 function M.register(name, validator, tmpl)
   local key = lower(name)
 
-  if tmpl ~= nil then
+  if tmpl == nil then
+    messages[key] = fmt("expected %s, got {{got}}", name)
+  else
+    validate_template(3, "register", tmpl)
     messages[key] = tmpl
   end
 
   local wrapped = function(v, tmpl)
     if validator(v) then
       return true
+    end
+    if tmpl ~= nil then
+      validate_template(2, name, tmpl)
     end
     return false, render_msg(key, type(v), v, tmpl)
   end
@@ -58,7 +84,7 @@ function M.register(name, validator, tmpl)
 end
 
 for k in ("boolean function nil number string table thread userdata"):gmatch("%S+") do
-  M.register(k, is[k], fmt("expected %s, got {{got}}", k))
+  M.register(k, is[k])
 end
 
 for k in ("false true falsy truthy integer callable"):gmatch("%S+") do
@@ -82,6 +108,7 @@ return setmetatable(M, {
   ---@param validator modsValidatorName
   __call = function(_, v, validator, tmpl)
     validator = validator or "truthy"
+    validate_template(3, validator, tmpl)
 
     local validate = validators[validator]
     if validate then
