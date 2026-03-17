@@ -78,11 +78,11 @@ function M.list_args(v) end
 ---@generic T
 ---@param argn integer Argument index for error context.
 ---@param v T Value to check.
----@param tp? modsIsType Validator name (defaults to `"truthy"`).
+---@param validator? modsIsType Validator name (defaults to `"truthy"`).
 ---@param level? integer Optional error level for `error(...)` (defaults to `2`).
 ---@param msg? string Optional override template passed to `mods.validate`.
 ---@return T validatedValue Same input value on success.
-function M.assert_arg(argn, v, tp, level, msg) end
+function M.assert_arg(argn, v, validator, level, msg) end
 
 ---
 ---Validate a named value using `mods.validate` and raise a Lua error on failure.

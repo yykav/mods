@@ -84,8 +84,8 @@ function M.list_args(v)
   return inspect(v):gsub("^%s*{%s*(.-)%s*}%s*$", "%1")
 end
 
-function M.assert_arg(argn, v, tp, lvl, msg)
-  local ok, err = validate(v, tp, msg)
+function M.assert_arg(argn, v, validator, lvl, msg)
+  local ok, err = validate(v, validator, msg)
   if not ok then
     lvl = lvl or 2
     local message
