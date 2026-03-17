@@ -1,6 +1,6 @@
 ---@meta mods.validate
 
----@class modsValidateMessages
+---@class modsValidatorMessages
 ---@field [string] string
 ---
 ---@field boolean? string
@@ -113,9 +113,9 @@
 ---> For path checks, if the value is not a `string`, the message falls back to
 ---> `messages.string` (as if `validate.string` was called).
 ---
----@field messages modsValidateMessages
+---@field messages modsValidatorMessages
 ---
----@overload fun(v:any, tp?:modsIsType):(boolean, string?)
+---@overload fun(v:any, validator?:modsValidatorName):(boolean, string?)
 local M = {}
 
 --------------------------------------------------------------------------------
@@ -501,13 +501,13 @@ M.Socket = M.socket
 ---
 ---> [!NOTE]
 --->
----> * If `msg` is provided, it becomes the default message template for that validator.
----> * If `msg` is omitted, failures use: `expected {{expected}}, got {{got}}`.
+---> * If `template` is provided, it becomes the default message template for that validator.
+---> * If `template` is omitted, failures use: `expected {{expected}}, got {{got}}`.
 ---
 ---@param name string Validator name.
----@param check fun(v:any):(ok:boolean) Validator function.
----@param msg? string Optional default message template.
+---@param validator fun(v:any):(ok:boolean) Validator function.
+---@param template? string Optional default message template.
 ---@return nil none
-function M.register(name, check, msg) end
+function M.register(name, validator, template) end
 
 return M

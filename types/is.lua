@@ -3,7 +3,7 @@
 ---@module 'mods.List'
 local List
 
----@alias modsIsType
+---@alias modsValidatorName
 ---|type
 ---|string
 ---
@@ -58,7 +58,7 @@ local List
 ---```
 ---
 ---@class mods.is
----@overload fun(v:any, tp:modsIsType):boolean
+---@overload fun(v:any, tp:modsValidatorName):boolean
 local M = {}
 
 ---@ignore

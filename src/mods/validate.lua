@@ -3,7 +3,7 @@ local mods = require "mods"
 local is = mods.is
 local quote = mods.utils.quote
 local template = mods.template
-local path_checks = is._path_validator_names:toset()
+local validator_names = is._path_validator_names:toset()
 local lower = string.lower
 local fmt = string.format
 
@@ -11,18 +11,19 @@ local fmt = string.format
 ---@diagnostic disable-next-line: missing-fields
 local M = {}
 
----@type modsValidateMessages
+---@type modsValidatorMessages
 local messages = {}
 local validators = {}
 
 M.messages = messages
 
-local function render_msg(expected, got_kind, v, tmpl)
+---@param tp type
+local function render_msg(expected, tp, v, tmpl)
   local vt = type(v)
   v = vt == "string" and quote(v) or tostring(v)
 
   if not tmpl then
-    if vt ~= "string" and path_checks[expected] then
+    if vt ~= "string" and validator_names[expected] then
       tmpl = messages.string
       expected = "string"
     else
@@ -33,40 +34,40 @@ local function render_msg(expected, got_kind, v, tmpl)
 
   return template(tmpl, {
     expected = expected,
-    got = got_kind == "nil" and "no value" or got_kind,
+    got = tp == "nil" and "no value" or tp,
     value = v == "nil" and "no value" or v,
   })
 end
 
-function M.register(name, check, template_msg)
+function M.register(name, validator, tmpl)
   local key = lower(name)
 
-  if template_msg ~= nil then
-    messages[key] = template_msg
+  if tmpl ~= nil then
+    messages[key] = tmpl
   end
 
-  local wrapped = function(value, override_msg)
-    if check(value) then
+  local wrapped = function(v, tmpl)
+    if validator(v) then
       return true
     end
-    return false, render_msg(key, type(value), value, override_msg)
+    return false, render_msg(key, type(v), v, tmpl)
   end
 
   validators[key] = wrapped
   M[key] = wrapped
 end
 
-for tp in ("boolean function nil number string table thread userdata"):gmatch("%S+") do
-  M.register(tp, is[tp], fmt("expected %s, got {{got}}", tp))
+for k in ("boolean function nil number string table thread userdata"):gmatch("%S+") do
+  M.register(k, is[k], fmt("expected %s, got {{got}}", k))
 end
 
-for tp in ("false true falsy truthy integer callable"):gmatch("%S+") do
-  M.register(tp, is[tp], fmt("expected %s value, got {{value}}", tp))
+for k in ("false true falsy truthy integer callable"):gmatch("%S+") do
+  M.register(k, is[k], fmt("expected %s value, got {{value}}", k))
 end
 
-for tp in pairs(path_checks) do
-  local expected = tp == "dir" and "directory" or tp
-  M.register(tp, is[tp], fmt("{{value}} is not a valid %s path", expected))
+for k in pairs(validator_names) do
+  local expected = k == "dir" and "directory" or k
+  M.register(k, is[k], fmt("{{value}} is not a valid %s path", expected))
 end
 
 messages.path = "{{value}} is not a valid path"
@@ -77,18 +78,20 @@ return setmetatable(M, {
       return validators[lower(k)]
     end
   end,
-  __call = function(_, value, check_name, override_msg)
-    check_name = check_name or "truthy"
 
-    local validator = validators[check_name]
-    if validator then
-      return validator(value, override_msg)
+  ---@param validator modsValidatorName
+  __call = function(_, v, validator, tmpl)
+    validator = validator or "truthy"
+
+    local validate = validators[validator]
+    if validate then
+      return validate(v, tmpl)
     end
 
-    local got_kind = type(value)
-    if got_kind == check_name then
+    local tp = type(v)
+    if tp == validator then
       return true
     end
-    return false, render_msg(check_name, got_kind, value, override_msg)
+    return false, render_msg(validator, tp, v, tmpl)
   end,
 })

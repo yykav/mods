@@ -84,11 +84,13 @@ return setmetatable(M, {
       return rawget(t, k:lower())
     end
   end,
-  __call = function(_, v, tp)
-    local fn = M[tp]
+
+  ---@param validator modsValidatorName
+  __call = function(_, v, validator)
+    local fn = M[validator]
     if fn then
       return fn(v)
     end
-    return type(v) == tp
+    return type(v) == validator
   end,
 })

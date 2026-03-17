@@ -78,7 +78,7 @@ function M.list_args(v) end
 ---@generic T
 ---@param argn integer Argument index for error context.
 ---@param v T Value to check.
----@param validator? modsIsType Validator name (defaults to `"truthy"`).
+---@param validator? modsValidatorName Validator name (defaults to `"truthy"`).
 ---@param level? integer Optional error level for `error(...)` (defaults to `2`).
 ---@param msg? string Optional override template passed to `mods.validate`.
 ---@return T validatedValue Same input value on success.
@@ -96,7 +96,7 @@ function M.assert_arg(argn, v, validator, level, msg) end
 ---
 ---@param name string Name for the error prefix.
 ---@param v any Value to validate.
----@param validator? modsIsType Validator name (defaults to `"truthy"`).
+---@param validator? modsValidatorName Validator name (defaults to `"truthy"`).
 ---@param optional? boolean Skip errors when `v` is `nil` (defaults to `false`).
 ---@param msg? string Optional override template passed to `mods.validate`.
 ---@return nil none
