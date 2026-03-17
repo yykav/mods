@@ -40,10 +40,7 @@ function M.callable(v)
     return true
   end
   local mt = getmetatable(v)
-  if mt and type(mt.__call) == "function" then
-    return true
-  end
-  return false
+  return mt and type(mt.__call) == "function" or false
 end
 
 -------------------
