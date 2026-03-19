@@ -298,11 +298,16 @@ function List:remove(v) end
 ---```lua
 ---ls = List({ 3, 1, 2 })
 ---ls:sort() --> { 1, 2, 3 }
+---
+---words = List({ "ccc", "a", "bb" })
+---words:sort(function(a, b)
+---  return #a < #b
+---end) --> { "a", "bb", "ccc" }
 ---```
 ---
 ---@generic T:mods.List|any[]
 ---@param self T Current list.
----@param comp? fun(a,b):boolean Optional comparison function (defaults to `nil`).
+---@param comp? fun(a:any, b:any):boolean Optional comparison function (defaults to `nil`).
 ---@return T self Current list.
 function List:sort(comp) end
 
