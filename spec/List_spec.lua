@@ -176,6 +176,18 @@ describe("mods.List", function()
     end)
   end)
 
+  describe("sort()", function()
+    it("sorts in place with a custom comparison function", function()
+      local ls = List({ "ccc", "a", "bb" })
+      local res = ls:sort(function(a, b)
+        return #a < #b
+      end)
+
+      assert.are_same({ "a", "bb", "ccc" }, res)
+      assert.are_equal(true, rawequal(ls, res), "Expected same list reference")
+    end)
+  end)
+
   describe("metamethods", function()
     it("__add (+) extends and returns the left list", function()
       local a = List({ "a", "b" })
