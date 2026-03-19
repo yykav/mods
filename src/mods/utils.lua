@@ -8,7 +8,7 @@ local gsub = string.gsub
 local unpack = table.unpack or unpack
 
 ---@type mods.utils
-local M = { lfs = {} }
+local M = {}
 
 local ignored_caller_names = {
   [""] = true,
@@ -16,17 +16,6 @@ local ignored_caller_names = {
   pcall = true,
   xpcall = true,
 }
-
-setmetatable(M.lfs, {
-  __index = function(_, k)
-    local ok, mod = pcall(require, "lfs")
-    if not ok then
-      error("lfs is required for filesystem operations", 2)
-    end
-    M.lfs = mod
-    return mod[k]
-  end,
-})
 
 local function inspect(v)
   inspect = require "inspect"
@@ -114,9 +103,6 @@ function M.validate(label, v, validator, optional, msg)
 end
 
 function M.lazy_module(name, err)
-  M.assert_arg(1, name, "string")
-  M.assert_arg(2, err, "string", true)
-
   local load_err = err or fmt("failed to load module '%s'", name)
   local mt = {}
 

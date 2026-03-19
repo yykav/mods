@@ -12,7 +12,6 @@
 ---```
 ---
 ---@class mods.utils
----@field lfs LuaFileSystem Lazy-loaded on first key access.
 local M = {}
 
 ---
