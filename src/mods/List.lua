@@ -37,6 +37,14 @@ local function copy_range(self, start_i, end_i)
   return res
 end
 
+local function index_of(self, v)
+  for i = 1, #self do
+    if self[i] == v then
+      return i
+    end
+  end
+end
+
 local function lex_cmp(a, b)
   local limit = #a
   if #b < limit then
@@ -93,7 +101,7 @@ function List:clear()
 end
 
 function List:contains(v)
-  return self:index(v) ~= nil
+  return index_of(self, v) ~= nil
 end
 
 function List:copy()
@@ -223,14 +231,6 @@ function List:group_by(fn)
     bucket[#bucket + 1] = v
   end
   return res
-end
-
-function List:index(v)
-  for i = 1, #self do
-    if self[i] == v then
-      return i
-    end
-  end
 end
 
 function List:index_if(pred)
@@ -450,6 +450,7 @@ function List:zip(t)
   return res
 end
 
+List.index = index_of
 List.concat = concat
 List.pop = remove
 
