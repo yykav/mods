@@ -45,6 +45,25 @@ local function index_of(self, v)
   end
 end
 
+local function join_values(self, sep, quoted)
+  local out = {}
+  for i = 1, #self do
+    local v = self[i]
+    if v == self then
+      out[i] = "<self>"
+    elseif quoted and type(v) == "string" then
+      out[i] = quote(v)
+    else
+      out[i] = tostring(v)
+    end
+  end
+  return concat(out, sep)
+end
+
+local function stringify(self)
+  return "{ " .. join_values(self, ", ", true) .. " }"
+end
+
 local function lex_cmp(a, b)
   local limit = #a
   if #b < limit then
@@ -263,25 +282,6 @@ function List:invert()
   return res
 end
 
-function List:join(sep, quoted)
-  local out = {}
-  for i = 1, #self do
-    local v = self[i]
-    if v == self then
-      out[i] = "<self>"
-    elseif quoted and type(v) == "string" then
-      out[i] = quote(v)
-    else
-      out[i] = tostring(v)
-    end
-  end
-  return concat(out, sep)
-end
-
-function List:tostring()
-  return "{ " .. self:join(", ", true) .. " }"
-end
-
 function List:keypath()
   return keypath(unpack(self))
 end
@@ -451,6 +451,8 @@ function List:zip(t)
 end
 
 List.index = index_of
+List.join = join_values
+List.tostring = stringify
 List.concat = concat
 List.pop = remove
 
@@ -463,7 +465,7 @@ List.__mul = function(a, b)
   return type(a) == "number" and b:mul(a) or a:mul(b)
 end
 List.__sub = List.difference
-List.__tostring = List.tostring
+List.__tostring = stringify
 
 return setmetatable(List, {
   __index = function(t, k)
