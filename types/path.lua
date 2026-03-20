@@ -377,14 +377,14 @@ function M.suffixes(path) end
 ---Return logical parent paths from nearest to farthest.
 ---
 ---```lua
----path.dirnames("a/b/c") --> {"a/b", "a", "."}
----path.dirnames("c:a/b") --> {"c:a", "c:"}
+---path.parents("a/b/c") --> {"a/b", "a", "."}
+---path.parents("c:a/b") --> {"c:a", "c:"}
 ---```
 ---
 ---@param path string Input path.
 ---@return mods.List<string> parents Ancestor paths from nearest to farthest.
 ---@nodiscard
-function M.dirnames(path) end
+function M.parents(path) end
 
 --------------------------------------------------------------------------------
 ----------------------------------- Relations ----------------------------------

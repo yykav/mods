@@ -91,7 +91,7 @@ local tests = {
     "windows",
     {{{ [[\home\swen\spam]] , [[\home\swen\eggs]] }}, { [[\home\swen\]]   }},
   },
-  dirnames = {
+  parents = {
     "posix",
     {{ "a/b/c"        }, {{ "a/b"      , "a"       , "." }}},
     {{ "/a/b/c"       }, {{ "/a/b"     , "/a"      , "/" }}},

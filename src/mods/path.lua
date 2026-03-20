@@ -183,7 +183,7 @@ function M.as_uri(p)
   return prefix .. encoded
 end
 
-function M.dirnames(p)
+function M.parents(p)
   assert_arg(1, p, "string")
   local drive, root, tail = parse_path(p)
   local out = {}
