@@ -4,7 +4,7 @@ local mods = require "mods"
 
 local List = mods.List
 local Set = mods.Set
-local copy = mods.tbl.copy
+local shallow_copy = mods.tbl.copy
 local runtime = mods.runtime
 
 local upper = string.upper
@@ -67,30 +67,30 @@ describe("mods.Set", function()
 
     -- Second argument is a Set.
     it(fmt("Set(...):%s(Set(...))", fname), function()
-      local set_ = set:copy()
-      local res = set_[fname](set_, input)
+      local s = set:copy()
+      local res = Set[fname](s, input)
 
       assert.are_same(expected, res)
 
       if same_ref then
-        assert.are_equal(true, rawequal(set_, res), "Expected same set instance")
+        assert.are_equal(true, rawequal(s, res), "Expected same set instance")
       else
-        assert.are_equal(false, rawequal(set_, res), "Expected different set instances")
+        assert.are_equal(false, rawequal(s, res), "Expected different set instances")
       end
     end)
 
     -- Second argument is a plain table.
     it(fmt("Set(...):%s({...})", fname), function()
-      local set_ = copy(set)
-      local res = set[fname](set_, input)
+      local s = shallow_copy(set)
+      local res = Set[fname](s, input)
       assert.are_same(expected, res)
     end)
 
     if type(input) == "table" then
       -- Second argument is a List.
       it(fmt("Set.%s({...}, ...)", fname), function()
-        local set_ = copy(set)
-        local res = set[fname](set_, input:values())
+        local s = shallow_copy(set)
+        local res = Set[fname](s, input:values())
         assert.are_same(expected, res)
       end)
     end
