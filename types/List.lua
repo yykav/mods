@@ -554,8 +554,8 @@ function List:intersection(t) end
 ---t = List({ "a", "b", "c" }):invert() --> { a = 1, b = 2, c = 3 }
 ---```
 ---
----@generic T:mods.List|any[], K, V
----@param self T Current list.
+---@generic K, V
+---@param self mods.List|any[] Current list.
 ---@return table<V,K> idxByValue Table mapping each value to its last index.
 ---@nodiscard
 function List:invert() end
@@ -632,8 +632,9 @@ function List:keypath() end
 ---m = List({ "a", "b" }):map(to_upper) --> { "A", "B" }
 ---```
 ---
----@param self mods.List|any[] Current list.
----@param fn fun(v):any Callback function.
+---@generic T
+---@param self mods.List<T>|T[] Current list.
+---@param fn fun(value:T):any Callback function.
 ---@return mods.List ls New list.
 ---@nodiscard
 function List:map(fn) end
