@@ -65,8 +65,8 @@ describe("mods.Set", function()
     local fname, set, input, expected, same_ref =
       unpack(tests[i] --[[@as {[1]:string,[2]:mods.Set,[3]:any,[4]:any,[5]:boolean?}]], 1, 5)
 
-    -- Second argument is a Set.
-    it(fmt("Set(...):%s(Set(...))", fname), function()
+    -- First argument is a Set.
+    it(fmt("Set({...}):%s(...)", fname), function()
       local s = set:copy()
       local res = Set[fname](s, input)
 
@@ -79,8 +79,8 @@ describe("mods.Set", function()
       end
     end)
 
-    -- Second argument is a plain table.
-    it(fmt("Set(...):%s({...})", fname), function()
+    -- First argument is a plain table.
+    it(fmt("Set.%s({...}, ...)", fname), function()
       local s = shallow_copy(set)
       local res = Set[fname](s, input)
       assert.are_same(expected, res)
@@ -88,8 +88,8 @@ describe("mods.Set", function()
 
     if type(input) == "table" then
       -- Second argument is a List.
-      it(fmt("Set.%s({...}, ...)", fname), function()
-        local s = shallow_copy(set)
+      it(fmt("Set({...}):%s(List({...}))", fname), function()
+        local s = set:copy()
         local res = Set[fname](s, input:values())
         assert.are_same(expected, res)
       end)
