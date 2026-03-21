@@ -8,6 +8,7 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
+local lfs = require "lfs"
 local mods = require "mods"
 
 local Set = mods.Set
@@ -652,6 +653,10 @@ describe("mods.path", function()
       end
     end
   end
+
+  it("cwd()", function()
+    assert.are_equal(lfs.currentdir(), path.cwd())
+  end)
 
   it("expandvars()", function()
     with_env({ foo = "bar", ["{foo"] = "baz1", ["{foo}"] = "baz2" }, function()

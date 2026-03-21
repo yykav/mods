@@ -35,11 +35,6 @@ local EXT_SEP = "."
 local PARDIR = ".."
 local SEP = "/"
 
-local function getcwd()
-  getcwd = mods.fs.getcwd
-  return getcwd()
-end
-
 local function has_prefix(s, prefix)
   return sub(s, 1, #prefix) == prefix
 end
@@ -177,7 +172,7 @@ end
 
 function M.abspath(p)
   assert_arg(1, p, "string")
-  return M.normpath(M.join(getcwd(), p))
+  return M.normpath(M.join(M.cwd(), p))
 end
 
 function M.relpath(p, start)

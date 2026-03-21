@@ -53,11 +53,6 @@ for i = 1, 9 do
   reserved_names:add("COM" .. i):add("LPT" .. i)
 end
 
-local function getcwd()
-  getcwd = mods.fs.getcwd
-  return getcwd()
-end
-
 local function starts_with(s, prefix)
   return sub(s, 1, #prefix) == prefix
 end
@@ -379,7 +374,7 @@ end
 function M.abspath(p)
   assert_arg(1, p, "string")
   if not M.isabs(p) then
-    p = M.join(getcwd(), p)
+    p = M.join(M.cwd(), p)
   end
   return M.normpath(p)
 end

@@ -226,6 +226,18 @@ function M.expandvars(path) end
 ---@nodiscard
 function M.home() end
 
+---
+---Return the current working directory path.
+---
+---```lua
+---path.cwd()
+---```
+---
+---@return string? cwd Current working directory path.
+---@return string? err Error message when the cwd cannot be resolved.
+---@nodiscard
+function M.cwd() end
+
 --------------------------------------------------------------------------------
 ----------------------------------- Derived ------------------------------------
 --------------------------------------------------------------------------------
