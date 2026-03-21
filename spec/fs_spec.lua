@@ -39,23 +39,29 @@ describe("mods.fs", function()
 
   it("write_bytes()", function()
     local target = tmpname()
-    local f
-
     assert.is_true(fs.write_bytes(target, "abc"))
-    f = assert(io.open(target, "rb"))
-    assert.are_equal("abc", f:read("*a"))
-    f:close()
+    assert.are_equal("abc", fs.read_bytes(target))
     assert.is_true(os.remove(target))
   end)
 
   it("write_text()", function()
     local target = tmpname()
-    local f
-
     assert.is_true(fs.write_text(target, "abc"))
-    f = assert(io.open(target, "r"))
-    assert.are_equal("abc", f:read("*a"))
-    f:close()
+    assert.are_equal("abc", fs.read_text(target))
+    assert.is_true(os.remove(target))
+  end)
+
+  it("read_bytes()", function()
+    local target = tmpname()
+    assert.is_true(fs.write_bytes(target, "abc"))
+    assert.are_equal("abc", fs.read_bytes(target))
+    assert.is_true(os.remove(target))
+  end)
+
+  it("read_text()", function()
+    local target = tmpname()
+    assert.is_true(fs.write_text(target, "abc"))
+    assert.are_equal("abc", fs.read_text(target))
     assert.is_true(os.remove(target))
   end)
 
@@ -150,6 +156,8 @@ describe("mods.fs", function()
     assert.has_error(function() fs.getmtime()      end, "bad argument #1 to 'getmtime' (string expected, got no value)")
     assert.has_error(function() fs.getsize()       end, "bad argument #1 to 'getsize' (string expected, got no value)")
     assert.has_error(function() fs.lexists({})     end, "bad argument #1 to 'lexists' (string expected, got table)")
+    assert.has_error(function() fs.read_bytes({})  end, "bad argument #1 to 'read_bytes' (string expected, got table)")
+    assert.has_error(function() fs.read_text({})   end, "bad argument #1 to 'read_text' (string expected, got table)")
     assert.has_error(function() fs.write_bytes({}) end, "bad argument #1 to 'write_bytes' (string expected, got table)")
     assert.has_error(function() fs.write_text({})  end, "bad argument #1 to 'write_text' (string expected, got table)")
 

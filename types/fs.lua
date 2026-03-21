@@ -7,6 +7,36 @@
 local M = {}
 
 --------------------------------------------------------------------------------
+----------------------------------- Reading ------------------------------------
+--------------------------------------------------------------------------------
+
+---
+---Read full file in binary mode.
+---
+---```lua
+---fs.read_bytes("README.md")
+---```
+---
+---@param path string Input path.
+---@return string? body File contents read in binary mode, or `nil` on failure.
+---@return string? err Error message when the check fails.
+---@nodiscard
+function M.read_bytes(path) end
+
+---
+---Read full file in text mode.
+---
+---```lua
+---fs.read_text("README.md")
+---```
+---
+---@param path string Input path.
+---@return string? body File contents read in text mode, or `nil` on failure.
+---@return string? err Error message when the check fails.
+---@nodiscard
+function M.read_text(path) end
+
+--------------------------------------------------------------------------------
 ----------------------------------- Writing ------------------------------------
 --------------------------------------------------------------------------------
 

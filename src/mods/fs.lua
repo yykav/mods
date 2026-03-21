@@ -20,6 +20,20 @@ local function get_attr(p, name)
   return value
 end
 
+---Read entire file contents using given mode.
+---@return string? body, string? err
+local function read(p, mode)
+  local f, err = open(p, mode)
+  if not f then
+    return nil, err
+  end
+
+  local body = f:read("*a")
+  f:close()
+  return body
+end
+
+---Write file contents using the given mode.
 local function write(p, data, mode)
   local f, err = open(p, mode)
   if not f then
@@ -104,6 +118,16 @@ function M.write_text(p, data)
   assert_arg(1, p, "string")
   assert_arg(2, data, "string")
   return write(p, data, "w")
+end
+
+function M.read_bytes(p)
+  assert_arg(1, p, "string")
+  return read(p, "rb")
+end
+
+function M.read_text(p)
+  assert_arg(1, p, "string")
+  return read(p, "r")
 end
 
 M.rename = rename
