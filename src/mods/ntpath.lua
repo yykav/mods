@@ -374,7 +374,11 @@ end
 function M.abspath(p)
   assert_arg(1, p, "string")
   if not M.isabs(p) then
-    p = M.join(M.cwd(), p)
+    local cwd, err = M.cwd()
+    if not cwd then
+      error(err, 2)
+    end
+    p = M.join(cwd, p)
   end
   return M.normpath(p)
 end

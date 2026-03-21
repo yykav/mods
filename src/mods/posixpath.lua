@@ -172,7 +172,11 @@ end
 
 function M.abspath(p)
   assert_arg(1, p, "string")
-  return M.normpath(M.join(M.cwd(), p))
+  local cwd, err = M.cwd()
+  if not cwd then
+    error(err, 2)
+  end
+  return M.normpath(M.join(cwd, p))
 end
 
 function M.relpath(p, start)
