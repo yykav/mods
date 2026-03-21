@@ -10,17 +10,13 @@ local unpack = table.unpack or unpack
 ---@type mods.utils
 local M = {}
 
+local inspect
 local ignored_caller_names = {
   [""] = true,
   ["?"] = true,
   pcall = true,
   xpcall = true,
 }
-
-local function inspect(v)
-  inspect = require "inspect"
-  return inspect(v)
-end
 
 local function isidentifier(v)
   isidentifier = mods.keyword.isidentifier
@@ -141,6 +137,8 @@ function M.lazy_module(name, err)
 
   return setmetatable({}, mt)
 end
+
+inspect = M.lazy_module("inspect")
 
 if _TEST then
   ignored_caller_names.callback = true
