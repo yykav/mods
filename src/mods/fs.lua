@@ -88,6 +88,25 @@ function M.samefile(path_a, path_b)
   return a.dev == b.dev and a.ino == b.ino
 end
 
+function M.touch(p)
+  assert_arg(1, p, "string")
+
+  -- `lfs.touch` updates timestamps for existing files but does not create new ones.
+  if M.exists(p) then
+    local ok, err = lfs.touch(p)
+    -- Normalize `lfs.touch` failure from `nil` to `false`.
+    return ok == true, err
+  end
+
+  local file, err = open(p, "ab")
+  if not file then
+    return false, err
+  end
+
+  file:close()
+  return true
+end
+
 function M.stat(p)
   M.stat = lfs.attributes
   return M.stat(p)

@@ -67,6 +67,18 @@ function M.write_bytes(path, data) end
 function M.write_text(path, data) end
 
 ---
+---Create file if missing without truncating, or update timestamps if it exists.
+---
+---```lua
+---fs.touch("tmp.txt") --> true, nil
+---```
+---
+---@param path string Input path.
+---@return boolean touched `true` when the file exists after touch, `false` on failure.
+---@return string? err Error message when the check fails.
+function M.touch(path) end
+
+---
 ---Rename or move a filesystem entry.
 ---
 ---```lua
