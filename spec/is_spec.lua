@@ -1,12 +1,18 @@
-local is = require "mods.is"
+local helpers = require "spec.helpers"
 local lfs = require "lfs"
+local mods = require "mods"
 
+local is = mods.is
+local path = mods.path
+
+local is_unix = not mods.runtime.is_windows
 local fmt = string.format
+local tmpname = helpers.tmpname
 
 describe("mods.is", function()
-  local f = function() end
-  local co = coroutine.create(f)
-  local ct = setmetatable({}, { __call = f })
+  local fn = function() end
+  local co = coroutine.create(fn)
+  local ct = setmetatable({}, { __call = fn })
   local nct = setmetatable({}, { __call = true })
 
   it("is is callable", function()
@@ -18,15 +24,15 @@ describe("mods.is", function()
     -----type----|---valid---|-----invalid-----
     { "Boolean"  , false     , 123            },
     { "boolean"  , true      , nil            },
-    { "Function" , f         , "abc"          },
+    { "Function" , fn        , "abc"          },
     { "Nil"      , nil       , 123            },
     { "Number"   , 123       , "123"          },
     { "String"   , "abc"     , true           },
     { "Table"    , {}        , false          },
-    { "Thread"   , co        , f              },
+    { "Thread"   , co        , fn             },
 
     { "Callable" , ct        , nct            },
-    { "callable" , f         , {}             },
+    { "callable" , fn        , {}             },
     { "False"    , false     , true           },
     { "falsy"    , false     , true           },
     { "Falsy"    , nil       , 123            },
@@ -67,12 +73,11 @@ describe("mods.is", function()
   end
 
   it("link detects symlink paths when supported", function()
-    local root = os.tmpname()
-    os.remove(root)
+    local root = tmpname()
     assert.is_true(lfs.mkdir(root))
 
-    local target = root .. "/target.txt"
-    local link = root .. "/link.txt"
+    local target = path.join(root, "target.txt")
+    local link = path.join(root, "link.txt")
     local f = assert(io.open(target, "w"))
     f:close()
 
@@ -85,4 +90,33 @@ describe("mods.is", function()
     os.remove(target)
     lfs.rmdir(root)
   end)
+
+  if is_unix then
+    it("path() returns true for a symlink to an existing file", function()
+      local root = tmpname()
+      assert.is_true(lfs.mkdir(root))
+
+      local target = path.join(root, "target.txt")
+      local link = path.join(root, "link.txt")
+      local f = assert(io.open(target, "w"))
+      f:close()
+
+      assert.is_true(lfs.link(target, link, true))
+      assert.is_true(is.path(link))
+
+      os.remove(link)
+      os.remove(target)
+      lfs.rmdir(root)
+    end)
+
+    it("path() returns true for a broken symlink", function()
+      local target = tmpname()
+      local link = tmpname()
+
+      assert.is_true(lfs.link(target, link, true))
+      assert.is_true(is.path(link))
+
+      os.remove(link)
+    end)
+  end
 end)
