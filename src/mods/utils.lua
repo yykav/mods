@@ -28,6 +28,12 @@ local function validate(...)
   return validate(...)
 end
 
+local function remove_mt(item, path)
+  if path[#path] ~= inspect.METATABLE then
+    return item
+  end
+end
+
 local function caller_name(level)
   local base = (level or 2) + 1
   for i = base, base + 3 do
@@ -67,7 +73,8 @@ function M.keypath(...)
 end
 
 function M.args_repr(v)
-  return inspect(v):gsub("^%s*{%s*(.-)%s*}%s*$", "%1")
+  local s = inspect(v, { process = remove_mt })
+  return s:gsub("^%s*{%s*(.-)%s*}%s*$", "%1")
 end
 
 function M.assert_arg(argn, v, validator, optional, msg)

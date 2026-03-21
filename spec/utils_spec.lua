@@ -78,6 +78,11 @@ describe("mods.utils", function()
     end)
   end
 
+  it("args_repr() omits metatables from inspected tables", function()
+    local input = { setmetatable({ "a" }, { __index = { "b" } }) }
+    assert.are_equal('{ "a" }', utils.args_repr(input))
+  end)
+
   describe("assert_arg()", function()
     it("returns same value when validation passes", function()
       assert.are_equal("abc", utils.assert_arg(1, "abc", "string"))
