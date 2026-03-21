@@ -20,15 +20,6 @@ _G.args_repr = function(v)
   return inspect(v):gsub("^%s*{%s*", ""):gsub("%s*}%s*$", "")
 end
 
-_G.with_env = function(env, fn)
-  local getenv = os.getenv
-  rawset(os, "getenv", function(name)
-    return env[name]
-  end)
-  fn()
-  rawset(os, "getenv", getenv)
-end
-
 local positive_msg = "assertion.callable.positive"
 local negative_msg = "assertion.callable.negative"
 say:set(positive_msg, "Expected object to be callable.\nPassed in:\n%s\nExpected:\ncallable object")

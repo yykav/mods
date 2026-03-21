@@ -10,6 +10,7 @@
 
 local lfs = require "lfs"
 local mods = require "mods"
+local helpers = require "spec.helpers"
 
 local Set = mods.Set
 local ntpath = mods.ntpath
@@ -17,6 +18,7 @@ local path = mods.path
 local posixpath = mods.posixpath
 local runtime = mods.runtime
 local tbl = mods.tbl
+local with_env = helpers.with_env
 
 local fmt = string.format
 

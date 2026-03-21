@@ -8,12 +8,14 @@
 
 local lfs = require "lfs"
 local mods = require "mods"
+local helpers = require "spec.helpers"
 
 mods.runtime.is_windows = true -- Make mods.path use mods.ntpath.
 
 local ntpath = mods.ntpath
 local path = mods.path
 local tbl = mods.tbl
+local with_env = helpers.with_env
 
 local fmt = string.format
 

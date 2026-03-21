@@ -6,4 +6,13 @@ function M.tmpname()
   return p
 end
 
+function M.with_env(env, fn)
+  local getenv = os.getenv
+  rawset(os, "getenv", function(name)
+    return env[name]
+  end)
+  fn()
+  rawset(os, "getenv", getenv)
+end
+
 return M
