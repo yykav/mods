@@ -6,17 +6,18 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
+local helpers = require "spec.helpers"
 local lfs = require "lfs"
 local mods = require "mods"
-local helpers = require "spec.helpers"
 
 mods.runtime.is_windows = false -- Make mods.path use mods.posixpath.
 
 local posixpath = mods.posixpath
 local path = mods.path
 local tbl = mods.tbl
-local with_env = helpers.with_env
 
+local args_repr = mods.utils.args_repr
+local with_env = helpers.with_env
 local fmt = string.format
 
 describe("mods.posixpath", function()

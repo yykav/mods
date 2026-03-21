@@ -1,10 +1,9 @@
----@diagnostic disable: param-type-mismatch
-
 local mods = require "mods"
 
 local List = mods.List
 local str = mods.str
 
+local args_repr = mods.utils.args_repr
 local byte = string.byte
 local fmt = string.format
 
@@ -267,6 +266,7 @@ describe("mods.str", function()
   for i = 1, #tests do
     local fname, s, params, expected = unpack(tests[i], 1, 5)
     it(("%s(%q) returns correct result"):format(fname, s), function()
+      ---@diagnostic disable-next-line: param-type-mismatch
       local res = { str[fname](s, unpack(params)) }
       assert.are_same(expected, res)
     end)
@@ -289,6 +289,7 @@ describe("mods.str", function()
   for i = 1, #tests do
     local fname, params = unpack(tests[i])
     it(fmt("%s(%s) returns mods.List", fname, args_repr(params)), function()
+      ---@diagnostic disable-next-line: param-type-mismatch
       local res = str[fname](unpack(params))
       assert.are_equal(List, getmetatable(res))
     end)

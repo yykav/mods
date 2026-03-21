@@ -15,11 +15,6 @@ _G.inspect = function(v)
   return ins(v, { process = remove_all_metatables })
 end
 
-_G.args_repr = function(v)
-  -- Convert a table value to inspect output without the outer `{ ... }`.
-  return inspect(v):gsub("^%s*{%s*", ""):gsub("%s*}%s*$", "")
-end
-
 local positive_msg = "assertion.callable.positive"
 local negative_msg = "assertion.callable.negative"
 say:set(positive_msg, "Expected object to be callable.\nPassed in:\n%s\nExpected:\ncallable object")

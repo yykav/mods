@@ -1,5 +1,6 @@
 local utils = require "mods.utils"
 
+local args_repr = utils.args_repr
 local fmt = string.format
 
 describe("mods.utils", function()

@@ -5,6 +5,7 @@ local mods = require "mods"
 local List = mods.List
 local Set = mods.Set
 
+local args_repr = mods.utils.args_repr
 local shallow_copy = mods.tbl.copy
 
 local fmt = string.format

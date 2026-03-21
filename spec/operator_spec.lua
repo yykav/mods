@@ -1,5 +1,7 @@
-local operator = require "mods.operator"
+local mods = require "mods"
+local operator = mods.operator
 
+local args_repr = mods.utils.args_repr
 local fmt = string.format
 
 describe("mods.operator", function()

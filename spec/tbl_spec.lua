@@ -1,10 +1,10 @@
 local mods = require "mods"
-local tablex = require "pl.tablex"
 
 local List = mods.List
-local deepcopy = tablex.deepcopy
 local tbl = mods.tbl
 
+local args_repr = mods.utils.args_repr
+local deepcopy = tbl.deepcopy
 local fmt = string.format
 
 describe("mods.tbl", function()
@@ -73,7 +73,9 @@ describe("mods.tbl", function()
   -- stylua: ignore end
 
   for i = 1, #tests do
-    local fname, params, expected, same_ref = unpack(tests[i], 1, 4)
+    local fname, params, expected, same_ref =
+      unpack(tests[i] --[[@as {[1]:string, [2]:{}, [3]:any, [4]:boolean?}]], 1, 4)
+
     it(fmt("%s(%s) returns correct result", fname, args_repr(params)), function()
       params = deepcopy(params)
       local res = tbl[fname](unpack(params))

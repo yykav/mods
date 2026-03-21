@@ -1,5 +1,3 @@
----@diagnostic disable: undefined-field
-
 --[[
   Most test cases were ported from CPython's pathlib tests.
   Adapted and ported to Lua/Busted for this project's API and conventions.
@@ -8,9 +6,9 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
+local helpers = require "spec.helpers"
 local lfs = require "lfs"
 local mods = require "mods"
-local helpers = require "spec.helpers"
 
 local Set = mods.Set
 local ntpath = mods.ntpath
@@ -18,8 +16,9 @@ local path = mods.path
 local posixpath = mods.posixpath
 local runtime = mods.runtime
 local tbl = mods.tbl
-local with_env = helpers.with_env
 
+local with_env = helpers.with_env
+local args_repr = mods.utils.args_repr
 local fmt = string.format
 
 -- stylua: ignore
@@ -647,6 +646,7 @@ describe("mods.path", function()
         local case_modes = mode == "common" and { "posix", "windows" } or { mode }
         for _, case_mode in ipairs(case_modes) do
           it(fmt("%s(%s) [%s]", fname, args_repr(params), case_mode), function()
+            ---@diagnostic disable-next-line: undefined-field
             local set_semantics = case_mode == "posix" and path._set_posix_semantics or path._set_windows_semantics
             set_semantics()
             assert.are_same(expected, { path[fname](unpack(params)) })
