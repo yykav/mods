@@ -70,7 +70,7 @@ function M.keypath(...)
   return concat(res)
 end
 
-function M.list_args(v)
+function M.args_repr(v)
   return inspect(v):gsub("^%s*{%s*(.-)%s*}%s*$", "%1")
 end
 

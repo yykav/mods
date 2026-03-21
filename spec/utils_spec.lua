@@ -60,7 +60,7 @@ describe("mods.utils", function()
   end
 
   -------------------
-  --- list_args() ---
+  --- args_repr() ---
   -------------------
 
   -- stylua: ignore
@@ -73,8 +73,8 @@ describe("mods.utils", function()
 
   for i = 1, #tests do
     local input, expected = unpack(tests[i], 1, 2)
-    it(fmt("list_args(%s) returns correct result", args_repr(input)), function()
-      assert.are_equal(expected, utils.list_args(input))
+    it(fmt("args_repr(%s) returns correct result", args_repr(input)), function()
+      assert.are_equal(expected, utils.args_repr(input))
     end)
   end
 
