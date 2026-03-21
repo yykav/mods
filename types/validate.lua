@@ -128,7 +128,7 @@
 ---
 ---@field messages modsValidatorMessages
 ---
----@overload fun(v:any, validator?:modsValidatorName):(boolean, string?)
+---@overload fun(v:any, validator?:modsValidatorName, msg?:string):(boolean, string?)
 local M = {}
 
 --------------------------------------------------------------------------------
