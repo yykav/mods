@@ -102,4 +102,38 @@ function M.stat(path) end
 ---@nodiscard
 function M.samefile(path_a, path_b) end
 
+--------------------------------------------------------------------------------
+------------------------------- Existence Checks -------------------------------
+--------------------------------------------------------------------------------
+
+---
+---Return `true` when a path exists.
+---
+---```lua
+---fs.exists("README.md") --> true
+---```
+---
+---> [!NOTE]
+---> Broken symlinks return `false`.
+---
+---@param path any Input path.
+---@return boolean exists True when the path exists.
+---@nodiscard
+function M.exists(path) end
+
+---
+---Return `true` when a path exists without following symlinks.
+---
+---```lua
+---fs.lexists("README.md") --> true
+---```
+---
+---> [!NOTE]
+---> Broken symlinks return `true`.
+---
+---@param path any Input path.
+---@return boolean exists True when the path or symlink entry exists.
+---@nodiscard
+function M.lexists(path) end
+
 return M

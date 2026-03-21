@@ -66,4 +66,14 @@ function M.lstat(p)
   return M.lstat(p)
 end
 
+function M.exists(p)
+  assert_arg(1, p, "string")
+  return lfs.attributes(p, "mode") ~= nil
+end
+
+function M.lexists(p)
+  assert_arg(1, p, "string")
+  return lfs.symlinkattributes(p, "mode") ~= nil
+end
+
 return M
