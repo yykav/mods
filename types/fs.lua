@@ -19,7 +19,8 @@ local M = {}
 ---
 ---@param path string Input path.
 ---@return string? body File contents read in binary mode, or `nil` on failure.
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.read_bytes(path) end
 
@@ -32,7 +33,8 @@ function M.read_bytes(path) end
 ---
 ---@param path string Input path.
 ---@return string? body File contents read in text mode, or `nil` on failure.
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.read_text(path) end
 
@@ -49,8 +51,9 @@ function M.read_text(path) end
 ---
 ---@param path string Input path.
 ---@param data string Input data.
----@return boolean written `true` when writing succeeds, `false` on failure.
----@return string? err Error message when the check fails.
+---@return true? written `true` when writing succeeds, or `nil` on failure.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 function M.write_bytes(path, data) end
 
 ---
@@ -62,8 +65,9 @@ function M.write_bytes(path, data) end
 ---
 ---@param path string Input path.
 ---@param data string Input data.
----@return boolean written `true` when writing succeeds, `false` on failure.
----@return string? err Error message when the check fails.
+---@return true? written `true` when writing succeeds, or `nil` on failure.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 function M.write_text(path, data) end
 
 ---
@@ -74,8 +78,9 @@ function M.write_text(path, data) end
 ---```
 ---
 ---@param path string Input path.
----@return boolean touched `true` when the file exists after touch, `false` on failure.
----@return string? err Error message when the check fails.
+---@return true? touched `true` when the file exists after touch, or `nil` on failure.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 function M.touch(path) end
 
 ---
@@ -90,8 +95,9 @@ function M.touch(path) end
 ---
 ---@param oldname string Existing path.
 ---@param newname string Replacement path.
----@return boolean renamed `true` when the rename succeeds, `false` on failure.
----@return string? err Error message when the check fails.
+---@return true? renamed `true` when the rename succeeds, or `nil` on failure.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 function M.rename(oldname, newname) end
 
 ---
@@ -105,7 +111,7 @@ function M.rename(oldname, newname) end
 ---@param path string Input path.
 ---@param recursive? boolean Remove a directory tree recursively when `true`.
 ---@return true? removed `true` when removal succeeds, or `nil` on failure.
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
 ---@return integer? errcode OS error code when available.
 function M.rm(path, recursive) end
 
@@ -122,7 +128,8 @@ function M.rm(path, recursive) end
 ---
 ---@param path string Input path.
 ---@return integer? size File size in bytes.
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.getsize(path) end
 
@@ -135,7 +142,8 @@ function M.getsize(path) end
 ---
 ---@param path string Input path.
 ---@return number? timestamp Access time (seconds since epoch).
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.getatime(path) end
 
@@ -148,7 +156,8 @@ function M.getatime(path) end
 ---
 ---@param path string Input path.
 ---@return number? timestamp Modification time (seconds since epoch).
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.getmtime(path) end
 
@@ -161,7 +170,8 @@ function M.getmtime(path) end
 ---
 ---@param path string Input path.
 ---@return number? timestamp Change time (seconds since epoch).
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.getctime(path) end
 
@@ -174,7 +184,8 @@ function M.getctime(path) end
 ---
 ---@param path string Input path.
 ---@return LuaFileSystem.Attributes? attrs Symlink-aware attributes, or `nil` on failure.
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.lstat(path) end
 
@@ -187,7 +198,8 @@ function M.lstat(path) end
 ---
 ---@param path string Input path.
 ---@return string|integer|LuaFileSystem.AttributeMode|LuaFileSystem.Attributes? attrs File attributes, or `nil` on failure.
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.stat(path) end
 
@@ -201,7 +213,8 @@ function M.stat(path) end
 ---@param path_a string Input path.
 ---@param path_b string Input path.
 ---@return boolean? isSameFile True when both paths refer to the same file.
----@return string? err Error message when the check fails.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.samefile(path_a, path_b) end
 

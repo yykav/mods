@@ -36,19 +36,19 @@ end
 
 ---@param name LuaFileSystem.AttributeName
 local function get_attr(p, name)
-  local value, err = lfs.attributes(p, name)
-  if value == nil then
-    return nil, err
+  local value, errmsg, errcode = lfs.attributes(p, name)
+  if not value then
+    return nil, errmsg, errcode
   end
   return value
 end
 
 ---Read entire file contents using given mode.
----@return string? body, string? err
+---@return string? body, string? err, integer? errcode
 local function read(p, mode)
-  local f, err = open(p, mode)
+  local f, errmsg, errcode = open(p, mode)
   if not f then
-    return nil, err
+    return nil, errmsg, errcode
   end
 
   local body = f:read("*a")
@@ -58,15 +58,15 @@ end
 
 ---Write file contents using the given mode.
 local function write(p, data, mode)
-  local f, err = open(p, mode)
+  local f, errmsg, errcode = open(p, mode)
   if not f then
-    return false, err
+    return nil, errmsg, errcode
   end
 
   local ok, write_err = f:write(data)
   f:close()
   if not ok then
-    return false, write_err
+    return nil, write_err
   end
 
   return true
@@ -122,16 +122,16 @@ function M.samefile(path_a, path_b)
   assert_arg(1, path_a, "string")
   assert_arg(2, path_b, "string")
 
-  local a, b, err
+  local a, b, errmsg, errcode
 
-  a, err = M.stat(path_a)
+  a, errmsg, errcode = M.stat(path_a)
   if not a then
-    return nil, err
+    return nil, errmsg, errcode
   end
 
-  b, err = M.stat(path_b)
+  b, errmsg, errcode = M.stat(path_b)
   if not b then
-    return nil, err
+    return nil, errmsg, errcode
   end
 
   return a.dev == b.dev and a.ino == b.ino
@@ -142,14 +142,12 @@ function M.touch(p)
 
   -- `lfs.touch` updates timestamps for existing files but does not create new ones.
   if M.exists(p) then
-    local ok, err = lfs.touch(p)
-    -- Normalize `lfs.touch` failure from `nil` to `false`.
-    return ok == true, err
+    return lfs.touch(p)
   end
 
-  local file, err = open(p, "ab")
+  local file, errmsg, errcode = open(p, "ab")
   if not file then
-    return false, err
+    return nil, errmsg, errcode
   end
 
   file:close()
