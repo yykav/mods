@@ -9,6 +9,8 @@ local assert_arg = utils.assert_arg
 local isdir = is.dir
 local islink = is.link
 local join = path.join
+local path_parents = path.parents
+local normpath = path.normpath
 
 local open = io.open
 local remove = os.remove
@@ -227,6 +229,34 @@ function M.rm(p, recursive)
   end
 
   return remove(p)
+end
+
+function M.mkdir(p, parents)
+  assert_arg(1, p, "string")
+  assert_arg(2, parents, "boolean", true)
+
+  local mkdir = lfs.mkdir
+  if not parents then
+    return mkdir(p)
+  end
+
+  local normed = normpath(p)
+  local parents_dirs = path_parents(normed)
+  for i = #parents_dirs, 1, -1 do
+    local dir = parents_dirs[i]
+    if dir ~= CURDIR and not isdir(dir) then
+      local ok, errmsg, errcode = mkdir(dir)
+      if not ok then
+        return nil, errmsg, errcode
+      end
+    end
+  end
+
+  if normed ~= CURDIR and not isdir(normed) then
+    return mkdir(normed)
+  end
+
+  return true
 end
 
 M.rename = rename

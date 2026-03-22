@@ -6,6 +6,7 @@ local Tree = helpers.Tree
 local fs = mods.fs
 local path = mods.path
 
+local isdir = mods.is.dir
 local make_tmp_dir = helpers.make_tmp_dir
 local tmpname = helpers.tmpname
 local join = mods.path.join
@@ -204,6 +205,84 @@ describe("mods.fs", function()
         assert.is_true(os.remove(target))
       end)
     end
+  end)
+
+  describe("mkdir()", function()
+    it("creates a directory without parent mode", function()
+      local root = make_tmp_dir()
+      local target = path.join(root, "single")
+
+      assert.is_true(fs.mkdir(target))
+      assert.is_true(fs.exists(target))
+      assert.is_true(isdir(target))
+      assert.is_true(fs.rm(root, true))
+    end)
+
+    it("creates missing parent directories when parent mode is enabled", function()
+      local root = make_tmp_dir()
+      local target = path.join(root, "deep", "child")
+
+      assert.is_true(fs.mkdir(target, true))
+      assert.is_true(fs.exists(path.dirname(target)))
+      assert.is_true(fs.exists(target))
+      assert.is_true(isdir(target))
+      assert.is_true(fs.rm(root, true))
+    end)
+
+    it("succeeds when the target directory already exists", function()
+      local root = make_tmp_dir()
+      assert.is_true(fs.mkdir(root, true))
+      assert.is_true(fs.exists(root))
+      assert.is_true(isdir(root))
+      assert.is_true(fs.rm(root, true))
+    end)
+
+    it("normalizes dot segments before creating parent directories", function()
+      local root = make_tmp_dir()
+      local target = path.join(root, "alpha", "..", "beta", ".", "child")
+      local normalized = path.join(root, "beta", "child")
+
+      assert.is_true(fs.mkdir(target, true))
+      assert.is_false(fs.exists(path.join(root, "alpha")))
+      assert.is_true(fs.exists(normalized))
+      assert.is_true(isdir(normalized))
+      assert.is_true(fs.rm(root, true))
+    end)
+
+    it("fails when parent directories are missing without parent mode", function()
+      local target = path.join(tmpname(), "missing", "child")
+      local ok, errmsg, errcode = fs.mkdir(target)
+      assert.is_nil(ok)
+      assert.is_string(errmsg)
+      assert.is_number(errcode)
+    end)
+
+    it("fails when a parent path component is a file", function()
+      local root = make_tmp_dir()
+      local parent_file = path.join(root, "data.txt")
+      local target = path.join(parent_file, "child")
+
+      assert.is_true(fs.write_text(parent_file, "abc"))
+
+      local ok, errmsg, errcode = fs.mkdir(target, true)
+      assert.is_nil(ok)
+      assert.is_string(errmsg)
+      assert.is_number(errcode)
+      assert.is_true(fs.rm(root, true))
+    end)
+
+    it("fails when the target path already exists as a file", function()
+      local root = make_tmp_dir()
+      local target = path.join(root, "data.txt")
+
+      assert.is_true(fs.write_text(target, "abc"))
+
+      local ok, errmsg, errcode = fs.mkdir(target, true)
+      assert.is_nil(ok)
+      assert.is_string(errmsg)
+      assert.is_number(errcode)
+      assert.is_true(fs.rm(root, true))
+    end)
   end)
 
   describe("rm()", function()
@@ -412,6 +491,7 @@ describe("mods.fs", function()
     assert.has_error(function() fs.getmtime()      end, "bad argument #1 to 'getmtime' (string expected, got no value)")
     assert.has_error(function() fs.getsize()       end, "bad argument #1 to 'getsize' (string expected, got no value)")
     assert.has_error(function() fs.lexists({})     end, "bad argument #1 to 'lexists' (string expected, got table)")
+    assert.has_error(function() fs.mkdir()         end, "bad argument #1 to 'mkdir' (string expected, got no value)")
     assert.has_error(function() fs.read_bytes({})  end, "bad argument #1 to 'read_bytes' (string expected, got table)")
     assert.has_error(function() fs.read_text({})   end, "bad argument #1 to 'read_text' (string expected, got table)")
     assert.has_error(function() fs.rm({})          end, "bad argument #1 to 'rm' (string expected, got table)")
@@ -420,6 +500,7 @@ describe("mods.fs", function()
     assert.has_error(function() fs.write_text({})  end, "bad argument #1 to 'write_text' (string expected, got table)")
 
     -- Argument #2 validation.
+    assert.has_error(function() fs.mkdir("tmp", 1)              end, "bad argument #2 to 'mkdir' (boolean expected, got number)")
     assert.has_error(function() fs.rm("tmp", 1)                 end, "bad argument #2 to 'rm' (boolean expected, got number)")
     assert.has_error(function() fs.samefile(readme_file, 123)   end, "bad argument #2 to 'samefile' (string expected, got number)")
     assert.has_error(function() fs.write_bytes(readme_file, {}) end, "bad argument #2 to 'write_bytes' (string expected, got table)")

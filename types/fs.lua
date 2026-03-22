@@ -115,6 +115,20 @@ function M.rename(oldname, newname) end
 ---@return integer? errcode OS error code when available.
 function M.rm(path, recursive) end
 
+---
+---Create a directory.
+---
+---```lua
+---fs.mkdir("tmp/a/b", true)
+---```
+---
+---@param path string Input path.
+---@param parents? boolean Create missing parent directories when `true`.
+---@return true? created `true` when directory creation succeeds, or `nil` on failure.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
+function M.mkdir(path, parents) end
+
 --------------------------------------------------------------------------------
 --------------------------------- Metadata -------------------------------------
 --------------------------------------------------------------------------------
@@ -232,7 +246,7 @@ function M.samefile(path_a, path_b) end
 ---> [!NOTE]
 ---> Broken symlinks return `false`.
 ---
----@param path any Input path.
+---@param path string Input path.
 ---@return boolean exists True when the path exists.
 ---@nodiscard
 function M.exists(path) end
@@ -247,7 +261,7 @@ function M.exists(path) end
 ---> [!NOTE]
 ---> Broken symlinks return `true`.
 ---
----@param path any Input path.
+---@param path string Input path.
 ---@return boolean exists True when the path or symlink entry exists.
 ---@nodiscard
 function M.lexists(path) end
