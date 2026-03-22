@@ -6,11 +6,12 @@
   Copyright (c) 2001 Python Software Foundation; All Rights Reserved.
 ]]
 
-local helpers = require "spec.helpers"
 local lfs = require "lfs"
 local mods = require "mods"
 
 mods.runtime.is_windows = true -- Make mods.path use mods.ntpath.
+
+local helpers = require "spec.helpers"
 
 local ntpath = mods.ntpath
 local path = mods.path
