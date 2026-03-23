@@ -1,6 +1,6 @@
 ---@meta mods.ntpath
 
----Path operations for Windows/NT-style paths.
+---Windows/NT-style path operations.
 ---
 --->💡Python `ntpath`-style behavior, ported to Lua.
 ---

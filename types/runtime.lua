@@ -1,7 +1,7 @@
 ---@meta mods.runtime
 
 ---
----Exposes Lua runtime metadata and version compatibility flags.
+---Lua runtime metadata and version compatibility flags.
 ---
 ---## Usage
 ---

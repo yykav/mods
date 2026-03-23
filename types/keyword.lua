@@ -1,7 +1,7 @@
 ---@meta mods.keyword
 
 ---
----Lua keyword helpers.
+---Helpers for Lua keywords and identifiers.
 ---
 ---## Usage
 ---

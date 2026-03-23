@@ -1,7 +1,7 @@
 ---@meta mods.tbl
 
 ---
----Utility functions for working with Lua tables.
+---Table operations for querying, copying, merging, and transforming tables.
 ---
 ---## Usage
 ---

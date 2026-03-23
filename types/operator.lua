@@ -1,7 +1,7 @@
 ---@meta mods.operator
 
 ---
----Operator helpers as functions.
+---Lua operators exposed as functions.
 ---
 ---## Usage
 ---

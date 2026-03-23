@@ -1,6 +1,6 @@
 ---@meta mods.template
 ---
----Interpolate string placeholders of the form <code v-pre>{{...}}</code>.
+---String template rendering with <code v-pre>{{...}}</code> placeholders.
 ---
 ---## Usage
 ---

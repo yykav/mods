@@ -1,7 +1,7 @@
 ---@meta mods.utils
 
 ---
----Small shared utility helpers used by modules in this library.
+---Shared utility helpers used across the Mods library.
 ---
 ---## Usage
 ---

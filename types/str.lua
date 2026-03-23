@@ -1,7 +1,7 @@
 ---@meta mods.str
 
 ---
----String utility helpers modeled after Python's `str`.
+---String operations for searching, splitting, trimming, and formatting text.
 ---
 ---## Usage
 ---

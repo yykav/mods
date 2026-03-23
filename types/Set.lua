@@ -1,8 +1,7 @@
 ---@meta mods.Set
 
 ---
----A set class providing common operations to create, modify, and query
----collections of unique values.
+---A set class for creating, combining, and querying unique values.
 ---
 ---## Usage
 ---

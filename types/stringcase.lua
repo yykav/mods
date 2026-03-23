@@ -1,7 +1,7 @@
 ---@meta mods.stringcase
 
 ---
----String case conversion helpers.
+---String case conversion and word splitting.
 ---
 ---## Usage
 ---

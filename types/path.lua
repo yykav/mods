@@ -1,7 +1,7 @@
 ---@meta mods.path
 
 ---
----Generic cross-platform path API with host-platform semantics.
+---Cross-platform path operations with host-platform semantics.
 ---
 ---## Usage
 ---

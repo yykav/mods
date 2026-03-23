@@ -1,8 +1,7 @@
 ---@meta mods.List
 
 ---
----A list class providing common operations to create,
----modify, and query sequences of values.
+---A list class for creating, transforming, and querying sequences of values.
 ---
 ---## Usage
 ---

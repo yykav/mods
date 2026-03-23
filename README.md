@@ -47,25 +47,25 @@ luarocks install mods
 
 ## Modules
 
-| Module         | Description                                                         |
-| -------------- | ------------------------------------------------------------------- |
-| [`fs`]         | Filesystem I/O and metadata operations.                             |
-| [`is`]         | Type predicates for Lua values and filesystem path types.           |
-| [`keyword`]    | Lua keyword helpers.                                                |
-| [`List`]       | A list class with common sequence operations.                       |
-| [`ntpath`]     | Lexical path operations for Windows/NT-style paths.                 |
-| [`operator`]   | Operator helpers as functions.                                      |
-| [`path`]       | Generic cross-platform path API.                                    |
-| [`posixpath`]  | Lexical path operations for POSIX-style paths.                      |
-| [`repr`]       | Render any Lua value as a readable string.                          |
-| [`runtime`]    | Exposes Lua runtime metadata and version compatibility flags.       |
-| [`Set`]        | A set class with common operations on unique values.                |
-| [`str`]        | String utility helpers modeled after Python's `str`.                |
-| [`stringcase`] | String case conversion helpers.                                     |
-| [`tbl`]        | Utility functions for working with Lua tables.                      |
-| [`template`]   | Interpolate string placeholders of the form `{{...}}`.              |
-| [`utils`]      | Small shared utility helpers used by modules in this library.       |
-| [`validate`]   | Validation checks for values and filesystem path types.             |
+| Module         | Description                                                   |
+| -------------- | ------------------------------------------------------------- |
+| [`fs`]         | Filesystem I/O, metadata, and filesystem path operations.    |
+| [`is`]         | Type predicates for Lua values and filesystem path types.     |
+| [`keyword`]    | Helpers for Lua keywords and identifiers.                     |
+| [`List`]       | A list class for creating, transforming, and querying sequences of values. |
+| [`ntpath`]     | Windows/NT-style path operations.                             |
+| [`operator`]   | Lua operators exposed as functions.                           |
+| [`path`]       | Cross-platform path operations with host-platform semantics.  |
+| [`posixpath`]  | POSIX-style path operations.                                  |
+| [`repr`]       | Readable string rendering for Lua values.                     |
+| [`runtime`]    | Lua runtime metadata and version compatibility flags.         |
+| [`Set`]        | A set class for creating, combining, and querying unique values. |
+| [`str`]        | String operations for searching, splitting, trimming, and formatting text. |
+| [`stringcase`] | String case conversion and word splitting.                    |
+| [`tbl`]        | Table operations for querying, copying, merging, and transforming tables. |
+| [`template`]   | String template rendering with `{{...}}` placeholders.        |
+| [`utils`]      | Shared utility helpers used across the Mods library.          |
+| [`validate`]   | Validation helpers for Lua values and filesystem path types.  |
 
 > [!NOTE]
 >

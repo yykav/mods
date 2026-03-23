@@ -30,7 +30,7 @@
 ---@field socket? string
 
 ---
----Validation checks for values and filesystem path types.
+---Validation helpers for Lua values and filesystem path types.
 ---
 ---## Usage
 ---

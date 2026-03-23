@@ -1,7 +1,7 @@
 ---@meta mods.posixpath
 
 ---
----Path operations for POSIX-style paths.
+---POSIX-style path operations.
 ---
 --->💡 Python `posixpath`-style behavior, ported to Lua.
 ---

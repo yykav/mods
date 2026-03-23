@@ -1,6 +1,6 @@
 ---@meta mods.repr
 ---
----Render any Lua value as a readable string.
+---Readable string rendering for Lua values.
 ---
 ---## Usage
 ---

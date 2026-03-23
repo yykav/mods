@@ -1,7 +1,7 @@
 ---@meta mods.fs
 
 ---
----Filesystem, environment, and cwd-dependent path operations.
+---Filesystem I/O, metadata, and filesystem path operations.
 ---
 ---## Usage
 ---
