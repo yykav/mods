@@ -1,7 +1,8 @@
 # Mods
 
-**Mods** is a pure Lua utility library with predictable APIs and support for Lua
-5.1, 5.2, 5.3, 5.4, and LuaJIT.
+**Mods** is a Lua utility library with predictable APIs, 💤 lazy-loaded
+inter-module dependencies, and support for Lua 5.1, 5.2, 5.3, 5.4, and
+LuaJIT.
 
 > [!IMPORTANT]
 >
