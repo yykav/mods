@@ -93,7 +93,7 @@ describe("mods.fs", function()
     end)
 
     it("fails with an error when the parent directory does not exist", function()
-      local target = path.join(tmpname(), "missing", "file.bin")
+      local target = join(tmpname(), "missing", "file.bin")
       local ok, errmsg, errcode = fs.write_bytes(target, "abc")
       assert.is_nil(ok)
       assert.is_string(errmsg)
@@ -110,7 +110,7 @@ describe("mods.fs", function()
     end)
 
     it("fails with an error when the parent directory does not exist", function()
-      local target = path.join(tmpname(), "missing", "file.txt")
+      local target = join(tmpname(), "missing", "file.txt")
       local ok, errmsg, errcode = fs.write_text(target, "abc")
       assert.is_nil(ok)
       assert.is_string(errmsg)
@@ -177,7 +177,7 @@ describe("mods.fs", function()
 
     it("fails when the parent directory does not exist", function()
       local root = tmpname()
-      local target = path.join(root, "missing", "file.txt")
+      local target = join(root, "missing", "file.txt")
       local ok, errmsg, errcode = fs.touch(target)
       assert.is_nil(ok)
       assert.is_string(errmsg)
@@ -212,7 +212,7 @@ describe("mods.fs", function()
   describe("mkdir()", function()
     it("creates a directory without parent mode", function()
       local root = make_tmp_dir()
-      local target = path.join(root, "single")
+      local target = join(root, "single")
 
       assert.is_true(fs.mkdir(target))
       assert.is_true(fs.exists(target))
@@ -222,10 +222,10 @@ describe("mods.fs", function()
 
     it("creates missing parent directories when parent mode is enabled", function()
       local root = make_tmp_dir()
-      local target = path.join(root, "deep", "child")
+      local target = join(root, "deep", "child")
 
       assert.is_true(fs.mkdir(target, true))
-      assert.is_true(fs.exists(path.dirname(target)))
+      assert.is_true(fs.exists(dirname(target)))
       assert.is_true(fs.exists(target))
       assert.is_true(isdir(target))
       assert.is_true(fs.rm(root, true))
@@ -241,18 +241,18 @@ describe("mods.fs", function()
 
     it("normalizes dot segments before creating parent directories", function()
       local root = make_tmp_dir()
-      local target = path.join(root, "alpha", "..", "beta", ".", "child")
-      local normalized = path.join(root, "beta", "child")
+      local target = join(root, "alpha", "..", "beta", ".", "child")
+      local normalized = join(root, "beta", "child")
 
       assert.is_true(fs.mkdir(target, true))
-      assert.is_false(fs.exists(path.join(root, "alpha")))
+      assert.is_false(fs.exists(join(root, "alpha")))
       assert.is_true(fs.exists(normalized))
       assert.is_true(isdir(normalized))
       assert.is_true(fs.rm(root, true))
     end)
 
     it("fails when parent directories are missing without parent mode", function()
-      local target = path.join(tmpname(), "missing", "child")
+      local target = join(tmpname(), "missing", "child")
       local ok, errmsg, errcode = fs.mkdir(target)
       assert.is_nil(ok)
       assert.is_string(errmsg)
@@ -261,8 +261,8 @@ describe("mods.fs", function()
 
     it("fails when a parent path component is a file", function()
       local root = make_tmp_dir()
-      local parent_file = path.join(root, "data.txt")
-      local target = path.join(parent_file, "child")
+      local parent_file = join(root, "data.txt")
+      local target = join(parent_file, "child")
 
       assert.is_true(fs.write_text(parent_file, "abc"))
 
@@ -275,7 +275,7 @@ describe("mods.fs", function()
 
     it("fails when the target path already exists as a file", function()
       local root = make_tmp_dir()
-      local target = path.join(root, "data.txt")
+      local target = join(root, "data.txt")
 
       assert.is_true(fs.write_text(target, "abc"))
 
@@ -478,7 +478,7 @@ describe("mods.fs", function()
 
     it("fails with an error for a non-empty directory without recursive mode", function()
       local root = make_tmp_dir()
-      local target = path.join(root, "data.txt")
+      local target = join(root, "data.txt")
 
       assert.is_true(fs.write_text(target, "abc"))
 
@@ -519,7 +519,7 @@ describe("mods.fs", function()
       local tree = Tree():dir("sub"):dir(join("sub", "deep")):file("data.txt"):file(join("sub", "deep", "nested.txt"))
       local root = tree.root
       local target = tree:path("data.txt")
-      local nested = tree:path(path.join("sub", "deep", "nested.txt"))
+      local nested = tree:path(join("sub", "deep", "nested.txt"))
 
       assert.is_true(fs.exists(root))
       assert.is_true(fs.exists(target))
@@ -535,7 +535,7 @@ describe("mods.fs", function()
     if is_unix then
       it("removes a symlink root without deleting the target directory", function()
         local external = make_tmp_dir()
-        local external_file = path.join(external, "nested.txt")
+        local external_file = join(external, "nested.txt")
 
         assert.is_true(fs.write_text(external_file, "abc"))
 
@@ -557,8 +557,8 @@ describe("mods.fs", function()
       it("does not follow symlinked directories during recursive removal", function()
         local root = make_tmp_dir()
         local external = make_tmp_dir()
-        local external_file = path.join(external, "nested.txt")
-        local link_dir = path.join(root, "linked")
+        local external_file = join(external, "nested.txt")
+        local link_dir = join(root, "linked")
 
         assert.is_true(fs.write_text(external_file, "abc"))
 
@@ -634,8 +634,8 @@ describe("mods.fs", function()
     if is_unix then
       it("returns true for a hard link to the same file", function()
         local root = tmpname()
-        local target = path.join(root, "target.txt")
-        local link = path.join(root, "hardlink.txt")
+        local target = join(root, "target.txt")
+        local link = join(root, "hardlink.txt")
 
         assert.is_true(lfs.mkdir(root))
 
