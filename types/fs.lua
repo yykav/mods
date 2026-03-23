@@ -130,6 +130,7 @@ function M.touch(path) end
 ---```
 ---
 ---> [!NOTE]
+--->
 ---> This is an alias for `os.rename`.
 ---
 ---@param oldname string Existing path.
@@ -298,6 +299,7 @@ function M.samefile(path_a, path_b) end
 ---```
 ---
 ---> [!NOTE]
+--->
 ---> Broken symlinks return `false`.
 ---
 ---@param path string Input path.
@@ -313,6 +315,7 @@ function M.exists(path) end
 ---```
 ---
 ---> [!NOTE]
+--->
 ---> Broken symlinks return `true`.
 ---
 ---@param path string Input path.
