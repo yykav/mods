@@ -284,6 +284,7 @@ M.Truthy = M.truthy
 ---```
 ---
 ---> [!NOTE]
+--->
 ---> Returns `true` for broken symlinks.
 ---
 ---@param v any Value to validate.
