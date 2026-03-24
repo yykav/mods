@@ -273,6 +273,18 @@ function M.touch(p)
   return true
 end
 
+function M.link(a, linkpath)
+  assert_arg(1, a, "string")
+  assert_arg(2, linkpath, "string")
+  return lfs.link(a, linkpath, false)
+end
+
+function M.symlink(p, linkpath)
+  assert_arg(1, p, "string")
+  assert_arg(2, linkpath, "string")
+  return lfs.link(p, linkpath, true)
+end
+
 function M.stat(p)
   M.stat = lfs.attributes
   return M.stat(p)

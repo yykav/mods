@@ -80,7 +80,7 @@ function M.dir(path, opts) end
 function M.listdir(path, opts) end
 
 --------------------------------------------------------------------------------
------------------------------------ Writing ------------------------------------
+----------------------------- Filesystem Mutations -----------------------------
 --------------------------------------------------------------------------------
 
 ---
@@ -123,6 +123,33 @@ function M.write_text(path, data) end
 ---@return string? errmsg Error message when the check fails.
 ---@return integer? errcode OS error code when available.
 function M.touch(path) end
+
+---Create a hard link.
+---
+---```lua
+---fs.link("target.txt", "hardlink.txt")
+---```
+---
+---@param path string Existing path to link to.
+---@param linkpath string New link path to create.
+---@return true? linked `true` when link creation succeeds, or `nil` on failure.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
+function M.link(path, linkpath) end
+
+---
+---Create a symbolic link.
+---
+---```lua
+---fs.symlink("target.txt", "symlink.txt")
+---```
+---
+---@param path string Path to reference from the new symlink.
+---@param linkpath string New symlink path to create.
+---@return true? linked `true` when link creation succeeds, or `nil` on failure.
+---@return string? errmsg Error message when the check fails.
+---@return integer? errcode OS error code when available.
+function M.symlink(path, linkpath) end
 
 ---
 ---Rename or move a filesystem entry.
