@@ -50,7 +50,6 @@ luarocks install mods
 | Module         | Description                                                                |
 | -------------- | -------------------------------------------------------------------------- |
 | [`fs`]         | Filesystem I/O, metadata, and filesystem path operations.                  |
-| [`glob`]       | Glob-style matching and filesystem expansion helpers.                      |
 | [`is`]         | Type predicates for Lua values and filesystem path types.                  |
 | [`keyword`]    | Helpers for Lua keywords and identifiers.                                  |
 | [`List`]       | A list class for creating, transforming, and querying sequences of values. |
@@ -82,7 +81,6 @@ Thanks to these Lua ecosystem projects:
 - [busted](https://github.com/lunarmodules/busted) for test framework support.
 
 [`fs`]: https://luamod.github.io/mods/modules/fs
-[`glob`]: https://luamod.github.io/mods/modules/glob
 [`is`]: https://luamod.github.io/mods/modules/is
 [`keyword`]: https://luamod.github.io/mods/modules/keyword
 [`List`]: https://luamod.github.io/mods/modules/list
