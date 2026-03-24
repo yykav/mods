@@ -3,7 +3,6 @@ local lfs = require "lfs"
 local mods = require "mods"
 
 local List = mods.List
-local Tree = helpers.Tree
 local fs = mods.fs
 local path = mods.path
 
@@ -916,10 +915,15 @@ describe("mods.fs", function()
     end)
 
     it("removes a directory tree recursively", function()
-      local tree = Tree():dir("sub"):dir(join("sub", "deep")):file("data.txt"):file(join("sub", "deep", "nested.txt"))
-      local root = tree.root
-      local target = tree:path("data.txt")
-      local nested = tree:path(join("sub", "deep", "nested.txt"))
+      local root = make_tmp_dir()
+      local subdir = join(root, "sub")
+      local deep_dir = join(subdir, "deep")
+      local target = join(root, "data.txt")
+      local nested = join(deep_dir, "nested.txt")
+
+      assert.is_true(fs.mkdir(deep_dir, true))
+      assert.is_true(fs.write_text(target, "abc"))
+      assert.is_true(fs.write_text(nested, "abc"))
 
       assert.is_true(fs.exists(root))
       assert.is_true(fs.exists(target))
@@ -936,12 +940,11 @@ describe("mods.fs", function()
       it("removes a symlink root without deleting the target directory", function()
         local external = make_tmp_dir()
         local external_file = join(external, "nested.txt")
+        local root = make_tmp_dir()
+        local link_dir = join(root, "linked")
 
         assert.is_true(fs.write_text(external_file, "abc"))
-
-        local tree = Tree():link("linked", external, true)
-        local root = tree.root
-        local link_dir = tree:path("linked")
+        assert.is_true(lfs.link(external, link_dir, true))
 
         assert.is_true(fs.lexists(link_dir))
         assert.is_true(fs.rm(link_dir, true))
