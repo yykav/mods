@@ -35,7 +35,6 @@ describe("mods.fs", function()
 
   describe("stat()", function()
     it("exposes an lfs.attributes alias", function()
-      assert.is_table(fs.stat(readme_file))
       assert.are_equal(lfs.attributes, fs.stat)
     end)
 
@@ -49,7 +48,6 @@ describe("mods.fs", function()
 
   describe("lstat()", function()
     it("exposes an lfs.symlinkattributes alias", function()
-      assert.is_table(fs.lstat(readme_file))
       assert.are_equal(lfs.symlinkattributes, fs.lstat)
     end)
 
@@ -85,9 +83,12 @@ describe("mods.fs", function()
   end)
 
   describe("cd()", function()
+    it("exposes an lfs.chdir alias", function()
+      assert.are_equal(lfs.chdir, fs.cd)
+    end)
+
     it("changes the current working directory", function()
       local root = make_tmp_dir()
-
       assert.is_true(fs.cd(root))
       assert.are_equal(root, path.cwd())
       assert.is_true(fs.cd(cwd))

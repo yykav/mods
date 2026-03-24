@@ -285,21 +285,6 @@ function M.symlink(p, linkpath)
   return lfs.link(p, linkpath, true)
 end
 
-function M.cd(p)
-  M.cd = lfs.chdir
-  return M.cd(p)
-end
-
-function M.stat(p)
-  M.stat = lfs.attributes
-  return M.stat(p)
-end
-
-function M.lstat(p)
-  M.lstat = lfs.symlinkattributes
-  return M.lstat(p)
-end
-
 function M.exists(p)
   assert_arg(1, p, "string")
   return lfs.attributes(p, "mode") ~= nil
@@ -448,4 +433,10 @@ end
 
 M.rename = rename
 
-return M
+return setmetatable(M, {
+  __index = function(t, k)
+    local v = ({ cd = lfs.chdir, stat = lfs.attributes, lstat = lfs.symlinkattributes })[k]
+    t[k] = v
+    return v
+  end,
+})
