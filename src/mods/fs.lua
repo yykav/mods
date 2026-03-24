@@ -124,21 +124,21 @@ local function collect_dir_items(root, opts, items, fullpath)
   local follow = opts.follow
   local hidden = opts.hidden
   local recursive = opts.recursive
-  local type_filter = opts.type
+  local type = opts.type
 
   for entry in iter, dir_obj do
     if not is_dir_marker(entry) and (hidden or not is_hidden(entry)) then
       local child = join(root, entry)
       local link_mode = lstat(child, "mode")
-      local type = entry_types[link_mode] or link_mode or "unknown"
-      local child_is_dir = type == "directory"
-      if follow and type == "link" then
+      local tp = entry_types[link_mode] or link_mode or "unknown"
+      local child_is_dir = tp == "directory"
+      if follow and tp == "link" then
         child_is_dir = stat(child, "mode") == "directory"
       end
-      if not type_filter or type_filter == type then
-        items[#items + 1] = { fullpath and child or entry, type }
+      if not type or type == tp then
+        items[#items + 1] = { fullpath and child or entry, tp }
       end
-      if recursive and child_is_dir and (follow or type ~= "link") then
+      if recursive and child_is_dir and (follow or tp ~= "link") then
         local ok, err = collect_dir_items(child, opts, items, fullpath)
         if not ok then
           return false, err
@@ -169,9 +169,9 @@ local function copy_tree(src, dst)
   end
 
   for i = 1, #items do
-    local child, type_ = items[i][1], items[i][2]
+    local child, type = items[i][1], items[i][2]
     local target = join(dst, basename(child))
-    if type_ == "directory" then
+    if type == "directory" then
       ok, errmsg, errcode = copy_tree(child, target)
       if not ok then
         return nil, errmsg, errcode
@@ -195,9 +195,9 @@ end
 
 local function normalize_dir_opts(fname, opts)
   opts = opts or {}
+  validate(fname .. ".opts.follow", opts.follow, "boolean", true)
   validate(fname .. ".opts.hidden", opts.hidden, "boolean", true)
   validate(fname .. ".opts.recursive", opts.recursive, "boolean", true)
-  validate(fname .. ".opts.follow", opts.follow, "boolean", true)
   validate(fname .. ".opts.type", opts.type, "string", true)
 
   return {
@@ -358,9 +358,9 @@ function M.mkdir(p, parents_)
   end
 
   local normed = normpath(p)
-  local parents_dirs = parents(normed)
-  for i = #parents_dirs, 1, -1 do
-    local dir = parents_dirs[i]
+  local dirs = parents(normed)
+  for i = #dirs, 1, -1 do
+    local dir = dirs[i]
     if dir ~= CURDIR and not isdir(dir) then
       local ok, errmsg, errcode = mkdir(dir)
       if not ok then
