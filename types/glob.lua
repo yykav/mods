@@ -14,34 +14,40 @@
 ---print(glob.glob("src", "*.lua")[1])
 ---```
 ---
----## Supported wildcards:
+---## Supported wildcards
 ---
 ---* `*`: match zero or more characters within one path segment.
+---
 ---  ```lua
 ---  match("main.lua", "*.lua")
 ---  ```
 ---
 ---* `?`: match exactly one character within one path segment.
+---
 ---  ```lua
 ---  match("a1.lua", "a?.lua")
 ---  ```
 ---
 ---* `[]`: match one character from a bracket class like `[a-z]`.
+---
 ---  ```lua
 ---  match("file7.lua", "file[0-9].lua")
 ---  ```
 ---
 ---* `[!]`: negate a bracket class, like `[!0-9]`.
+---
 ---  ```lua
 ---  match("filex.lua", "file[!0-9].lua")
 ---  ```
 ---
 ---* `{a,b}`: match one of several brace alternatives.
+---
 ---  ```lua
 ---  match("init.lua", "init.{lua,luac}")
 ---  ```
 ---
 ---* `**`: match across path segments recursively.
+---
 ---  ```lua
 ---  match("src/mods/fs.lua", "**/*.lua")
 ---  ```
@@ -76,6 +82,7 @@ function M.match(path, pattern) end
 ---> [!NOTE]
 --->
 ---> * `*` and `?` stay within a single path segment.
+--->
 --->   ```lua
 --->   local pattern = "*.txt"
 --->   print(glob.translate(pattern))            --> "^[^/]*%.txt$"
@@ -83,6 +90,7 @@ function M.match(path, pattern) end
 --->   ```
 --->
 ---> * `**` and `{a,b}` need higher-level matching logic.
+--->
 --->   ```lua
 --->   pattern = "src/{x,y}.lua"
 --->   print(("src/x.lua"):match(glob.translate(pattern))) --> nil
