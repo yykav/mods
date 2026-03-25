@@ -146,6 +146,13 @@ function M.filter(names, pattern, ignorecase) end
 ---
 ---Return glob matches under `path`.
 ---
+---**Options**:
+---
+---* `hidden`: include hidden paths; defaults to `true`.
+---* `recursive`: recurse into subdirectories; defaults to `false`.
+---* `follow`: recurse into symlinked directories; defaults to `false`.
+---* `ignorecase`: use case-insensitive matching; defaults to platform semantics.
+---
 ---```lua
 ---glob.glob("src", "*.lua")
 ---glob.glob("src", "*.lua", { recursive = true })
@@ -160,6 +167,13 @@ function M.glob(path, pattern, opts) end
 
 ---
 ---Iterator over glob matches under `path`.
+---
+---**Options**:
+---
+---* `hidden`: include hidden paths; defaults to `true`.
+---* `recursive`: recurse into subdirectories; defaults to `false`.
+---* `follow`: recurse into symlinked directories; defaults to `false`.
+---* `ignorecase`: use case-insensitive matching; defaults to platform semantics.
 ---
 ---```lua
 ---for path in glob.iglob("src", "*.lua") do
