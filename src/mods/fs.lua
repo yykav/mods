@@ -198,11 +198,13 @@ local function normalize_dir_opts(fname, opts)
   validate(fname .. ".opts.follow", opts.follow, "boolean", true)
   validate(fname .. ".opts.hidden", opts.hidden, "boolean", true)
   validate(fname .. ".opts.recursive", opts.recursive, "boolean", true)
+  validate(fname .. ".opts.names", opts.names, "boolean", true)
   validate(fname .. ".opts.type", opts.type, "string", true)
 
   return {
     follow = opts.follow == true,
     hidden = opts.hidden ~= false,
+    names = opts.names == true,
     recursive = opts.recursive == true,
     type = opts.type,
   }
@@ -406,7 +408,7 @@ function M.listdir(p, opts)
   opts = normalize_dir_opts("listdir", opts)
 
   local items = {}
-  local ok, err = collect_dir_items(p, opts, items, true)
+  local ok, err = collect_dir_items(p, opts, items, not opts.names)
   if not ok then
     return nil, err
   end

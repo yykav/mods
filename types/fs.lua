@@ -1,7 +1,6 @@
 ---@meta mods.fs
 
 ---@alias modsFsEntryType "file"|"directory"|"link"|"fifo"|"socket"|"char"|"block"|"unknown"
----@alias modsDirOptions {hidden?:boolean, recursive?:boolean, follow?:boolean, type?:modsFsEntryType}
 
 ---
 ---Filesystem I/O, metadata, and filesystem path operations.
@@ -65,7 +64,7 @@ function M.read_text(path) end
 ---```
 ---
 ---@param path string Input path.
----@param opts? modsDirOptions Optional traversal options.
+---@param opts? {hidden?:boolean, recursive?:boolean, follow?:boolean, type?:modsFsEntryType} Optional traversal options.
 ---@return (fun(state:table, prev?:string):basename:string?, type:modsFsEntryType?)? iterator Iterator, or `nil` on failure.
 ---@return table|string state Iterator state on success, or error message on failure.
 function M.dir(path, opts) end
@@ -73,13 +72,22 @@ function M.dir(path, opts) end
 ---
 ---Return direct children of a directory.
 ---
+---**Options**:
+---
+---* `recursive`: recurse into subdirectories; defaults to `false`.
+---* `hidden`: include hidden entries; defaults to `true`.
+---* `follow`: recurse into symlinked directories; defaults to `false`.
+---* `type`: filter by entry type, such as `"file"` or `"directory"`; defaults to `nil`.
+---* `names`: return basenames; defaults to `false`.
+---
 ---```lua
 ---fs.listdir("src")
+---fs.listdir("src", { names = true })
 ---```
 ---
 ---@param path string Input path.
----@param opts? modsDirOptions Optional traversal options.
----@return mods.List<string>? paths Direct child paths.
+---@param opts? {hidden?:boolean, recursive?:boolean, follow?:boolean, type?:modsFsEntryType, names?:boolean} Optional traversal options.
+---@return mods.List<string>? paths Direct child paths, or basenames when `opts.names` is `true`.
 ---@return string? err Error message when traversal setup fails.
 ---@nodiscard
 function M.listdir(path, opts) end

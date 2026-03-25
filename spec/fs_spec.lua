@@ -315,6 +315,23 @@ describe("mods.fs", function()
       assert.is_true(fs.rm(root, true))
     end)
 
+    it("can return basenames instead of full paths", function()
+      local root = make_tmp_dir()
+      local subdir = join(root, "sub")
+      local hidden_dir = join(root, ".hidden")
+      local target = join(root, "data.txt")
+      local hidden_target = join(root, ".secret")
+
+      assert.is_true(fs.mkdir(subdir))
+      assert.is_true(fs.mkdir(hidden_dir))
+      assert.is_true(fs.write_text(target, "abc"))
+      assert.is_true(fs.write_text(hidden_target, "zzz"))
+
+      assert.same({ ".hidden", ".secret", "data.txt", "sub" }, fs.listdir(root, { names = true }):sort())
+
+      assert.is_true(fs.rm(root, true))
+    end)
+
     it("supports recursive listing", function()
       local root = make_tmp_dir()
       local subdir = join(root, "sub")
@@ -1167,6 +1184,7 @@ describe("mods.fs", function()
     -- Option validation.
 
     local hidden = { hidden = 1 }
+    local names  = { names = 1 }
     local rec    = { recursive = 1 }
     local follow = { follow = 1 }
     local tp     = { type = 1 }
@@ -1177,6 +1195,7 @@ describe("mods.fs", function()
     assert.has_error(function() fs.dir("src", tp)         end, "dir.opts.type: string expected, got number")
     assert.has_error(function() fs.listdir("src", follow) end, "listdir.opts.follow: boolean expected, got number")
     assert.has_error(function() fs.listdir("src", hidden) end, "listdir.opts.hidden: boolean expected, got number")
+    assert.has_error(function() fs.listdir("src", names)  end, "listdir.opts.names: boolean expected, got number")
     assert.has_error(function() fs.listdir("src", rec)    end, "listdir.opts.recursive: boolean expected, got number")
     assert.has_error(function() fs.listdir("src", tp)     end, "listdir.opts.type: string expected, got number")
   end)
