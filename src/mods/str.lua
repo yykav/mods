@@ -1,6 +1,8 @@
-local List = require "mods.List"
-local keyword = require "mods.keyword"
-local stringcase = require "mods.stringcase"
+local mods = require "mods"
+
+local List = mods.List
+local keyword = mods.keyword
+local stringcase = mods.stringcase
 
 local byte = string.byte
 local char = string.char
@@ -19,24 +21,23 @@ local upper = string.upper
 local M = {}
 
 local function norm_range(s, start, stop)
-  local len = #s
   if start == nil then
     start = 1
   elseif start < 0 then
-    start = len + start + 1
+    start = #s + start + 1
   end
 
   if stop == nil then
-    stop = len
+    stop = #s
   elseif stop < 0 then
-    stop = len + stop + 1
+    stop = #s + stop + 1
   end
 
   if start < 1 then
     start = 1
   end
-  if stop > len then
-    stop = len
+  if stop > #s then
+    stop = #s
   end
 
   return start, stop
@@ -59,43 +60,41 @@ local function split_whitespace_words(s)
 end
 
 local function norm_range_exclusive(s, start, stop)
-  local len = #s
   local a = start
   local b = stop
 
   if a == nil then
     a = 1
   elseif a < 0 then
-    a = len + a + 1
+    a = #s + a + 1
   end
 
   if b == nil then
-    b = len + 1
+    b = #s + 1
   elseif b < 0 then
-    b = len + b + 1
+    b = #s + b + 1
   end
 
   if a < 1 then
     a = 1
-  elseif a > len + 1 then
-    a = len + 1
+  elseif a > #s + 1 then
+    a = #s + 1
   end
 
   if b < 1 then
     b = 1
-  elseif b > len + 1 then
-    b = len + 1
+  elseif b > #s + 1 then
+    b = #s + 1
   end
 
   return a, b
 end
 
 function M.center(s, width, fillchar)
-  local len = #s
-  if width <= len then
+  if width <= #s then
     return s
   end
-  local pad = width - len
+  local pad = width - #s
   local left = floor(pad / 2)
   local right = pad - left
   local fc = first_char_or_space(fillchar)
@@ -217,8 +216,7 @@ function M.isalpha(s)
 end
 
 function M.isascii(s)
-  local len = #s
-  for i = 1, len do
+  for i = 1, #s do
     if byte(s, i) > 127 then
       return false
     end
@@ -256,8 +254,7 @@ function M.isupper(s)
 end
 
 function M.isprintable(s)
-  local len = #s
-  for i = 1, len do
+  for i = 1, #s do
     local b = byte(s, i)
     if b < 32 or b > 126 then
       return false
@@ -271,12 +268,11 @@ function M.join(sep, list)
 end
 
 function M.ljust(s, width, fillchar)
-  local len = #s
-  if width <= len then
+  if width <= #s then
     return s
   end
   local fc = first_char_or_space(fillchar)
-  return s .. rep(fc, width - len)
+  return s .. rep(fc, width - #s)
 end
 
 function M.lstrip(s, chars)
@@ -343,10 +339,9 @@ function M.replace(s, old, new, count)
   end
 
   if old == "" then
-    local len = #s
     local limit = count
     if limit < 0 then
-      limit = len + 1
+      limit = #s + 1
     end
     if limit == 0 then
       return s
@@ -354,7 +349,7 @@ function M.replace(s, old, new, count)
     local out = {}
     out[#out + 1] = new
     local n = 1
-    for i = 1, len do
+    for i = 1, #s do
       out[#out + 1] = sub(s, i, i)
       if n < limit then
         out[#out + 1] = new
@@ -415,12 +410,11 @@ function M.rindex(s, subp, start, stop)
 end
 
 function M.rjust(s, width, fillchar)
-  local len = #s
-  if width <= len then
+  if width <= #s then
     return s
   end
   local fc = first_char_or_space(fillchar)
-  return rep(fc, width - len) .. s
+  return rep(fc, width - #s) .. s
 end
 
 function M.rpartition(s, sep)
@@ -532,12 +526,11 @@ function M.split(s, sep, maxsplit)
 end
 
 function M.splitlines(s, keepends)
-  local len = #s
   local out = List()
   local i = 1
-  while i <= len do
+  while i <= #s do
     local j = i
-    while j <= len do
+    while j <= #s do
       local b = byte(s, j)
       if b == 10 or b == 13 then
         break
@@ -545,7 +538,7 @@ function M.splitlines(s, keepends)
       j = j + 1
     end
 
-    if j > len then
+    if j > #s then
       out[#out + 1] = sub(s, i)
       break
     end
@@ -623,15 +616,14 @@ function M.translate(s, table_map)
 end
 
 function M.zfill(s, width)
-  local len = #s
-  if width <= len then
+  if width <= #s then
     return s
   end
   local sign = sub(s, 1, 1)
   if sign == "+" or sign == "-" then
-    return sign .. rep("0", width - len) .. sub(s, 2)
+    return sign .. rep("0", width - #s) .. sub(s, 2)
   end
-  return rep("0", width - len) .. s
+  return rep("0", width - #s) .. s
 end
 
 M.capitalize = stringcase.capital
