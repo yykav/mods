@@ -1,9 +1,6 @@
 local List = require "mods.List"
 local keyword = require "mods.keyword"
-local runtime = require "mods.runtime"
 local stringcase = require "mods.stringcase"
-
-local is_luajit = runtime.is_luajit
 
 local byte = string.byte
 local char = string.char
@@ -211,39 +208,11 @@ function M.format_map(s, mapping)
   )
 end
 
-local function isalnum_bytes(s)
-  local len = #s
-  if len == 0 then
-    return false
-  end
-  for i = 1, len do
-    local b = byte(s, i)
-    if not ((b >= 48 and b <= 57) or (b >= 65 and b <= 90) or (b >= 97 and b <= 122)) then
-      return false
-    end
-  end
-  return true
-end
-
-local function isalnum_pattern(s)
+function M.isalnum(s)
   return find(s, "^[%a%d]+$") == 1
 end
 
-local function isalpha_bytes(s)
-  local len = #s
-  if len == 0 then
-    return false
-  end
-  for i = 1, len do
-    local b = byte(s, i)
-    if not ((b >= 65 and b <= 90) or (b >= 97 and b <= 122)) then
-      return false
-    end
-  end
-  return true
-end
-
-local function isalpha_pattern(s)
+function M.isalpha(s)
   return find(s, "^%a+$") == 1
 end
 
@@ -257,57 +226,15 @@ function M.isascii(s)
   return true
 end
 
-local function isdecimal_bytes(s)
-  local len = #s
-  if len == 0 then
-    return false
-  end
-  for i = 1, len do
-    local b = byte(s, i)
-    if b < 48 or b > 57 then
-      return false
-    end
-  end
-  return true
-end
-
-local function isdecimal_pattern(s)
+function M.isdecimal(s)
   return find(s, "^%d+$") == 1
 end
 
-local function islower_bytes(s)
-  local has = false
-  for i = 1, #s do
-    local b = byte(s, i)
-    if b >= 65 and b <= 90 then
-      return false
-    end
-    if b >= 97 and b <= 122 then
-      has = true
-    end
-  end
-  return has
-end
-
-local function islower_pattern(s)
+function M.islower(s)
   return match(s, "%a") ~= nil and match(s, "%u") == nil
 end
 
-local function isspace_bytes(s)
-  local len = #s
-  if len == 0 then
-    return false
-  end
-  for i = 1, len do
-    local b = byte(s, i)
-    if b ~= 32 and (b < 9 or b > 13) then
-      return false
-    end
-  end
-  return true
-end
-
-local function isspace_pattern(s)
+function M.isspace(s)
   return find(s, "^%s+$") == 1
 end
 
@@ -324,21 +251,7 @@ function M.istitle(s)
   return has
 end
 
-local function isupper_bytes(s)
-  local has = false
-  for i = 1, #s do
-    local b = byte(s, i)
-    if b >= 97 and b <= 122 then
-      return false
-    end
-    if b >= 65 and b <= 90 then
-      has = true
-    end
-  end
-  return has
-end
-
-local function isupper_pattern(s)
+function M.isupper(s)
   return match(s, "%a") ~= nil and match(s, "%l") == nil
 end
 
@@ -722,15 +635,9 @@ function M.zfill(s, width)
 end
 
 M.capitalize = stringcase.capital
-M.isalnum = is_luajit and isalnum_bytes or isalnum_pattern
-M.isalpha = is_luajit and isalpha_bytes or isalpha_pattern
-M.isdecimal = is_luajit and isdecimal_bytes or isdecimal_pattern
 M.isdigit = M.isdecimal
 M.isidentifier = keyword.isidentifier
-M.islower = is_luajit and islower_bytes or islower_pattern
 M.isnumeric = M.isdecimal
-M.isspace = is_luajit and isspace_bytes or isspace_pattern
-M.isupper = is_luajit and isupper_bytes or isupper_pattern
 M.lower = lower
 M.swapcase = stringcase.swap
 M.upper = upper
