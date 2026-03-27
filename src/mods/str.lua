@@ -44,7 +44,7 @@ local function norm_range(s, start, stop)
 end
 
 local function escape_class(s)
-  return gsub(s, "([%%%]%^%-])", "%%%1")
+  return gsub(s, "([]%%^-])", "%%%1")
 end
 
 local function first_char_or_space(fillchar)
@@ -208,7 +208,7 @@ function M.format_map(s, mapping)
 end
 
 function M.isalnum(s)
-  return find(s, "^[%a%d]+$") == 1
+  return find(s, "^%w+$") == 1
 end
 
 function M.isalpha(s)
@@ -591,7 +591,7 @@ function M.startswith(s, prefix, start, stop)
 end
 
 function M.title(s)
-  return (gsub(lower(s), "(%a)([%w]*)", function(f, r)
+  return (gsub(lower(s), "(%a)(%w*)", function(f, r)
     return upper(f) .. r
   end))
 end

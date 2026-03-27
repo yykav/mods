@@ -173,6 +173,7 @@ describe("mods.str", function()
     { "lstrip"       , ""              , {                     } , { ""                      } },
     { "lstrip"       , "abc"           , { ""                  } , { "abc"                   } },
     { "lstrip"       , "abcabc"        , { "ac"                } , { "bcabc"                 } },
+    { "lstrip"       , "]^-abc"        , { "]^-"               } , { "abc"                   } },
     { "lstrip"       , "xxabc"         , { "xy"                } , { "abc"                   } },
 
     { "partition"    , "-abc"          , { "-"                 } , { "", "-", "abc"          } },
@@ -211,6 +212,7 @@ describe("mods.str", function()
     { "rsplit"       , "a,b,c"         , { ",", 1              } , { { "a,b", "c" }          } },
     { "rsplit"       , "a,b"           , { ",", 0              } , { { "a,b" }               } },
     { "rstrip"       , "--hello--"     , { "-"                 } , { "--hello"               } },
+    { "rstrip"       , "abc-^]"        , { "]^-"               } , { "abc"                   } },
     { "rstrip"       , "abc"           , { ""                  } , { "abc"                   } },
     { "rstrip"       , "hello  "       , {                     } , { "hello"                 } },
 
@@ -234,6 +236,7 @@ describe("mods.str", function()
 
     { "strip"        , "  hello  "     , {                     } , { "hello"                 } },
     { "strip"        , "..hello.."     , { "."                 } , { "hello"                 } },
+    { "strip"        , "]^-hello-^]"   , { "]^-"               } , { "hello"                 } },
     { "strip"        , "abc"           , { ""                  } , { "abc"                   } },
 
     { "swapcase"     , ""              , {                     } , { ""                      } },
