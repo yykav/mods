@@ -195,19 +195,6 @@ function M.isascii(s) end
 ---@nodiscard
 function M.isdecimal(s) end
 
----
----Return true if all characters are digits and string is non-empty.
----
----```lua
----ok = isdigit("123") --> true
----```
----
----@param s string Input string.
----@return boolean isDigit True when `s` is non-empty and all characters are digits.
----@nodiscard
-function M.isdigit(s) end
-
----
 ---Return true if string is a valid identifier and not a reserved keyword.
 ---
 ---```lua
@@ -233,19 +220,6 @@ function M.isidentifier(s) end
 ---@nodiscard
 function M.islower(s) end
 
----
----Return true if all characters are numeric and string is non-empty.
----
----```lua
----ok = isnumeric("123") --> true
----```
----
----@param s string Input string.
----@return boolean isNumeric True when `s` is non-empty and all characters are numeric.
----@nodiscard
-function M.isnumeric(s) end
-
----
 ---Return true if all characters are printable.
 ---
 ---```lua

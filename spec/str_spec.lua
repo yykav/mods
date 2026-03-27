@@ -95,13 +95,6 @@ describe("mods.str", function()
     { "isdecimal"    , "123"           , {                     } , { true                    } },
     { "isdecimal"    , "12a"           , {                     } , { false                   } },
 
-    { "isdigit"      , " 1"            , {                     } , { false                   } },
-    { "isdigit"      , ""              , {                     } , { false                   } },
-    { "isdigit"      , "01"            , {                     } , { true                    } },
-    { "isdigit"      , "١٢٣"           , {                     } , { false                   } },
-    { "isdigit"      , "123"           , {                     } , { true                    } },
-    { "isdigit"      , "12a"           , {                     } , { false                   } },
-
     { "isidentifier" , "_"             , {                     } , { true                    } },
     { "isidentifier" , "[var"          , {                     } , { false                   } },
     { "isidentifier" , "2var"          , {                     } , { false                   } },
@@ -118,13 +111,6 @@ describe("mods.str", function()
     { "islower"      , "abC"           , {                     } , { false                   } },
     { "islower"      , "abc"           , {                     } , { true                    } },
     { "islower"      , "abc123"        , {                     } , { true                    } },
-
-    { "isnumeric"    , " 1"            , {                     } , { false                   } },
-    { "isnumeric"    , ""              , {                     } , { false                   } },
-    { "isnumeric"    , "01"            , {                     } , { true                    } },
-    { "isnumeric"    , "١٢٣"           , {                     } , { false                   } },
-    { "isnumeric"    , "123"           , {                     } , { true                    } },
-    { "isnumeric"    , "12a"           , {                     } , { false                   } },
 
     { "isprintable"  , " "             , {                     } , { true                    } },
     { "isprintable"  , ""              , {                     } , { true                    } },
