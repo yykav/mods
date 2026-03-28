@@ -1,278 +1,316 @@
+local helpers = require "spec.helpers"
 local mods = require "mods"
 
 local List = mods.List
 local str = mods.str
 
+local test_functions = helpers.test_functions
 local args_repr = mods.utils.args_repr
+
 local byte = string.byte
 local fmt = string.format
 
 describe("mods.str", function()
+  test_functions(str, {
+    -- stylua: ignore start
+    --{{expected_results}, {args}}
+
+    capitalize = {
+      {{ ""      }, { ""      }},
+      {{ "1abc"  }, { "1abc"  }},
+      {{ "A"     }, { "a"     }},
+      {{ "Hello" }, { "hello" }},
+      {{ "Hello" }, { "hELLO" }},
+    },
+    center = {
+      {{ "hi"     }, { "hi", -6      }},
+      {{ "hi"     }, { "hi", 2       }},
+      {{ "ahia"   }, { "hi", 4, "ab" }},
+      {{ "  hi  " }, { "hi", 6       }},
+      {{ "__hi__" }, { "hi", 6, "_"  }},
+    },
+    count = {
+      {{ 4 }, { "aaaa"  , "a" ,       }},
+      {{ 2 }, { "aaaa"  , "a" , 2, -1 }},
+      {{ 2 }, { "aaaa"  , "aa",       }},
+      {{ 2 }, { "aaaaaa", "a" , 2, 4  }},
+      {{ 5 }, { "abcd"  , ""  ,       }},
+      {{ 2 }, { "abcd"  , ""  , 2, 3  }},
+      {{ 0 }, { "abcd"  , "a" , 3, 2  }},
+    },
+    endswith = {
+      {{ true  }, { "hello.lua", ".lua"             }},
+      {{ false }, { "hello.lua", ".lua", 1, 6       }},
+      {{ false }, { "hello.lua", ".txt"             }},
+      {{ true  }, { "hello.lua", ""                 }},
+      {{ true  }, { "hello.lua", { ".txt", ".lua" } }},
+    },
+    expandtabs = {
+      {{ "A       B" }, { "A\tB"         ,   }},
+      {{ "A       B" }, { "A\tB"         , 8 }},
+      {{ "AB C"      }, { "AB\tC"        , 1 }},
+      {{ "AB  C"     }, { "AB\tC"        , 2 }},
+      {{ "Hello"     }, { "H\te\tl\tl\to", 0 }},
+      {{ "H e l l o" }, { "H\te\tl\tl\to", 1 }},
+      {{ "H e l l o" }, { "H\te\tl\tl\to", 2 }},
+    },
+    find = {
+      {{ 1   }, { "banana", ""  ,       }},
+      {{ nil }, { "banana", ""  , 3, 2  }},
+      {{ 4   }, { "banana", ""  , 4     }},
+      {{ 3   }, { "banana", "na",       }},
+      {{ 5   }, { "banana", "na", -2    }},
+      {{ 5   }, { "banana", "na", -3    }},
+      {{ 3   }, { "banana", "na", 2, -2 }},
+      {{ nil }, { "banana", "na", 3, -3 }},
+      {{ 5   }, { "banana", "na", 4     }},
+      {{ nil }, { "banana", "na", 4, 4  }},
+      {{ nil }, { "banana", "na", 4, 5  }},
+      {{ nil }, { "banana", "zz",       }},
+    },
+    format_map = {
+      {{ "1-true"    }, { "{a}-{b}"    , { a = 1, b = true } }},
+      {{ "a y b y"   }, { "a {x} b {x}", { x = "y" }         }},
+      {{ "hi nil"    }, { "hi {name}"  , {}                  }},
+      {{ "hi bob"    }, { "hi {name}"  , { name = "bob" }    }},
+      {{ "hi nil"    }, { "hi {name}"  , {}                  }},
+      {{ "no braces" }, { "no braces"  , { a = 1 }           }},
+      {{ "xZy"       }, { "x{}y"       , { [""] = "Z" }      }},
+    },
+    isalnum = {
+      {{ false }, { ""        }},
+      {{ true  }, { "123"     }},
+      {{ false }, { "a-1"     }},
+      {{ false }, { "a1 "     }},
+      {{ false }, { "á1"      }},
+      {{ false }, { "abc_123" }},
+      {{ true  }, { "abc"     }},
+      {{ true  }, { "abc123"  }},
+    },
+    isalpha = {
+      {{ false  }, { ""     }},
+      {{ false  }, { "a b"  }},
+      {{ false  }, { "á"    }},
+      {{ true   }, { "A"    }},
+      {{ true   }, { "abc"  }},
+      {{ false  }, { "abc1" }},
+    },
+    isascii = {
+      {{ true  }, { ""    }},
+      {{ true  }, { "\n"  }},
+      {{ true  }, { "~"   }},
+      {{ false }, { "á"   }},
+      {{ true  }, { "abc" }},
+    },
+    isdecimal = {
+      {{ false }, { " 1"  }},
+      {{ false }, { ""    }},
+      {{ true  }, { "01"  }},
+      {{ false }, { "١٢٣" }},
+      {{ true  }, { "123" }},
+      {{ false }, { "12a" }},
+    },
+    isidentifier = {
+      {{ true  }, { "_"        }},
+      {{ false }, { "[var"     }},
+      {{ false }, { "2var"     }},
+      {{ false }, { "end"      }},
+      {{ false }, { "function" }},
+      {{ false }, { "local"    }},
+      {{ false }, { "nil"      }},
+      {{ true  }, { "var"      }},
+      {{ false }, { "var)"     }},
+    },
+    islower = {
+      {{ false }, { ""       }},
+      {{ false }, { "123"    }},
+      {{ true  }, { "a c"    }},
+      {{ false }, { "abC"    }},
+      {{ true  }, { "abc"    }},
+      {{ true  }, { "abc123" }},
+    },
+    isprintable = {
+      {{ true  }, { " "    }},
+      {{ true  }, { ""     }},
+      {{ false }, { "\t"   }},
+      {{ false }, { "á"    }},
+      {{ false }, { "a\n"  }},
+      {{ true  }, { "abc!" }},
+    },
+    isspace = {
+      {{ true  }, { " \t"  }},
+      {{ false }, { " a"   }},
+      {{ false }, { ""     }},
+      {{ true  }, { "\n\r" }},
+      {{ true  }, { "\v"   }},
+    },
+    istitle = {
+      {{ false }, { "_"           }},
+      {{ false }, { "..."         }},
+      {{ false }, { ""            }},
+      {{ false }, { "123"         }},
+      {{ false }, { "hello World" }},
+      {{ false }, { "Hello world" }},
+      {{ false }, { "HELLO World" }},
+      {{ true  }, { "Hello World" }},
+      {{ true  }, { "Hello-World" }},
+    },
+    isupper = {
+      {{ false }, { ""        }},
+      {{ false }, { "123"     }},
+      {{ true  }, { "ABC 123" }},
+      {{ false }, { "AbC"     }},
+      {{ true  }, { "ABC123"  }},
+    },
+    join = {
+      {{ "a"   }, { "-", { "a" }      }},
+      {{ "a,b" }, { ",", { "a", "b" } }},
+      {{ ""    }, { ",", {}           }},
+      {{ "ab"  }, { "" , { "a", "b" } }},
+    },
+    ljust = {
+      {{ "hi"    }, { "hi", 2,     }},
+      {{ "hi  "  }, { "hi", 4,     }},
+      {{ "hi..." }, { "hi", 5, "." }},
+    },
+    lower = {
+      {{ ""            }, { ""            }},
+      {{ "123"         }, { "123"         }},
+      {{ "hello world" }, { "HELLO WORLD" }},
+      {{ "hello"       }, { "HeLLo"       }},
+    },
+    lstrip = {
+      {{ "hello" }, { "  hello",       }},
+      {{ "hello" }, { "--hello", "-"   }},
+      {{ ""      }, { ""       ,       }},
+      {{ "abc"   }, { "abc"    , ""    }},
+      {{ "bcabc" }, { "abcabc" , "ac"  }},
+      {{ "abc"   }, { "]^-abc" , "]^-" }},
+      {{ "abc"   }, { "xxabc"  , "xy"  }},
+    },
+    partition = {
+      {{ ""   , "-", "abc" }, { "-abc" , "-" }},
+      {{ "a"  , "-", "b-c" }, { "a-b-c", "-" }},
+      {{ "abc", "-", ""    }, { "abc-" , "-" }},
+      {{ "abc", "" , ""    }, { "abc"  , "-" }},
+    },
+    removeprefix = {
+      {{ "foo"    }, { "foo"   , ""    }},
+      {{ ""       }, { "foo"   , "foo" }},
+      {{ "foobar" }, { "foobar", "baz" }},
+      {{ "bar"    }, { "foobar", "foo" }},
+    },
+    removesuffix = {
+      {{ "bar"    }, { "bar"   , ""    }},
+      {{ ""       }, { "bar"   , "bar" }},
+      {{ "foo"    }, { "foobar", "bar" }},
+      {{ "foobar" }, { "foobar", "baz" }},
+    },
+    replace = {
+      {{ "a_b_c" }, { "a-b-c", "-", "_"    }},
+      {{ "a_b-c" }, { "a-b-c", "-", "_", 1 }},
+      {{ "-a-bc" }, { "abc"  , "" , "-", 2 }},
+      {{ "abc"   }, { "abc"  , "a", "b", 0 }},
+    },
+    rfind = {
+      {{ 5 }, { "ababa", ""          }},
+      {{ 4 }, { "ababa", "ba"        }},
+      {{ 2 }, { "ababa", "ba", 1, 4  }},
+      {{ 4 }, { "ababa", "ba", 2, -1 }},
+      {{   }, { "ababa", "zz"        }},
+    },
+    rjust = {
+      {{ "  hi" }, { "hi", 4,     }},
+      {{ "..hi" }, { "hi", 4, "." }},
+    },
+    rpartition = {
+      {{ ""   , "-", "abc" }, { "-abc" , "-" }},
+      {{ "a-b", "-", "c"   }, { "a-b-c", "-" }},
+      {{ "abc", "-", ""    }, { "abc-" , "-" }},
+      {{ ""   , "" , "abc" }, { "abc"  , "-" }},
+    },
+    rsplit = {
+      {{ { "a,b", "c" } }, { "a,b,c", ",", 1 }},
+      {{ { "a,b" }      }, { "a,b"  , ",", 0 }},
+    },
+    rstrip = {
+      {{ "--hello" }, { "--hello--", "-"   }},
+      {{ "abc"     }, { "abc-^]"   , "]^-" }},
+      {{ "abc"     }, { "abc"      , ""    }},
+      {{ "hello"   }, { "hello  "  ,       }},
+    },
+    split = {
+      {{ { "a", "b", "c" } }, { " a  b\tc ",        }},
+      {{ { "" }            }, { ""         , ",",   }},
+      {{ { "a", "b", "c" } }, { "a b  c"   ,        }},
+      {{ { "a", "", "b" }  }, { "a,,b"     , ",",   }},
+      {{ { "a", "b", "c" } }, { "a,b,c"    , ",",   }},
+      {{ { "a", "b,c" }    }, { "a,b,c"    , ",", 1 }},
+      {{ { "a,b" }         }, { "a,b"      , ",", 0 }},
+    },
+    splitlines = {
+      {{ {}                      }, { ""         ,      }},
+      {{ { "a", "b", "c" }       }, { "a\nb\r\nc",      }},
+      {{ { "a\n", "b\r\n", "c" } }, { "a\nb\r\nc", true }},
+    },
+    startswith = {
+      {{ true  }, { "hello.lua", ""            ,   }},
+      {{ true  }, { "hello.lua", "he"          ,   }},
+      {{ false }, { "hello.lua", "he"          , 2 }},
+      {{ false }, { "hello.lua", "lo"          ,   }},
+      {{ true  }, { "hello.lua", { "lo", "he" },   }},
+    },
+    strip = {
+      {{ "hello" }, { "  hello  "  ,       }},
+      {{ "hello" }, { "..hello.."  , "."   }},
+      {{ "hello" }, { "]^-hello-^]", "]^-" }},
+      {{ "abc"   }, { "abc"        , ""    }},
+    },
+    swapcase = {
+      {{ ""    }, { ""    }},
+      {{ "123" }, { "123" }},
+      {{ "A1b" }, { "a1B" }},
+      {{ "aBc" }, { "AbC" }},
+    },
+    title = {
+      {{ ""            }, { ""            }},
+      {{ "123Abc"      }, { "123abc"      }},
+      {{ "Hello World" }, { "hello world" }},
+      {{ "Hello World" }, { "HELLO WORLD" }},
+      {{ "Hello-World" }, { "hello-world" }},
+      {{ "Hello"       }, { "heLLo"       }},
+    },
+    translate = {
+      {{ "cb" }, { "ab" , { [byte("a")] = byte("c") }                                   }},
+      {{ "xc" }, { "abc", { [byte("a")] = "x", ["b"] = false }                          }},
+      {{ "be" }, { "acd", { [byte("a")] = "b", ["c"] = false, [byte("d")] = byte("e") } }},
+    },
+    upper = {
+      {{ ""       }, { ""       }},
+      {{ "123"    }, { "123"    }},
+      {{ "HELLO!" }, { "HeLLo!" }},
+      {{ "HELLO"  }, { "HeLLo"  }},
+    },
+    zfill = {
+      {{ "-0042" }, { "-42", 5 }},
+      {{ "+0042" }, { "+42", 5 }},
+      {{ "123"   }, { "123", 2 }},
+      {{ "00042" }, { "42" , 5 }},
+    },
+  })
+
   -- stylua: ignore
-  local tests=  {
-    -------fname-----|------string-----|----------params---------|-----------expected-----------
-    { "capitalize"   , ""              , {                     } , { ""                      } },
-    { "capitalize"   , "1abc"          , {                     } , { "1abc"                  } },
-    { "capitalize"   , "a"             , {                     } , { "A"                     } },
-    { "capitalize"   , "hello"         , {                     } , { "Hello"                 } },
-    { "capitalize"   , "hELLO"         , {                     } , { "Hello"                 } },
-
-    { "center"       , "hi"            , { -6                  } , { "hi"                    } },
-    { "center"       , "hi"            , { 2                   } , { "hi"                    } },
-    { "center"       , "hi"            , { 4, "ab"             } , { "ahia"                  } },
-    { "center"       , "hi"            , { 6                   } , { "  hi  "                } },
-    { "center"       , "hi"            , { 6, "_"              } , { "__hi__"                } },
-
-    { "count"        , "aaaa"          , { "a"                 } , { 4                       } },
-    { "count"        , "aaaa"          , { "a", 2, -1          } , { 2                       } },
-    { "count"        , "aaaa"          , { "aa"                } , { 2                       } },
-    { "count"        , "aaaaaa"        , { "a", 2, 4           } , { 2                       } },
-    { "count"        , "abcd"          , { ""                  } , { 5                       } },
-    { "count"        , "abcd"          , { "", 2, 3            } , { 2                       } },
-    { "count"        , "abcd"          , { "a", 3, 2           } , { 0                       } },
-
-    { "endswith"     , "hello.lua"     , { ".lua"              } , { true                    } },
-    { "endswith"     , "hello.lua"     , { ".lua", 1, 6        } , { false                   } },
-    { "endswith"     , "hello.lua"     , { ".txt"              } , { false                   } },
-    { "endswith"     , "hello.lua"     , { ""                  } , { true                    } },
-    { "endswith"     , "hello.lua"     , { { ".txt", ".lua" }  } , { true                    } },
-
-    { "expandtabs"   , "A\tB"          , {                     } , { "A       B"             } },
-    { "expandtabs"   , "A\tB"          , { 8                   } , { "A       B"             } },
-    { "expandtabs"   , "AB\tC"         , { 1                   } , { "AB C"                  } },
-    { "expandtabs"   , "AB\tC"         , { 2                   } , { "AB  C"                 } },
-    { "expandtabs"   , "H\te\tl\tl\to" , { 0                   } , { "Hello"                 } },
-    { "expandtabs"   , "H\te\tl\tl\to" , { 1                   } , { "H e l l o"             } },
-    { "expandtabs"   , "H\te\tl\tl\to" , { 2                   } , { "H e l l o"             } },
-
-    { "find"         , "banana"        , { ""                  } , { 1                       } },
-    { "find"         , "banana"        , { "", 3, 2            } , { nil                     } },
-    { "find"         , "banana"        , { "", 4               } , { 4                       } },
-    { "find"         , "banana"        , { "na"                } , { 3                       } },
-    { "find"         , "banana"        , { "na", -2            } , { 5                       } },
-    { "find"         , "banana"        , { "na", -3            } , { 5                       } },
-    { "find"         , "banana"        , { "na", 2, -2         } , { 3                       } },
-    { "find"         , "banana"        , { "na", 3, -3         } , { nil                     } },
-    { "find"         , "banana"        , { "na", 4             } , { 5                       } },
-    { "find"         , "banana"        , { "na", 4, 4          } , { nil                     } },
-    { "find"         , "banana"        , { "na", 4, 5          } , { nil                     } },
-    { "find"         , "banana"        , { "zz"                } , { nil                     } },
-
-    { "format_map"   , "{a}-{b}"       , { { a = 1, b = true } } , { "1-true"                } },
-    { "format_map"   , "a {x} b {x}"   , { { x = "y" }         } , { "a y b y"               } },
-    { "format_map"   , "hi {name}"     , { { }                 } , { "hi nil"                } },
-    { "format_map"   , "hi {name}"     , { { name = "bob" }    } , { "hi bob"                } },
-    { "format_map"   , "hi {name}"     , { {}                  } , { "hi nil"                } },
-    { "format_map"   , "no braces"     , { { a = 1 }           } , { "no braces"             } },
-    { "format_map"   , "x{}y"          , { { [""] = "Z" }      } , { "xZy"                   } },
-
-    { "isalnum"      , ""              , {                     } , { false                   } },
-    { "isalnum"      , "123"           , {                     } , { true                    } },
-    { "isalnum"      , "a-1"           , {                     } , { false                   } },
-    { "isalnum"      , "a1 "           , {                     } , { false                   } },
-    { "isalnum"      , "á1"            , {                     } , { false                   } },
-    { "isalnum"      , "abc_123"       , {                     } , { false                   } },
-    { "isalnum"      , "abc"           , {                     } , { true                    } },
-    { "isalnum"      , "abc123"        , {                     } , { true                    } },
-
-    { "isalpha"      , ""              , {                     } , { false                   } },
-    { "isalpha"      , "a b"           , {                     } , { false                   } },
-    { "isalpha"      , "á"             , {                     } , { false                   } },
-    { "isalpha"      , "A"             , {                     } , { true                    } },
-    { "isalpha"      , "abc"           , {                     } , { true                    } },
-    { "isalpha"      , "abc1"          , {                     } , { false                   } },
-
-    { "isascii"      , ""              , {                     } , { true                    } },
-    { "isascii"      , "\n"            , {                     } , { true                    } },
-    { "isascii"      , "~"             , {                     } , { true                    } },
-    { "isascii"      , "á"             , {                     } , { false                   } },
-    { "isascii"      , "abc"           , {                     } , { true                    } },
-
-    { "isdecimal"    , " 1"            , {                     } , { false                   } },
-    { "isdecimal"    , ""              , {                     } , { false                   } },
-    { "isdecimal"    , "01"            , {                     } , { true                    } },
-    { "isdecimal"    , "١٢٣"           , {                     } , { false                   } },
-    { "isdecimal"    , "123"           , {                     } , { true                    } },
-    { "isdecimal"    , "12a"           , {                     } , { false                   } },
-
-    { "isidentifier" , "_"             , {                     } , { true                    } },
-    { "isidentifier" , "[var"          , {                     } , { false                   } },
-    { "isidentifier" , "2var"          , {                     } , { false                   } },
-    { "isidentifier" , "end"           , {                     } , { false                   } },
-    { "isidentifier" , "function"      , {                     } , { false                   } },
-    { "isidentifier" , "local"         , {                     } , { false                   } },
-    { "isidentifier" , "nil"           , {                     } , { false                   } },
-    { "isidentifier" , "var"           , {                     } , { true                    } },
-    { "isidentifier" , "var)"          , {                     } , { false                   } },
-
-    { "islower"      , ""              , {                     } , { false                   } },
-    { "islower"      , "123"           , {                     } , { false                   } },
-    { "islower"      , "a c"           , {                     } , { true                    } },
-    { "islower"      , "abC"           , {                     } , { false                   } },
-    { "islower"      , "abc"           , {                     } , { true                    } },
-    { "islower"      , "abc123"        , {                     } , { true                    } },
-
-    { "isprintable"  , " "             , {                     } , { true                    } },
-    { "isprintable"  , ""              , {                     } , { true                    } },
-    { "isprintable"  , "\t"            , {                     } , { false                   } },
-    { "isprintable"  , "á"             , {                     } , { false                   } },
-    { "isprintable"  , "a\n"           , {                     } , { false                   } },
-    { "isprintable"  , "abc!"          , {                     } , { true                    } },
-
-    { "isspace"      , " \t"           , {                     } , { true                    } },
-    { "isspace"      , " a"            , {                     } , { false                   } },
-    { "isspace"      , ""              , {                     } , { false                   } },
-    { "isspace"      , "\n\r"          , {                     } , { true                    } },
-    { "isspace"      , "\v"            , {                     } , { true                    } },
-    { "istitle"      , "_"             , {                     } , { false                   } },
-    { "istitle"      , "..."           , {                     } , { false                   } },
-    { "istitle"      , ""              , {                     } , { false                   } },
-    { "istitle"      , "123"           , {                     } , { false                   } },
-    { "istitle"      , "hello World"   , {                     } , { false                   } },
-    { "istitle"      , "Hello world"   , {                     } , { false                   } },
-    { "istitle"      , "HELLO World"   , {                     } , { false                   } },
-    { "istitle"      , "Hello World"   , {                     } , { true                    } },
-    { "istitle"      , "Hello-World"   , {                     } , { true                    } },
-
-    { "isupper"      , ""              , {                     } , { false                   } },
-    { "isupper"      , "123"           , {                     } , { false                   } },
-    { "isupper"      , "ABC 123"       , {                     } , { true                    } },
-    { "isupper"      , "AbC"           , {                     } , { false                   } },
-    { "isupper"      , "ABC123"        , {                     } , { true                    } },
-
-    { "join"         , "-"             , { { "a" }             } , { "a"                     } },
-    { "join"         , ","             , { { "a", "b" }        } , { "a,b"                   } },
-    { "join"         , ","             , { { }                 } , { ""                      } },
-    { "join"         , ""              , { { "a", "b" }        } , { "ab"                    } },
-
-    { "ljust"        , "hi"            , { 2                   } , { "hi"                    } },
-    { "ljust"        , "hi"            , { 4                   } , { "hi  "                  } },
-    { "ljust"        , "hi"            , { 5, "."              } , { "hi..."                 } },
-
-    { "lower"        , ""              , {                     } , { ""                      } },
-    { "lower"        , "123"           , {                     } , { "123"                   } },
-    { "lower"        , "HELLO WORLD"   , {                     } , { "hello world"           } },
-    { "lower"        , "HeLLo"         , {                     } , { "hello"                 } },
-
-    { "lstrip"       , "  hello"       , {                     } , { "hello"                 } },
-    { "lstrip"       , "--hello"       , { "-"                 } , { "hello"                 } },
-    { "lstrip"       , ""              , {                     } , { ""                      } },
-    { "lstrip"       , "abc"           , { ""                  } , { "abc"                   } },
-    { "lstrip"       , "abcabc"        , { "ac"                } , { "bcabc"                 } },
-    { "lstrip"       , "]^-abc"        , { "]^-"               } , { "abc"                   } },
-    { "lstrip"       , "xxabc"         , { "xy"                } , { "abc"                   } },
-
-    { "partition"    , "-abc"          , { "-"                 } , { "", "-", "abc"          } },
-    { "partition"    , "a-b-c"         , { "-"                 } , { "a", "-", "b-c"         } },
-    { "partition"    , "abc-"          , { "-"                 } , { "abc", "-", ""          } },
-    { "partition"    , "abc"           , { "-"                 } , { "abc", "", ""           } },
-
-    { "removeprefix" , "foo"           , { ""                  } , { "foo"                   } },
-    { "removeprefix" , "foo"           , { "foo"               } , { ""                      } },
-    { "removeprefix" , "foobar"        , { "baz"               } , { "foobar"                } },
-    { "removeprefix" , "foobar"        , { "foo"               } , { "bar"                   } },
-    { "removesuffix" , "bar"           , { ""                  } , { "bar"                   } },
-    { "removesuffix" , "bar"           , { "bar"               } , { ""                      } },
-    { "removesuffix" , "foobar"        , { "bar"               } , { "foo"                   } },
-    { "removesuffix" , "foobar"        , { "baz"               } , { "foobar"                } },
-
-    { "replace"      , "a-b-c"         , { "-", "_"            } , { "a_b_c"                 } },
-    { "replace"      , "a-b-c"         , { "-", "_", 1         } , { "a_b-c"                 } },
-    { "replace"      , "abc"           , { "", "-", 2          } , { "-a-bc"                 } },
-    { "replace"      , "abc"           , { "a", "b", 0         } , { "abc"                   } },
-
-    { "rfind"        , "ababa"         , { ""                  } , { 5                       } },
-    { "rfind"        , "ababa"         , { "ba"                } , { 4                       } },
-    { "rfind"        , "ababa"         , { "ba", 1, 4          } , { 2                       } },
-    { "rfind"        , "ababa"         , { "ba", 2, -1         } , { 4                       } },
-    { "rfind"        , "ababa"         , { "zz"                } , {                         } },
-
-    { "rjust"        , "hi"            , { 4                   } , { "  hi"                  } },
-    { "rjust"        , "hi"            , { 4, "."              } , { "..hi"                  } },
-
-    { "rpartition"   , "-abc"          , { "-"                 } , { ""   , "-", "abc"       } },
-    { "rpartition"   , "a-b-c"         , { "-"                 } , { "a-b", "-", "c"         } },
-    { "rpartition"   , "abc-"          , { "-"                 } , { "abc", "-", ""          } },
-    { "rpartition"   , "abc"           , { "-"                 } , { ""   , "" , "abc"       } },
-
-    { "rsplit"       , "a,b,c"         , { ",", 1              } , { { "a,b", "c" }          } },
-    { "rsplit"       , "a,b"           , { ",", 0              } , { { "a,b" }               } },
-    { "rstrip"       , "--hello--"     , { "-"                 } , { "--hello"               } },
-    { "rstrip"       , "abc-^]"        , { "]^-"               } , { "abc"                   } },
-    { "rstrip"       , "abc"           , { ""                  } , { "abc"                   } },
-    { "rstrip"       , "hello  "       , {                     } , { "hello"                 } },
-
-    { "split"        , " a  b\tc "     , {                     } , { { "a", "b"  , "c" }     } },
-    { "split"        , ""              , { ","                 } , { { ""              }     } },
-    { "split"        , "a b  c"        , {                     } , { { "a", "b"  , "c" }     } },
-    { "split"        , "a,,b"          , { ","                 } , { { "a", ""   , "b" }     } },
-    { "split"        , "a,b,c"         , { ","                 } , { { "a", "b"  , "c" }     } },
-    { "split"        , "a,b,c"         , { ",", 1              } , { { "a", "b,c"      }     } },
-    { "split"        , "a,b"           , { ",", 0              } , { { "a,b"           }     } },
-
-    { "splitlines"   , ""              , {                     } , { {}                      } },
-    { "splitlines"   , "a\nb\r\nc"     , {                     } , { { "a", "b", "c" }       } },
-    { "splitlines"   , "a\nb\r\nc"     , { true                } , { { "a\n", "b\r\n", "c" } } },
-
-    { "startswith"   , "hello.lua"     , { ""                  } , { true                    } },
-    { "startswith"   , "hello.lua"     , { "he"                } , { true                    } },
-    { "startswith"   , "hello.lua"     , { "he", 2             } , { false                   } },
-    { "startswith"   , "hello.lua"     , { "lo"                } , { false                   } },
-    { "startswith"   , "hello.lua"     , { { "lo", "he" }      } , { true                    } },
-
-    { "strip"        , "  hello  "     , {                     } , { "hello"                 } },
-    { "strip"        , "..hello.."     , { "."                 } , { "hello"                 } },
-    { "strip"        , "]^-hello-^]"   , { "]^-"               } , { "hello"                 } },
-    { "strip"        , "abc"           , { ""                  } , { "abc"                   } },
-
-    { "swapcase"     , ""              , {                     } , { ""                      } },
-    { "swapcase"     , "123"           , {                     } , { "123"                   } },
-    { "swapcase"     , "a1B"           , {                     } , { "A1b"                   } },
-    { "swapcase"     , "AbC"           , {                     } , { "aBc"                   } },
-
-    { "title"        , ""              , {                     } , { ""                      } },
-    { "title"        , "123abc"        , {                     } , { "123Abc"                } },
-    { "title"        , "hello world"   , {                     } , { "Hello World"           } },
-    { "title"        , "HELLO WORLD"   , {                     } , { "Hello World"           } },
-    { "title"        , "hello-world"   , {                     } , { "Hello-World"           } },
-    { "title"        , "heLLo"         , {                     } , { "Hello"                 } },
-
-    { "translate"    , "ab"            , { { [byte("a")] = byte("c") }                                   } , { "cb" } },
-    { "translate"    , "abc"           , { { [byte("a")] = "x", ["b"] = false }                          } , { "xc" } },
-    { "translate"    , "acd"           , { { [byte("a")] = "b", ["c"] = false, [byte("d")] = byte("e") } } , { "be" } },
-
-    { "upper"        , ""              , {                     } , { ""                      } },
-    { "upper"        , "123"           , {                     } , { "123"                   } },
-    { "upper"        , "HeLLo!"        , {                     } , { "HELLO!"                } },
-    { "upper"        , "HeLLo"         , {                     } , { "HELLO"                 } },
-
-    { "zfill"        , "-42"           , { 5                   } , { "-0042"                 } },
-    { "zfill"        , "+42"           , { 5                   } , { "+0042"                 } },
-    { "zfill"        , "123"           , { 2                   } , { "123"                   } },
-    { "zfill"        , "42"            , { 5                   } , { "00042"                 } },
-  }
-
-  for i = 1, #tests do
-    local fname, s, params, expected = unpack(tests[i] --[[@as {[1]:string,[2]:string,[3]:any[],[4]:any?}]], 1, 4)
-
-    it(("%s(%q) returns correct result"):format(fname, s), function()
-      local res = { str[fname](s, unpack(params)) }
-      assert.are_same(expected, res)
-    end)
-  end
-
-  -- stylua: ignore
-  tests = {
-    ------fname----|-------params-------
-    { "split"      , { "a b"         } },
-    { "split"      , { "a,b", ","    } },
-    { "split"      , { "a,b", ",", 0 } },
-    { "rsplit"     , { "a b"         } },
-    { "rsplit"     , { "a,b", ","    } },
-    { "rsplit"     , { "a,b", ",", 0 } },
-    { "splitlines" , { ""            } },
-    { "splitlines" , { "a\nb"        } },
-    { "splitlines" , { "a\nb", true  } },
+  local tests = {
+    -----fname----|-------params-------
+    { "split"     , { "a b" ,        }},
+    { "split"     , { "a,b" , ","    }},
+    { "split"     , { "a,b" , ",", 0 }},
+    { "rsplit"    , { "a b" ,        }},
+    { "rsplit"    , { "a,b" , ","    }},
+    { "rsplit"    , { "a,b" , ",", 0 }},
+    { "splitlines", { ""    ,        }},
+    { "splitlines", { "a\nb",        }},
+    { "splitlines", { "a\nb", true   }},
   }
 
   for i = 1, #tests do
