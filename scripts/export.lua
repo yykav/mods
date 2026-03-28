@@ -452,17 +452,10 @@ end
 ---Check whether any item has a `section` field in tags.
 local function has_section_field(items)
   for _, item in ipairs(items or {}) do
-    if item and item.kind == "section" then
-      return true
-    end
     local tags = item and item.tags
-    local fields = tags and tags.fields
-    if type(fields) == "table" then
-      for _, field in ipairs(fields) do
-        if field and field.name == "section" then
-          return true
-        end
-      end
+    local section = tags and tags.section
+    if section and section.view and section.view ~= "" then
+      return true
     end
   end
   return false
@@ -494,7 +487,6 @@ local function build_markdown(items)
   local quick_ref = {}
   local section_order = {}
   local seen_sections = {}
-  local current_section = nil
   local function_count = 0
   local detail_entries = {}
   local detail_sections = {}
@@ -525,24 +517,17 @@ local function build_markdown(items)
   end
 
   for _, item in ipairs(items) do
-    if has_functions and item.kind == "section" then
-      current_section = item.name or "Section"
-      if not detail_sections[current_section] then
-        detail_sections[current_section] = {
-          heading = fmt("### %s", current_section),
-          desc = item.desc and linkify_mods_refs(item.desc) or nil,
-          entries = {},
-        }
-      end
-      if not seen_sections[current_section] then
-        insert(section_order, current_section)
-        seen_sections[current_section] = true
-      end
-    elseif has_functions and (item.kind == "function" or is_function_doc_item(item)) then
+    if has_functions and (item.kind == "function" or is_function_doc_item(item)) then
       local alias_doc_item = is_function_doc_item(item)
       function_count = function_count + 1
       local signature = function_signature(item)
       local ref_id = function_ref_id(item)
+      local tags = item.tags or {}
+      local section_tag = tags.section
+      local section_name = nil
+      if section_tag and section_tag.view and section_tag.view ~= "" then
+        section_name = section_tag.view
+      end
       local row_anchor = ref_id
       if alias_doc_item then
         row_anchor = nil
@@ -553,23 +538,27 @@ local function build_markdown(items)
         desc = first_paragraph(linkify_mods_refs(item.desc)),
       }
       if section_fields then
-        local section_name = current_section or "Ungrouped"
-        if not detail_sections[section_name] then
-          detail_sections[section_name] = {
-            heading = fmt("### %s", section_name),
-            entries = {},
-          }
-        end
-        if not seen_sections[section_name] then
-          insert(section_order, section_name)
-          seen_sections[section_name] = true
-        end
-        insert(detail_sections[section_name].entries, {
+        local entry = {
           signature = signature,
           row = row,
           item = alias_doc_item and nil or item,
           ref_id = ref_id,
-        })
+        }
+        if section_name then
+          if not detail_sections[section_name] then
+            detail_sections[section_name] = {
+              heading = fmt("### %s", section_name),
+              entries = {},
+            }
+          end
+          if not seen_sections[section_name] then
+            insert(section_order, section_name)
+            seen_sections[section_name] = true
+          end
+          insert(detail_sections[section_name].entries, entry)
+        else
+          insert(detail_entries, entry)
+        end
       else
         insert(detail_entries, {
           signature = signature,
@@ -584,6 +573,13 @@ local function build_markdown(items)
   -- Show quick reference only for larger modules.
   if has_functions and function_count > 3 then
     if section_fields then
+      if #detail_entries > 0 then
+        sort_function_entries(detail_entries)
+        for _, entry in ipairs(detail_entries) do
+          insert(quick_ref, entry.row)
+        end
+        append_quick_ref_table(doc, quick_ref)
+      end
       for _, section_name in ipairs(section_order) do
         local section = detail_sections[section_name]
         local rows = {}
@@ -606,6 +602,14 @@ local function build_markdown(items)
   end
 
   if section_fields then
+    sort_function_entries(detail_entries)
+    for _, entry in ipairs(detail_entries) do
+      if entry.item then
+        insert(doc, fmt('<a id="%s"></a>', entry.ref_id))
+        insert(doc, fmt("%s `%s`", function_heading_level, entry.signature))
+        append_function_signature_details(doc, entry.item, alias_views)
+      end
+    end
     for _, section_name in ipairs(section_order) do
       local section = detail_sections[section_name]
       if section then
