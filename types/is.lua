@@ -47,6 +47,12 @@ local List
 --->is.tAbLe({})  --> true
 --->```
 ---
+---> [!IMPORTANT]
+--->
+---> Path checks require **LuaFileSystem**
+---> ([`lfs`](https://github.com/lunarmodules/luafilesystem))
+---> and raise an error if it is not installed.
+---
 ---## `is()`
 ---
 ---`is` is also callable as `is(value, type)` to check if a value is of a given type.
@@ -61,19 +67,9 @@ local List
 ---@overload fun(v:any, tp:modsValidatorName):boolean
 local M = {}
 
----@ignore
 ---@private
----
 ---Names of filesystem path-check predicates shared by related modules/tests.
----
 M._path_validator_names = List({ "path", "block", "char", "dir", "fifo", "file", "link", "socket", "device" })
-
---------------------------------------------------------------------------------
----------------------------------- Type Checks ---------------------------------
---------------------------------------------------------------------------------
----
----Core Lua type checks (`type(v)` family).
----
 
 ---
 ---Returns `true` when `v` is a boolean.
@@ -82,6 +78,7 @@ M._path_validator_names = List({ "path", "block", "char", "dir", "fifo", "file",
 ---is.boolean(true)
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@return boolean isBoolean Whether the check succeeds.
 ---@nodiscard
@@ -95,6 +92,7 @@ M.Boolean = M.boolean
 ---is.Function(function() end)
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@return boolean isFunction Whether the check succeeds.
 ---@nodiscard
@@ -108,6 +106,7 @@ M.Function = function(v) end
 ---is.Nil(nil)
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@return boolean isNil Whether the check succeeds.
 ---@nodiscard
@@ -121,6 +120,7 @@ M.Nil = M["nil"]
 ---is.number(3.14)
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@return boolean isNumber Whether the check succeeds.
 ---@nodiscard
@@ -134,6 +134,7 @@ M.Number = M.number
 ---is.string("hello")
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@return boolean isString Whether the check succeeds.
 ---@nodiscard
@@ -147,6 +148,7 @@ M.String = M.string
 ---is.table({})
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@return boolean isTable Whether the check succeeds.
 ---@nodiscard
@@ -160,6 +162,7 @@ M.Table = M.table
 ---is.thread(coroutine.create(function() end))
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@return boolean isThread Whether the check succeeds.
 ---@nodiscard
@@ -173,15 +176,13 @@ M.Thread = M.thread
 ---is.userdata(io.stdout)
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@return boolean isUserdata Whether the check succeeds.
 ---@nodiscard
 M.userdata = function(v) end
 M.Userdata = M.userdata
 
---------------------------------------------------------------------------------
---------------------------------- Value Checks ---------------------------------
---------------------------------------------------------------------------------
 ---
 ---Truthiness, exact-value, and callable checks.
 ---
@@ -193,6 +194,7 @@ M.Userdata = M.userdata
 ---is.False(false)
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@return boolean isFalse Whether the check succeeds.
 ---@nodiscard
@@ -206,6 +208,7 @@ M.False = M["false"]
 ---is.True(true)
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@return boolean isTrue Whether the check succeeds.
 ---@nodiscard
@@ -219,6 +222,7 @@ M.True = M["true"]
 ---is.falsy(false)
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@return boolean isFalsy Whether the check succeeds.
 ---@nodiscard
@@ -232,6 +236,7 @@ M.Falsy = M.falsy
 ---is.callable(function() end)
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@return boolean isCallable Whether the check succeeds.
 ---@nodiscard
@@ -245,6 +250,7 @@ M.Callable = M.callable
 ---is.integer(42)
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@return boolean isInteger Whether the check succeeds.
 ---@nodiscard
@@ -258,23 +264,12 @@ M.Integer = M.integer
 ---is.truthy("non-empty")
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@return boolean isTruthy Whether the check succeeds.
 ---@nodiscard
 M.truthy = function(v) end
 M.Truthy = M.truthy
-
---------------------------------------------------------------------------------
---------------------------------- Path Checks ----------------------------------
---------------------------------------------------------------------------------
----
----Filesystem path type checks.
----
----> [!IMPORTANT]
---->
----> Path checks require **LuaFileSystem**
----> ([`lfs`](https://github.com/lunarmodules/luafilesystem))
----> and raise an error if it is not installed.
 
 ---
 ---Returns `true` when `v` is a valid filesystem path.
@@ -287,6 +282,7 @@ M.Truthy = M.truthy
 --->
 ---> Returns `true` for broken symlinks.
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isPath Whether the check succeeds.
 ---@nodiscard
@@ -300,6 +296,7 @@ M.Path = M.path
 ---is.block("/dev/sda")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isBlock Whether the check succeeds.
 ---@nodiscard
@@ -313,6 +310,7 @@ M.Block = M.block
 ---is.char("/dev/null")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isChar Whether the check succeeds.
 ---@nodiscard
@@ -326,6 +324,7 @@ M.Char = M.char
 ---is.device("/dev/null")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isDevice Whether the check succeeds.
 ---@nodiscard
@@ -339,6 +338,7 @@ M.Device = M.device
 ---is.dir("/tmp")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isDir Whether the check succeeds.
 ---@nodiscard
@@ -352,6 +352,7 @@ M.Dir = M.dir
 ---is.fifo("/path/to/fifo")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isFifo Whether the check succeeds.
 ---@nodiscard
@@ -365,6 +366,7 @@ M.Fifo = M.fifo
 ---is.file("README.md")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isFile Whether the check succeeds.
 ---@nodiscard
@@ -378,6 +380,7 @@ M.File = M.file
 ---is.link("/path/to/link")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isLink Whether the check succeeds.
 ---@nodiscard
@@ -391,6 +394,7 @@ M.Link = M.link
 ---is.socket("/path/to/socket")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@return boolean isSocket Whether the check succeeds.
 ---@nodiscard

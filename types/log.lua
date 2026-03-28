@@ -45,6 +45,7 @@ local M = {}
 ---
 ---Create a new logger.
 ---
+---@section Factory
 ---@param opts? mods.log.new.opts Logger configuration.
 ---@return mods.log.logger logger Logger instance.
 ---@nodiscard
@@ -57,6 +58,7 @@ local Logger = {}
 ---
 ---Emit a record for `level` when it passes the logger filter.
 ---
+---@section Logger Methods
 ---@param levelname modsLogLevel Log level to emit.
 ---@param ... any Additional values joined with spaces.
 function Logger:log(levelname, ...) end
@@ -64,24 +66,28 @@ function Logger:log(levelname, ...) end
 ---
 ---Emit a `debug` record.
 ---
+---@section Logger Methods
 ---@param ... any Additional values joined with spaces.
 function Logger:debug(...) end
 
 ---
 ---Emit an `info` record.
 ---
+---@section Logger Methods
 ---@param ... any Additional values joined with spaces.
 function Logger:info(...) end
 
 ---
 ---Emit a `warn` record.
 ---
+---@section Logger Methods
 ---@param ... any Additional values joined with spaces.
 function Logger:warn(...) end
 
 ---
 ---Emit an `error` record.
 ---
+---@section Logger Methods
 ---@param ... any Additional values joined with spaces.
 function Logger:error(...) end
 

@@ -64,6 +64,7 @@ local M = {}
 ---glob.match("src/mods/fs.lua", "**/*.lua") --> true
 ---```
 ---
+---@section Glob Operations
 ---@param path string Input path.
 ---@param pattern string Input glob pattern.
 ---@param ignorecase? boolean Override platform-default case matching.
@@ -100,6 +101,7 @@ function M.match(path, pattern, ignorecase) end
 --->   print(glob.match("src/x.lua", pattern))             --> true
 --->   ```
 ---
+---@section Glob Operations
 ---@param pattern string Input glob segment.
 ---@return string lua_pattern Lua pattern string.
 ---@nodiscard
@@ -112,6 +114,7 @@ function M.translate(pattern) end
 ---glob.has_magic("*.txt")   --> true
 ---```
 ---
+---@section Glob Operations
 ---@param s string Input string.
 ---@return boolean has_magic True when the string contains glob syntax.
 ---@nodiscard
@@ -124,6 +127,7 @@ function M.has_magic(s) end
 ---glob.escape("a*b") --> "a\\*b"
 ---```
 ---
+---@section Glob Operations
 ---@param s string Input literal string.
 ---@return string pattern Escaped glob pattern.
 ---@nodiscard
@@ -136,6 +140,7 @@ function M.escape(s) end
 ---glob.filter({ "a.lua", "b.txt", "c.lua" }, "*.lua") --> { "a.lua", "c.lua" }
 ---```
 ---
+---@section Glob Operations
 ---@param names string[] Input names.
 ---@param pattern string Input glob pattern.
 ---@param ignorecase? boolean Override platform-default case matching.
@@ -158,6 +163,7 @@ function M.filter(names, pattern, ignorecase) end
 ---glob.glob("src", "*.lua", { recursive = true })
 ---```
 ---
+---@section Glob Operations
 ---@param path string Input path.
 ---@param pattern? string Optional pattern to match.
 ---@param opts? modsGlobOptions Optional glob options.
@@ -181,6 +187,7 @@ function M.glob(path, pattern, opts) end
 ---end
 ---```
 ---
+---@section Glob Operations
 ---@param path string Input path.
 ---@param pattern? string Optional pattern to match.
 ---@param opts? modsGlobOptions Optional glob options.

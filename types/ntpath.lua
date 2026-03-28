@@ -21,7 +21,6 @@
 ---@class mods.ntpath:mods.path
 local M = {}
 
----@ignore
 ---
 ---Expand percent-style variables in a string.
 ---

@@ -51,6 +51,12 @@
 ---validate(1, "nil") --> false, "nil expected, got number"
 ---```
 ---
+---> [!IMPORTANT]
+--->
+---> Path checks require **LuaFileSystem**
+---> ([`lfs`](https://github.com/lunarmodules/luafilesystem))
+---> and raise an error if it is not installed.
+---
 ---## Validator Names
 ---
 ---Validator names are case-insensitive for field access.
@@ -131,13 +137,6 @@
 ---@overload fun(v:any, validator?:modsValidatorName, msg?:string):(boolean, string?)
 local M = {}
 
---------------------------------------------------------------------------------
----------------------------------- Type Checks ---------------------------------
---------------------------------------------------------------------------------
----
----Basic Lua type validators (and their negated variants).
----
-
 ---
 ---Returns `true` when `v` is a boolean. Otherwise returns `false` and an error
 ---message.
@@ -147,6 +146,7 @@ local M = {}
 ---ok, err = validate.boolean(1)    --> false, "boolean expected, got number"
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -164,6 +164,7 @@ M.Boolean = M.boolean
 -----> false, "function expected, got number"
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -180,6 +181,7 @@ M.Function = M["function"]
 ---ok, err = validate.Nil(0)   --> false, "nil expected, got number"
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -196,6 +198,7 @@ M.Nil = M["nil"]
 ---ok, err = validate.number("x") --> false, "number expected, got string"
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -212,6 +215,7 @@ M.Number = M.number
 ---ok, err = validate.string(1)       --> false, "string expected, got number"
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -228,6 +232,7 @@ M.String = M.string
 ---ok, err = validate.table(1)  --> false, "table expected, got number"
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -245,6 +250,7 @@ M.Table = M.table
 ---ok, err = validate.thread(1)  --> false, "thread expected, got number"
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -261,19 +267,13 @@ M.Thread = M.thread
 ---ok, err = validate.userdata(1)         --> false, "userdata expected, got number"
 ---```
 ---
+---@section Type Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.userdata = function(v, msg) end
 M.Userdata = M.userdata
-
---------------------------------------------------------------------------------
---------------------------------- Value Checks ---------------------------------
---------------------------------------------------------------------------------
----
----Value-state validators (exact true/false, truthy/falsy, callable, integer).
----
 
 ---
 ---Returns `true` when `v` is exactly `false`. Otherwise returns `false` and an
@@ -284,6 +284,7 @@ M.Userdata = M.userdata
 ---ok, err = validate.False(true)  --> false, "false value expected, got true"
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -300,6 +301,7 @@ M.False = M["false"]
 ---ok, err = validate.True(false) --> false, "true value expected, got false"
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -316,6 +318,7 @@ M.True = M["true"]
 ---ok, err = validate.falsy(1)     --> false, "falsy value expected, got 1"
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -332,6 +335,7 @@ M.Falsy = M.falsy
 ---ok, err = validate.callable(1)    --> false, "callable value expected, got 1"
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -348,6 +352,7 @@ M.Callable = M.callable
 ---ok, err = validate.integer(1.5) --> false, "integer value expected, got 1.5"
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -364,24 +369,13 @@ M.Integer = M.integer
 ---ok, err = validate.truthy(false) --> false, "truthy value expected, got false"
 ---```
 ---
+---@section Value Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.truthy = function(v, msg) end
 M.Truthy = M.truthy
-
---------------------------------------------------------------------------------
---------------------------------- Path Checks ----------------------------------
---------------------------------------------------------------------------------
----
----Filesystem path-kind validators backed by LuaFileSystem (`lfs`).
----
----> [!IMPORTANT]
---->
----> Path checks require **LuaFileSystem**
----> ([`lfs`](https://github.com/lunarmodules/luafilesystem))
----> and raise an error if it is not installed.
 
 ---
 ---Returns `true` when `v` is a valid filesystem path. Otherwise returns `false`
@@ -391,6 +385,7 @@ M.Truthy = M.truthy
 ---ok, err = validate.path("README.md")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -406,6 +401,7 @@ M.Path = M.path
 ---ok, err = validate.block(".")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -421,6 +417,7 @@ M.Block = M.block
 ---ok, err = validate.char(".")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -436,6 +433,7 @@ M.Char = M.char
 ---ok, err = validate.device(".")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -451,6 +449,7 @@ M.Device = M.device
 ---ok, err = validate.dir(".")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -466,6 +465,7 @@ M.Dir = M.dir
 ---ok, err = validate.fifo(".")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -481,6 +481,7 @@ M.Fifo = M.fifo
 ---ok, err = validate.file(".")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -496,6 +497,7 @@ M.File = M.file
 ---ok, err = validate.link(".")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
@@ -511,16 +513,13 @@ M.Link = M.link
 ---ok, err = validate.socket(".")
 ---```
 ---
+---@section Path Checks
 ---@param v any Value to validate.
 ---@param msg? string Optional override template.
 ---@return boolean isValid Whether the check succeeds.
 ---@return string? err Error message when the check fails.
 M.socket = function(v, msg) end
 M.Socket = M.socket
-
---------------------------------------------------------------------------------
---------------------------------- Validator API --------------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Register or override a validator function by name.
@@ -540,6 +539,7 @@ M.Socket = M.socket
 ---> * If `template` is provided, it becomes the default message template for that validator.
 ---> * If `template` is omitted, failures use: `{{expected}} expected, got {{got}}`.
 ---
+---@section Registration
 ---@param name string Validator name.
 ---@param validator fun(v:any):(ok:boolean) Validator function.
 ---@param template? string Optional default message template.

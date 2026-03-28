@@ -22,6 +22,7 @@ local M = {}
 ---print(utils.quote('say "hi" and \\'bye\\'')) -- "say \"hi\" and 'bye'"
 ---```
 ---
+---@section Formatting
 ---@param v string String to quote.
 ---@return string out Quoted string.
 ---@nodiscard
@@ -37,6 +38,7 @@ function M.quote(v) end
 ---p4 = utils.keypath()                          --> ""
 ---```
 ---
+---@section Formatting
 ---@param ... any Additional arguments.
 ---@return string path Rendered key path.
 ---@nodiscard
@@ -53,6 +55,7 @@ function M.keypath(...) end
 --->
 ---> Requires [`inspect`](https://github.com/kikito/inspect.lua)
 ---
+---@section Formatting
 ---@param v table|any Value to format.
 ---@return string out Argument list string.
 ---@nodiscard
@@ -75,6 +78,7 @@ function M.args_repr(v) end
 ---> When the caller function name is available, error text includes
 ---> `to '<function>'` (Lua-style bad argument context).
 ---
+---@section Validation
 ---@generic T
 ---@param argn integer Argument index for error context.
 ---@param v T Value to check.
@@ -94,6 +98,7 @@ function M.assert_arg(argn, v, validator, optional, msg) end
 -----> raises: count: expected number, got string
 ---```
 ---
+---@section Validation
 ---@param name string Name for the error prefix.
 ---@param v any Value to validate.
 ---@param validator? modsValidatorName Validator name (defaults to `"truthy"`).
@@ -115,6 +120,7 @@ function M.validate(name, v, validator, optional, msg) end
 --->
 ---> On failure, `path` is rendered with `mods.utils.keypath`.
 ---
+---@section Validation
 ---@param path table Path parts for the error name.
 ---@param v any Value to validate.
 ---@param validator? modsValidatorName Validator name (defaults to `"truthy"`).
@@ -141,6 +147,7 @@ function M.validate(path, v, validator, optional, msg) end
 --->
 ---> Supports both table-returning modules and function-returning modules.
 ---
+---@section Lazy Loading
 ---@param name string Module name passed to `require`.
 ---@param err? string Optional error message raised when loading fails.
 ---@return {} module Lazy proxy for the loaded module.

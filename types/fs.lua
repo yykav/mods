@@ -22,10 +22,6 @@
 ---@class mods.fs
 local M = {}
 
---------------------------------------------------------------------------------
------------------------------------ Reading ------------------------------------
---------------------------------------------------------------------------------
-
 ---
 ---Read full file in binary mode.
 ---
@@ -33,6 +29,7 @@ local M = {}
 ---fs.read_bytes("README.md")
 ---```
 ---
+---@section Reading
 ---@param path string Input path.
 ---@return string? body File contents read in binary mode, or `nil` on failure.
 ---@return string? errmsg Error message when the check fails.
@@ -47,6 +44,7 @@ function M.read_bytes(path) end
 ---fs.read_text("README.md")
 ---```
 ---
+---@section Reading
 ---@param path string Input path.
 ---@return string? body File contents read in text mode, or `nil` on failure.
 ---@return string? errmsg Error message when the check fails.
@@ -70,6 +68,7 @@ function M.read_text(path) end
 ---end
 ---```
 ---
+---@section Reading
 ---@param path string Input path.
 ---@param opts? {hidden?:boolean, recursive?:boolean, follow?:boolean, type?:modsFsEntryType} Optional traversal options.
 ---@return (fun(state:table, prev?:string):basename:string?, type:modsFsEntryType?)? iterator Iterator, or `nil` on failure.
@@ -92,16 +91,13 @@ function M.dir(path, opts) end
 ---fs.listdir("src", { names = true })
 ---```
 ---
+---@section Reading
 ---@param path string Input path.
 ---@param opts? {hidden?:boolean, recursive?:boolean, follow?:boolean, type?:modsFsEntryType, names?:boolean} Optional traversal options.
 ---@return mods.List<string>? paths Direct child paths, or basenames when `opts.names` is `true`.
 ---@return string? err Error message when traversal setup fails.
 ---@nodiscard
 function M.listdir(path, opts) end
-
---------------------------------------------------------------------------------
------------------------------ Filesystem Mutations -----------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Write full file in binary mode.
@@ -110,6 +106,7 @@ function M.listdir(path, opts) end
 ---fs.write_bytes("tmp.bin", "abc") --> true, nil
 ---```
 ---
+---@section Filesystem Mutations
 ---@param path string Input path.
 ---@param data string Input data.
 ---@return true? written `true` when writing succeeds, or `nil` on failure.
@@ -124,6 +121,7 @@ function M.write_bytes(path, data) end
 ---fs.write_text("tmp.txt", "abc") --> true, nil
 ---```
 ---
+---@section Filesystem Mutations
 ---@param path string Input path.
 ---@param data string Input data.
 ---@return true? written `true` when writing succeeds, or `nil` on failure.
@@ -138,6 +136,7 @@ function M.write_text(path, data) end
 ---fs.touch("tmp.txt") --> true, nil
 ---```
 ---
+---@section Filesystem Mutations
 ---@param path string Input path.
 ---@return true? touched `true` when the file exists after touch, or `nil` on failure.
 ---@return string? errmsg Error message when the check fails.
@@ -150,6 +149,7 @@ function M.touch(path) end
 ---fs.link("target.txt", "hardlink.txt")
 ---```
 ---
+---@section Filesystem Mutations
 ---@param path string Existing path to link to.
 ---@param linkpath string New link path to create.
 ---@return true? linked `true` when link creation succeeds, or `nil` on failure.
@@ -164,6 +164,7 @@ function M.link(path, linkpath) end
 ---fs.symlink("target.txt", "symlink.txt")
 ---```
 ---
+---@section Filesystem Mutations
 ---@param path string Path to reference from the new symlink.
 ---@param linkpath string New symlink path to create.
 ---@return true? linked `true` when link creation succeeds, or `nil` on failure.
@@ -178,6 +179,7 @@ function M.symlink(path, linkpath) end
 ---fs.cwd()
 ---```
 ---
+---@section Filesystem Mutations
 ---@return string? cwd Current working directory, or `nil` on failure.
 ---@return string? errmsg Error message when the lookup fails.
 ---@return integer? errcode OS error code when available.
@@ -190,6 +192,7 @@ function M.cwd() end
 ---fs.cd("src")
 ---```
 ---
+---@section Filesystem Mutations
 ---@param path string Directory path to switch into.
 ---@return true? changed `true` when the directory change succeeds, or `nil` on failure.
 ---@return string? errmsg Error message when the change fails.
@@ -206,6 +209,7 @@ function M.cd(path) end
 --->
 ---> This is an alias for `os.rename`.
 ---
+---@section Filesystem Mutations
 ---@param oldname string Existing path.
 ---@param newname string Replacement path.
 ---@return true? renamed `true` when the rename succeeds, or `nil` on failure.
@@ -221,6 +225,7 @@ function M.rename(oldname, newname) end
 ---fs.rm("tmp/cache", true) --> true, nil
 ---```
 ---
+---@section Filesystem Mutations
 ---@param path string Input path.
 ---@param recursive? boolean Remove a directory tree recursively when `true`.
 ---@return true? removed `true` when removal succeeds, or `nil` on failure.
@@ -235,6 +240,7 @@ function M.rm(path, recursive) end
 ---fs.mkdir("tmp/a/b", true)
 ---```
 ---
+---@section Filesystem Mutations
 ---@param path string Input path.
 ---@param parents? boolean Create missing parent directories when `true`.
 ---@return true? created `true` when directory creation succeeds, or `nil` on failure.
@@ -250,16 +256,13 @@ function M.mkdir(path, parents) end
 ---fs.cp("src", "backup/src")
 ---```
 ---
+---@section Filesystem Mutations
 ---@param src string Source path.
 ---@param dst string Destination path.
 ---@return true? copied `true` when copying succeeds, or `nil` on failure.
 ---@return string? errmsg Error message when the check fails.
 ---@return integer? errcode OS error code when available.
 function M.cp(src, dst) end
-
---------------------------------------------------------------------------------
---------------------------------- Metadata -------------------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Return file size in bytes.
@@ -268,6 +271,7 @@ function M.cp(src, dst) end
 ---fs.getsize("README.md") --> 1234
 ---```
 ---
+---@section Metadata
 ---@param path string Input path.
 ---@return integer? size File size in bytes.
 ---@return string? errmsg Error message when the check fails.
@@ -282,6 +286,7 @@ function M.getsize(path) end
 ---fs.getatime("README.md") --> 1712345678
 ---```
 ---
+---@section Metadata
 ---@param path string Input path.
 ---@return number? timestamp Access time (seconds since epoch).
 ---@return string? errmsg Error message when the check fails.
@@ -296,6 +301,7 @@ function M.getatime(path) end
 ---fs.getmtime("README.md") --> 1712345678
 ---```
 ---
+---@section Metadata
 ---@param path string Input path.
 ---@return number? timestamp Modification time (seconds since epoch).
 ---@return string? errmsg Error message when the check fails.
@@ -310,6 +316,7 @@ function M.getmtime(path) end
 ---fs.getctime("README.md") --> 1712345678
 ---```
 ---
+---@section Metadata
 ---@param path string Input path.
 ---@return number? timestamp Change time (seconds since epoch).
 ---@return string? errmsg Error message when the check fails.
@@ -324,6 +331,7 @@ function M.getctime(path) end
 ---fs.lstat("README.md")
 ---```
 ---
+---@section Metadata
 ---@param path string Input path.
 ---@return LuaFileSystem.Attributes? attrs Symlink-aware attributes, or `nil` on failure.
 ---@return string? errmsg Error message when the check fails.
@@ -338,6 +346,7 @@ function M.lstat(path) end
 ---fs.stat("README.md")
 ---```
 ---
+---@section Metadata
 ---@param path string Input path.
 ---@return string|integer|LuaFileSystem.AttributeMode|LuaFileSystem.Attributes? attrs File attributes, or `nil` on failure.
 ---@return string? errmsg Error message when the check fails.
@@ -352,6 +361,7 @@ function M.stat(path) end
 ---fs.samefile("README.md", "README.md") --> true
 ---```
 ---
+---@section Metadata
 ---@param a string Input path.
 ---@param b string Input path.
 ---@return boolean? isSameFile True when both paths refer to the same file.
@@ -359,10 +369,6 @@ function M.stat(path) end
 ---@return integer? errcode OS error code when available.
 ---@nodiscard
 function M.samefile(a, b) end
-
---------------------------------------------------------------------------------
-------------------------------- Existence Checks -------------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Return `true` when a path exists.
@@ -375,6 +381,7 @@ function M.samefile(a, b) end
 --->
 ---> Broken symlinks return `false`.
 ---
+---@section Existence Checks
 ---@param path string Input path.
 ---@return boolean exists True when the path exists.
 ---@nodiscard
@@ -391,6 +398,7 @@ function M.exists(path) end
 --->
 ---> Broken symlinks return `true`.
 ---
+---@section Existence Checks
 ---@param path string Input path.
 ---@return boolean exists True when the path or symlink entry exists.
 ---@nodiscard

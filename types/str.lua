@@ -14,10 +14,6 @@
 ---@class mods.str
 local M = {}
 
---------------------------------------------------------------------------------
------------------------------------ Formatting ---------------------------------
---------------------------------------------------------------------------------
-
 ---
 ---Return copy with first character capitalized and the rest lowercased.
 ---
@@ -25,6 +21,7 @@ local M = {}
 ---s = capitalize("hello WORLD") --> "Hello world"
 ---```
 ---
+---@section Formatting
 ---@param s string Input string.
 ---@return string capitalized Capitalized string.
 ---@nodiscard
@@ -37,6 +34,7 @@ function M.capitalize(s) end
 ---s = center("hi", 6, "-") --> "--hi--"
 ---```
 ---
+---@section Formatting
 ---@param s string Input string.
 ---@param width integer Target width.
 ---@param fillchar? string Optional fill character.
@@ -53,6 +51,7 @@ function M.center(s, width, fillchar) end
 ---n = count("abcd", "")         --> 5
 ---```
 ---
+---@section Formatting
 ---@param s string Input string.
 ---@param sub string Substring to search.
 ---@param start? integer Optional start index (defaults to `1`).
@@ -72,6 +71,7 @@ function M.count(s, sub, start, stop) end
 --->
 ---> If suffix is a list, returns `true` when any suffix matches.
 ---
+---@section Formatting
 ---@param s string Input string.
 ---@param suffix string|string[] Suffix string.
 ---@param start? integer Optional start index (defaults to `1`).
@@ -87,6 +87,7 @@ function M.endswith(s, suffix, start, stop) end
 ---s = expandtabs("a\tb", 4) --> "a   b"
 ---```
 ---
+---@section Formatting
 ---@param s string Input string.
 ---@param tabsize? integer Optional tab width (defaults to `8`).
 ---@return string expanded String with tabs expanded.
@@ -100,6 +101,7 @@ function M.expandtabs(s, tabsize) end
 ---i = find("hello", "ll") --> 3
 ---```
 ---
+---@section Formatting
 ---@param s string Input string.
 ---@param sub string Substring to search.
 ---@param start? integer Optional start index (defaults to `1`).
@@ -120,6 +122,7 @@ function M.find(s, sub, start, stop) end
 ---> `format_map` is a lightweight `{key}` replacement helper.
 ---> For richer templating, use `mods.template`.
 ---
+---@section Formatting
 ---@param s string Template string with `{key}` placeholders.
 ---@param mapping table Values used to replace placeholder keys.
 ---@return string formatted Formatted string with placeholders replaced.
@@ -144,6 +147,7 @@ function M.format_map(s, mapping) end
 ---> ```lua
 ---> isalnum("á1") --> false
 ---> ```
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isAlnum True when `s` is non-empty and all characters are alphanumeric.
 ---@nodiscard
@@ -163,6 +167,7 @@ function M.isalnum(s) end
 ---> ```lua
 ---> isalpha("á") --> false
 ---> ```
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isAlpha True when `s` is non-empty and all characters are alphabetic.
 ---@nodiscard
@@ -178,6 +183,7 @@ function M.isalpha(s) end
 ---> [!NOTE]
 --->
 ---> The empty string returns `true`.
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isAscii True when all bytes in `s` are ASCII.
 ---@nodiscard
@@ -190,6 +196,7 @@ function M.isascii(s) end
 ---ok = isdecimal("123") --> true
 ---```
 ---
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isDecimal True when `s` is non-empty and all characters are decimal digits.
 ---@nodiscard
@@ -203,6 +210,7 @@ function M.isdecimal(s) end
 ---ok = isidentifier("end") --> false (keyword)
 ---```
 ---
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isIdentifier True when `s` is a valid identifier and not a keyword.
 ---@nodiscard
@@ -215,6 +223,7 @@ function M.isidentifier(s) end
 ---ok = islower("hello") --> true
 ---```
 ---
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isLower True when `s` has at least one cased character and all are lowercase.
 ---@nodiscard
@@ -229,6 +238,7 @@ function M.islower(s) end
 ---> [!NOTE]
 --->
 ---> The empty string returns `true`.
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isPrintable True when all bytes in `s` are printable ASCII.
 ---@nodiscard
@@ -241,6 +251,7 @@ function M.isprintable(s) end
 ---ok = isspace(" \t") --> true
 ---```
 ---
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isSpace True when `s` is non-empty and all characters are whitespace.
 ---@nodiscard
@@ -253,6 +264,7 @@ function M.isspace(s) end
 ---ok = istitle("Hello World") --> true
 ---```
 ---
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isTitle True when `s` is titlecased.
 ---@nodiscard
@@ -265,14 +277,11 @@ function M.istitle(s) end
 ---ok = isupper("HELLO") --> true
 ---```
 ---
+---@section Predicates
 ---@param s string Input string.
 ---@return boolean isUpper True when `s` has at least one cased character and all are uppercase.
 ---@nodiscard
 function M.isupper(s) end
-
---------------------------------------------------------------------------------
------------------------------------- Layout ------------------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Join an array-like table of strings using this string as separator.
@@ -281,6 +290,7 @@ function M.isupper(s) end
 ---s = join(",", { "a", "b", "c" }) --> "a,b,c"
 ---```
 ---
+---@section Layout
 ---@param sep string Separator value.
 ---@param ls string[] Table value.
 ---@return string joined Joined string.
@@ -294,6 +304,7 @@ function M.join(sep, ls) end
 ---s = ljust("hi", 5, ".") --> "hi..."
 ---```
 ---
+---@section Layout
 ---@param s string Input string.
 ---@param width integer Target width.
 ---@param fillchar? string Optional fill character.
@@ -308,6 +319,7 @@ function M.ljust(s, width, fillchar) end
 ---s = lower("HeLLo") --> "hello"
 ---```
 ---
+---@section Layout
 ---@param s string Input string.
 ---@return string lowercased Lowercased string.
 ---@nodiscard
@@ -320,6 +332,7 @@ function M.lower(s) end
 ---s = lstrip("  hello") --> "hello"
 ---```
 ---
+---@section Layout
 ---@param s string Input string.
 ---@param chars? string Optional character set.
 ---@return string leadingStripped String with leading characters removed.
@@ -333,6 +346,7 @@ function M.lstrip(s, chars) end
 ---s = rstrip("hello  ") --> "hello"
 ---```
 ---
+---@section Layout
 ---@param s string Input string.
 ---@param chars? string Optional character set.
 ---@return string trailingStripped String with trailing characters removed.
@@ -346,15 +360,12 @@ function M.rstrip(s, chars) end
 ---s = strip("  hello  ") --> "hello"
 ---```
 ---
+---@section Layout
 ---@param s string Input string.
 ---@param chars? string Optional character set.
 ---@return string stripped String with leading and trailing characters removed.
 ---@nodiscard
 function M.strip(s, chars) end
-
---------------------------------------------------------------------------------
-------------------------------- Split & Replace --------------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Partition string into head, sep, tail from left.
@@ -363,6 +374,7 @@ function M.strip(s, chars) end
 ---a, b, c = partition("a-b-c", "-") --> "a", "-", "b-c"
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param sep string Separator value.
 ---@return string head Part before the separator.
@@ -378,6 +390,7 @@ function M.partition(s, sep) end
 ---s = removeprefix("foobar", "foo") --> "bar"
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param prefix string Prefix string.
 ---@return string prefixRemoved String with prefix removed when present.
@@ -391,6 +404,7 @@ function M.removeprefix(s, prefix) end
 ---s = removesuffix("foobar", "bar") --> "foo"
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param suffix string Suffix string.
 ---@return string suffixRemoved String with suffix removed when present.
@@ -404,6 +418,7 @@ function M.removesuffix(s, suffix) end
 ---s = replace("a-b-c", "-", "_", 1) --> "a_b-c"
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param old string Substring to replace.
 ---@param new string Replacement string.
@@ -419,6 +434,7 @@ function M.replace(s, old, new, count) end
 ---i = rfind("ababa", "ba") --> 4
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param sub string Substring to search.
 ---@param start? integer Optional start index (defaults to `1`).
@@ -434,6 +450,7 @@ function M.rfind(s, sub, start, stop) end
 ---i = rindex("ababa", "ba") --> 4
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param sub string Substring to search.
 ---@param start? integer Optional start index (defaults to `1`).
@@ -449,6 +466,7 @@ function M.rindex(s, sub, start, stop) end
 ---s = rjust("hi", 5, ".") --> "...hi"
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param width integer Target width.
 ---@param fillchar? string Optional fill character.
@@ -463,6 +481,7 @@ function M.rjust(s, width, fillchar) end
 ---a, b, c = rpartition("a-b-c", "-") --> "a-b", "-", "c"
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param sep string Separator value.
 ---@return string head Part before the separator.
@@ -478,6 +497,7 @@ function M.rpartition(s, sep) end
 ---parts = rsplit("a,b,c", ",", 1) --> { "a,b", "c" }
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param sep? string Optional separator value.
 ---@param maxsplit? integer Optional maximum number of splits.
@@ -492,6 +512,7 @@ function M.rsplit(s, sep, maxsplit) end
 ---parts = split("a,b,c", ",") --> { "a", "b", "c" }
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param sep? string Optional separator value.
 ---@param maxsplit? integer Optional maximum number of splits.
@@ -506,15 +527,12 @@ function M.split(s, sep, maxsplit) end
 ---lines = splitlines("a\nb\r\nc") --> { "a", "b", "c" }
 ---```
 ---
+---@section Split & Replace
 ---@param s string Input string.
 ---@param keepends? boolean Optional whether to keep line endings.
 ---@return mods.List lines Split lines.
 ---@nodiscard
 function M.splitlines(s, keepends) end
-
---------------------------------------------------------------------------------
------------------------------- Casing & Transform ------------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Return a copy with case of alphabetic characters swapped.
@@ -523,6 +541,7 @@ function M.splitlines(s, keepends) end
 ---s = swapcase("AbC") --> "aBc"
 ---```
 ---
+---@section Casing & Transform
 ---@param s string Input string.
 ---@return string swappedCase String with alphabetic case swapped.
 ---@nodiscard
@@ -539,6 +558,7 @@ function M.swapcase(s) end
 --->
 ---> If prefix is a list, returns `true` when any prefix matches.
 ---
+---@section Casing & Transform
 ---@param s string Input string.
 ---@param prefix string|string[] Prefix string.
 ---@param start? integer Optional start index (defaults to `1`).
@@ -554,6 +574,7 @@ function M.startswith(s, prefix, start, stop) end
 ---s = title("hello world") --> "Hello World"
 ---```
 ---
+---@section Casing & Transform
 ---@param s string Input string.
 ---@return string titlecased Titlecased string.
 ---@nodiscard
@@ -567,6 +588,7 @@ function M.title(s) end
 ---s = translate("abc", map) --> "bb"
 ---```
 ---
+---@section Casing & Transform
 ---@param s string Input string.
 ---@param table_map table Character translation map.
 ---@return string translated Translated string.
@@ -580,6 +602,7 @@ function M.translate(s, table_map) end
 ---s = upper("Hello") --> "HELLO"
 ---```
 ---
+---@section Casing & Transform
 ---@param s string Input string.
 ---@return string uppercased Uppercased string.
 ---@nodiscard
@@ -592,6 +615,7 @@ function M.upper(s) end
 ---s = zfill("42", 5) --> "00042"
 ---```
 ---
+---@section Casing & Transform
 ---@param s string Input string.
 ---@param width integer Target width.
 ---@return string zeroFilled Zero-padded string.

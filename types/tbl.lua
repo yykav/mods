@@ -14,13 +14,6 @@
 ---@class mods.tbl
 local M = {}
 
---------------------------------------------------------------------------------
------------------------------------- Basics ------------------------------------
---------------------------------------------------------------------------------
----
----Core table utilities for clearing and counting.
----
-
 ---
 ---Remove all entries from the table.
 ---
@@ -29,6 +22,7 @@ local M = {}
 ---clear(t) --> t = {}
 ---```
 ---
+---@section Core Utilities
 ---@param t table Target table.
 ---@return nil none
 function M.clear(t) end
@@ -40,17 +34,11 @@ function M.clear(t) end
 ---n = count({ a = 1, b = 2 }) --> 2
 ---```
 ---
+---@section Core Utilities
 ---@param t table Input table.
 ---@return integer count Number of keys in `t`.
 ---@nodiscard
 function M.count(t) end
-
---------------------------------------------------------------------------------
------------------------------------- Copying -----------------------------------
---------------------------------------------------------------------------------
----
----Shallow and deep copy helpers.
----
 
 ---
 ---Create a shallow copy of the table.
@@ -59,6 +47,7 @@ function M.count(t) end
 ---t = copy({ a = 1, b = 2 }) --> { a = 1, b = 2 }
 ---```
 ---
+---@section Copies
 ---@generic T:table
 ---@param t T Source table.
 ---@return T copy Shallow-copied table.
@@ -78,18 +67,12 @@ function M.copy(t) end
 ---> If `v` is a table, all nested tables are copied recursively; other types
 ---> are returned as-is.
 ---
+---@section Copies
 ---@generic T
 ---@param v T Input value.
 ---@return T copiedValue Deep-copied value.
 ---@nodiscard
 function M.deepcopy(v) end
-
---------------------------------------------------------------------------------
-------------------------------------- Query ------------------------------------
---------------------------------------------------------------------------------
----
----Read-only lookup and selection helpers.
----
 
 ---
 ---Filter entries by a value predicate.
@@ -100,6 +83,7 @@ function M.deepcopy(v) end
 ---end) --> { b = 2 }
 ---```
 ---
+---@section Queries
 ---@generic K,V
 ---@param t table<K,V> Input table.
 ---@param pred fun(value:V):boolean Value predicate.
@@ -114,6 +98,7 @@ function M.filter(t, pred) end
 ---key = find({ a = 1, b = 2, c = 2 }, 2) --> "b" or "c"
 ---```
 ---
+---@section Queries
 ---@generic K,V
 ---@param t table<K,V> Input table.
 ---@param v V Value to find.
@@ -129,6 +114,7 @@ function M.find(t, v) end
 ---ok = same({ a = {} }, { a = {} })             --> false
 ---```
 ---
+---@section Queries
 ---@param a table Left table.
 ---@param b table Right table.
 ---@return boolean isSame True when both tables have the same keys and values.
@@ -144,6 +130,7 @@ function M.same(a, b) end
 ---end) --> 2, "b"
 ---```
 ---
+---@section Queries
 ---@generic K,V
 ---@param t table Input table.
 ---@param pred fun(key:K,value:V):boolean Predicate function.
@@ -165,18 +152,12 @@ function M.find_if(t, pred) end
 --->
 ---> If no keys are provided, returns the input table.
 ---
+---@section Queries
 ---@param t table Root table.
 ---@param ... any Additional arguments.
 ---@return any nestedValue Nested value, or `nil` when any key is missing.
 ---@nodiscard
 function M.get(t, ...) end
-
---------------------------------------------------------------------------------
----------------------------------- Transforms ----------------------------------
---------------------------------------------------------------------------------
----
----Table transformation and conversion utilities.
----
 
 ---
 ---Invert keys/values into new table.
@@ -185,6 +166,7 @@ function M.get(t, ...) end
 ---t = invert({ a = 1, b = 2 }) --> { [1] = "a", [2] = "b" }
 ---```
 ---
+---@section Transforms
 ---@generic K,V
 ---@param t table<K,V> Input table.
 ---@return table<V,K> inverted Inverted table (`value -> key`).
@@ -198,6 +180,7 @@ function M.invert(t) end
 ---empty = isempty({}) --> true
 ---```
 ---
+---@section Transforms
 ---@param t table Input table.
 ---@return boolean isEmpty True when `t` has no entries.
 ---@nodiscard
@@ -210,6 +193,7 @@ function M.isempty(t) end
 ---keys = keys({ a = 1, b = 2 }) --> { "a", "b" }
 ---```
 ---
+---@section Transforms
 ---@generic K,V
 ---@param t table<K,V> Input table.
 ---@return mods.List<V> keys List of keys in `t`.
@@ -225,6 +209,7 @@ function M.keys(t) end
 ---end) --> { a = 10, b = 20 }
 ---```
 ---
+---@section Transforms
 ---@generic T,K,V
 ---@param t table<K,V> Input table.
 ---@param fn fun(value:V):T Mapping function.
@@ -245,6 +230,7 @@ function M.map(t, fn) end
 --->
 ---> Output keeps original keys; only values are transformed by `fn`.
 ---
+---@section Transforms
 ---@generic T,K,V
 ---@param t table<K,V> Input table.
 ---@param fn fun(key:K, value:V):T Key-value mapping function.
@@ -260,6 +246,7 @@ function M.pairmap(t, fn) end
 ---update(t1, { b = 3, c = 4 }) --> t1 is { a = 1, b = 3, c = 4 }
 ---```
 ---
+---@section Transforms
 ---@generic T:table
 ---@param t1 T Target table.
 ---@param t2 table Source table.
@@ -273,17 +260,12 @@ function M.update(t1, t2) end
 ---vals = values({ a = 1, b = 2 }) --> { 1, 2 }
 ---```
 ---
+---@section Transforms
 ---@generic K,V
 ---@param t table<K,V> Input table.
 ---@return mods.List<V> values List of values in `t`.
 ---@nodiscard
 function M.values(t) end
-
---------------------------------------------------------------------------------
------------------------------------ Iteration ----------------------------------
---------------------------------------------------------------------------------
----
----Iterators and ordered traversal helpers.
 
 ---
 ---Call a function for each value in the table.
@@ -294,6 +276,7 @@ function M.values(t) end
 ---end)
 ---```
 ---
+---@section Iterators
 ---@generic K,V
 ---@param t table<K,V> Input table.
 ---@param fn fun(value:V, key:K) Function invoked for each entry.
@@ -309,6 +292,7 @@ function M.foreach(t, fn) end
 ---end
 ---```
 ---
+---@section Iterators
 ---@generic T:table, K, V
 ---@param t T Input table.
 ---@return fun(table: table<K, V>, index?: K):(K, V) iterator Sorted pairs iterator.

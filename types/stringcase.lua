@@ -13,10 +13,6 @@
 ---@class mods.stringcase
 local M = {}
 
---------------------------------------------------------------------------------
-------------------------------------- Basic ------------------------------------
---------------------------------------------------------------------------------
-
 ---
 ---Convert string to all lowercase.
 ---
@@ -25,6 +21,7 @@ local M = {}
 ---lower("FooBar baz")  --> "foobar baz"
 ---```
 ---
+---@section Basic
 ---@param s string Input string.
 ---@return string lowercased Lowercased string.
 ---@nodiscard
@@ -38,14 +35,11 @@ function M.lower(s) end
 ---upper("FooBar baz")  --> "FOOBAR BAZ"
 ---```
 ---
+---@section Basic
 ---@param s string Input string.
 ---@return string uppercased Uppercased string.
 ---@nodiscard
 function M.upper(s) end
-
---------------------------------------------------------------------------------
----------------------------------- Word Case -----------------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Convert string to snake_case.
@@ -55,6 +49,7 @@ function M.upper(s) end
 ---snake("FooBar baz")  --> "foo_bar_baz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string snakeCased Snake-cased string.
 ---@nodiscard
@@ -68,6 +63,7 @@ function M.snake(s) end
 ---camel("FooBar baz")  --> "fooBarBaz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string camelCased Camel-cased string.
 ---@nodiscard
@@ -81,6 +77,7 @@ function M.camel(s) end
 ---replace("FooBar baz", "-")  --> "foo-bar-baz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@param sep? string Optional separator value (defaults to `""`).
 ---@return string replaced String with underscores replaced by `sep`.
@@ -95,6 +92,7 @@ function M.replace(s, sep) end
 ---acronym("FooBar baz")  --> "FBB"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string acronym Acronym string.
 ---@nodiscard
@@ -108,6 +106,7 @@ function M.acronym(s) end
 ---title("FooBar baz")  --> "Foo Bar Baz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string titleCased Title-cased string.
 ---@nodiscard
@@ -121,6 +120,7 @@ function M.title(s) end
 ---constant("FooBar baz")  --> "FOO_BAR_BAZ"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string constantCased Constant-cased string.
 ---@nodiscard
@@ -134,6 +134,7 @@ function M.constant(s) end
 ---pascal("FooBar baz")  --> "FooBarBaz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string pascalCased Pascal-cased string.
 ---@nodiscard
@@ -147,6 +148,7 @@ function M.pascal(s) end
 ---kebab("FooBar baz")  --> "foo-bar-baz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string kebabCased Kebab-cased string.
 ---@nodiscard
@@ -160,6 +162,7 @@ function M.kebab(s) end
 ---dot("FooBar baz")  --> "foo.bar.baz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string dotCased Dot-cased string.
 ---@nodiscard
@@ -173,6 +176,7 @@ function M.dot(s) end
 ---space("FooBar baz")  --> "foo bar baz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string spaceCased Space-cased string.
 ---@nodiscard
@@ -186,14 +190,11 @@ function M.space(s) end
 ---path("FooBar baz")  --> "foo/bar/baz"
 ---```
 ---
+---@section Word Case
 ---@param s string Input string.
 ---@return string pathCased Path-cased string.
 ---@nodiscard
 function M.path(s) end
-
---------------------------------------------------------------------------------
----------------------------------- Letter Case ---------------------------------
---------------------------------------------------------------------------------
 
 ---
 ---Swap case of each letter.
@@ -203,6 +204,7 @@ function M.path(s) end
 ---swap("FooBar baz")  --> "fOObAR BAZ"
 ---```
 ---
+---@section Letter Case
 ---@param s string Input string.
 ---@return string swapCased Swap-cased string.
 ---@nodiscard
@@ -216,6 +218,7 @@ function M.swap(s) end
 ---capital("FooBar baz")  --> "Foobar baz"
 ---```
 ---
+---@section Letter Case
 ---@param s string Input string.
 ---@return string capitalized Capitalized string.
 ---@nodiscard
@@ -229,6 +232,7 @@ function M.capital(s) end
 ---sentence("FooBar baz")  --> "FooBar baz"
 ---```
 ---
+---@section Letter Case
 ---@param s string Input string.
 ---@return string sentenceCased Sentence-cased string.
 ---@nodiscard

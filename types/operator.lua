@@ -14,13 +14,6 @@
 ---@class mods.operator
 local M = {}
 
---------------------------------------------------------------------------------
----------------------------------- Arithmetic ----------------------------------
---------------------------------------------------------------------------------
----
----Numeric arithmetic operators as functions.
----
-
 ---
 ---Add two numbers.
 ---
@@ -28,6 +21,7 @@ local M = {}
 ---add(1, 2) --> 3
 ---```
 ---
+---@section Arithmetic
 ---@param a number Left numeric value.
 ---@param b number Right numeric value.
 ---@return number sum Sum of `a` and `b`.
@@ -41,6 +35,7 @@ function M.add(a, b) end
 ---sub(5, 3) --> 2
 ---```
 ---
+---@section Arithmetic
 ---@param a number Left numeric value.
 ---@param b number Right numeric value.
 ---@return number difference Difference `a - b`.
@@ -54,6 +49,7 @@ function M.sub(a, b) end
 ---mul(3, 4) --> 12
 ---```
 ---
+---@section Arithmetic
 ---@param a number Left numeric value.
 ---@param b number Right numeric value.
 ---@return number product Product `a * b`.
@@ -67,6 +63,7 @@ function M.mul(a, b) end
 ---div(10, 4) --> 2.5
 ---```
 ---
+---@section Arithmetic
 ---@param a number Dividend value.
 ---@param b number Divisor value.
 ---@return number quotient Quotient `a / b`.
@@ -80,6 +77,7 @@ function M.div(a, b) end
 ---idiv(5, 2) --> 2
 ---```
 ---
+---@section Arithmetic
 ---@param a number Dividend value.
 ---@param b number Divisor value.
 ---@return integer quotient Floor-division result.
@@ -93,6 +91,7 @@ function M.idiv(a, b) end
 ---mod(5, 2) --> 1
 ---```
 ---
+---@section Arithmetic
 ---@param a number Dividend value.
 ---@param b number Divisor value.
 ---@return number remainder Remainder of `a % b`.
@@ -106,6 +105,7 @@ function M.mod(a, b) end
 ---pow(2, 4) --> 16
 ---```
 ---
+---@section Arithmetic
 ---@param a number Base value.
 ---@param b number Exponent value.
 ---@return number power Result of `a ^ b`.
@@ -119,17 +119,11 @@ function M.pow(a, b) end
 ---unm(3) --> -3
 ---```
 ---
+---@section Arithmetic
 ---@param a number Input numeric value.
 ---@return number negated Result of `-a`.
 ---@nodiscard
 function M.unm(a) end
-
---------------------------------------------------------------------------------
----------------------------------- Comparison ----------------------------------
---------------------------------------------------------------------------------
----
----Equality and ordering comparison operators.
----
 
 ---
 ---Check whether two values are equal.
@@ -138,6 +132,7 @@ function M.unm(a) end
 ---eq(1, 1) --> true
 ---```
 ---
+---@section Comparison
 ---@param a any Left value.
 ---@param b any Right value.
 ---@return boolean isEqual True when `a == b`.
@@ -151,6 +146,7 @@ function M.eq(a, b) end
 ---neq(1, 2) --> true
 ---```
 ---
+---@section Comparison
 ---@param a any Left value.
 ---@param b any Right value.
 ---@return boolean isNotEqual True when `a ~= b`.
@@ -164,6 +160,7 @@ function M.neq(a, b) end
 ---lt(1, 2) --> true
 ---```
 ---
+---@section Comparison
 ---@param a number Left numeric value.
 ---@param b number Right numeric value.
 ---@return boolean isLess True when `a < b`.
@@ -177,6 +174,7 @@ function M.lt(a, b) end
 ---le(2, 2) --> true
 ---```
 ---
+---@section Comparison
 ---@param a number Left numeric value.
 ---@param b number Right numeric value.
 ---@return boolean isLessOrEqual True when `a <= b`.
@@ -190,6 +188,7 @@ function M.le(a, b) end
 ---gt(3, 2) --> true
 ---```
 ---
+---@section Comparison
 ---@param a number Left numeric value.
 ---@param b number Right numeric value.
 ---@return boolean isGreater True when `a > b`.
@@ -203,18 +202,12 @@ function M.gt(a, b) end
 ---ge(2, 2) --> true
 ---```
 ---
+---@section Comparison
 ---@param a number Left numeric value.
 ---@param b number Right numeric value.
 ---@return boolean isGreaterOrEqual True when `a >= b`.
 ---@nodiscard
 function M.ge(a, b) end
-
---------------------------------------------------------------------------------
------------------------------------- Logical -----------------------------------
---------------------------------------------------------------------------------
----
----Boolean logic operators with Lua truthiness semantics.
----
 
 ---
 ---Evaluate `a and b` with Lua short-circuit semantics.
@@ -223,6 +216,7 @@ function M.ge(a, b) end
 ---land(true, false) --> false
 ---```
 ---
+---@section Logical
 ---@generic T1,T2
 ---@param a T1 First operand.
 ---@param b T2 Second operand.
@@ -237,6 +231,7 @@ function M.land(a, b) end
 ---lor(false, true) --> true
 ---```
 ---
+---@section Logical
 ---@generic T1,T2
 ---@param a T1 First operand.
 ---@param b T2 Second operand.
@@ -251,17 +246,11 @@ function M.lor(a, b) end
 ---lnot(true) --> false
 ---```
 ---
+---@section Logical
 ---@param a any Input value.
 ---@return boolean isNot Result of `not a`.
 ---@nodiscard
 function M.lnot(a) end
-
---------------------------------------------------------------------------------
-------------------------------- String & Length --------------------------------
---------------------------------------------------------------------------------
----
----String concatenation and length operators.
----
 
 ---
 ---Concatenate two strings.
@@ -270,6 +259,7 @@ function M.lnot(a) end
 ---concat("a", "b") --> "ab"
 ---```
 ---
+---@section String & Length
 ---@param a string Left string.
 ---@param b string Right string.
 ---@return string concatenated Concatenated result `a .. b`.
@@ -283,17 +273,11 @@ function M.concat(a, b) end
 ---len("abc") --> 3
 ---```
 ---
+---@section String & Length
 ---@param a string|table Value supporting Lua's `#` operator.
 ---@return integer length Length computed by `#a`.
 ---@nodiscard
 function M.len(a) end
-
---------------------------------------------------------------------------------
--------------------------------- Tables & Calls --------------------------------
---------------------------------------------------------------------------------
----
----Table indexing helpers and function invocation.
----
 
 ---
 ---Return the value at key/index `k` in table `t`.
@@ -302,6 +286,7 @@ function M.len(a) end
 ---index({ a = 1 }, "a") --> 1
 ---```
 ---
+---@section Tables & Calls
 ---@generic T
 ---@param t table Source table.
 ---@param k T Key/index value.
@@ -316,6 +301,7 @@ function M.index(t, k) end
 ---setindex({}, "a", 1) --> 1
 ---```
 ---
+---@section Tables & Calls
 ---@generic T
 ---@param t table Target table.
 ---@param k any Key/index value.
@@ -331,6 +317,7 @@ function M.setindex(t, k, v) end
 ---call(math.max, 1, 2) --> 2
 ---```
 ---
+---@section Tables & Calls
 ---@generic T1,T2
 ---@param f fun(...:T1):T2 Function to call.
 ---@param ... T1 Additional arguments.

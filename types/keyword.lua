@@ -23,6 +23,7 @@ local M = {}
 ---kw.iskeyword("hello")    --> false
 ---```
 ---
+---@section Predicates
 ---@param v any Value to validate.
 ---@return boolean isKeyword Whether the check succeeds.
 ---@nodiscard
@@ -36,6 +37,7 @@ function M.iskeyword(v) end
 ---kw.isidentifier("local")       --> false
 ---```
 ---
+---@section Predicates
 ---@param v any Value to validate.
 ---@return boolean isIdentifier Whether the check succeeds.
 ---@nodiscard
@@ -49,6 +51,7 @@ function M.isidentifier(v) end
 ---kw.kwlist():contains("global") --> true -- Lua 5.5+
 ---```
 ---
+---@section Collections
 ---@return mods.List<string> words List of Lua keywords.
 ---@nodiscard
 function M.kwlist() end
@@ -61,6 +64,7 @@ function M.kwlist() end
 ---kw.kwlset():contains("global") --> true -- Lua 5.5+
 ---```
 ---
+---@section Collections
 ---@return mods.Set<string> words Set of Lua keywords.
 ---@nodiscard
 function M.kwset() end
@@ -72,6 +76,7 @@ function M.kwset() end
 ---kw.normalize_identifier(" 2 bad-name ") --> "_2_bad_name"
 ---```
 ---
+---@section Normalization
 ---@param s string Input string.
 ---@return string identifier Normalized Lua identifier.
 ---@nodiscard
