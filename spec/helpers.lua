@@ -48,14 +48,14 @@ end
 ---})
 ---```
 ---
----@param subject table
+---@param module table
 ---@param tests table<string, {[1]: any[], [2]: any[]}[]>
-function M.test_functions(subject, tests)
+function M.test_functions(module, tests)
   for fname, t in spairs(tests) do
     for i = 1, #t do
       local expected, args = unpack(t[i] --[[@as {[1]:any[], [2]:any[]}]])
       it(fmt("%s(%s)", fname, args_repr(args)), function()
-        assert_same(expected, { subject[fname](unpack(args)) })
+        assert_same(expected, { module[fname](unpack(args)) })
       end)
     end
   end
