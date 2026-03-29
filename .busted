@@ -1,11 +1,7 @@
 local assert = require "luassert"
 local ins = require "inspect"
-local mods = require "mods"
 local say = require "say"
 local util = require "luassert.util"
-
-local List = mods.List
-local Set = mods.Set
 
 local remove_all_metatables = function(item, path)
   if path[#path] ~= ins.METATABLE then
@@ -34,7 +30,7 @@ say:set(list_positive, "Expected object to be a mods.List.\nPassed in:\n%s\nExpe
 say:set(list_negative, "Expected object to not be a mods.List.\nPassed in:\n%s\nDid not expect:\nmods.List")
 
 assert:register("assertion", "list", function(_, args)
-  return getmetatable(args[1]) == List
+  return getmetatable(args[1]) == require "mods.List"
 end, list_positive, list_negative)
 
 local set_positive = "assertion.set.positive"
@@ -43,7 +39,7 @@ say:set(set_positive, "Expected object to be a mods.Set.\nPassed in:\n%s\nExpect
 say:set(set_negative, "Expected object to not be a mods.Set.\nPassed in:\n%s\nDid not expect:\nmods.Set")
 
 assert:register("assertion", "set", function(_, args)
-  return getmetatable(args[1]) == Set
+  return getmetatable(args[1]) == require "mods.Set"
 end, set_positive, set_negative)
 
 return {}
