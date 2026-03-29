@@ -139,14 +139,14 @@ describe("mods.Set", function()
   it("values() returns a mods.List with all set values", function()
     local ls = { "a", "b", "c" }
     local res = Set(ls):values()
-    assert.are_equal(List, getmetatable(res))
+    assert.is_list(res)
     assert.are_same(ls, res:sort())
   end)
 
   describe("metamethods", function()
     it("__call constructs a set from a list", function()
       local s = Set({ "a", "b", "c" })
-      assert.is_true(getmetatable(s) == Set)
+      assert.is_set(s)
       assert.are_same({ a = true, b = true, c = true }, s)
     end)
 

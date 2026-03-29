@@ -1,7 +1,6 @@
 local helpers = require "spec.helpers"
 local mods = require "mods"
 
-local List = mods.List
 local str = mods.str
 
 local test_functions = helpers.test_functions
@@ -317,7 +316,7 @@ describe("mods.str", function()
     local fname, params = unpack(tests[i] --[[@as {[1]:string, [2]:any[]}]])
     it(fmt("%s(%s) returns mods.List", fname, args_repr(params)), function()
       local res = str[fname](unpack(params))
-      assert.are_equal(List, getmetatable(res))
+      assert.is_list(res)
     end)
   end
 end)

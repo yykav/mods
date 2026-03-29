@@ -113,7 +113,7 @@ describe("mods.keyword", function()
     end)
 
     it("returns a mods.List instance", function()
-      assert.are_equal(List, getmetatable(kw.kwlist()))
+      assert.is_list(kw.kwlist())
     end)
 
     it("returns a fresh copy on each call", function()
@@ -131,7 +131,7 @@ describe("mods.keyword", function()
     end)
 
     it("returns a mods.Set instance", function()
-      assert.are_equal(Set, getmetatable(kw.kwset()))
+      assert.is_set(kw.kwset())
     end)
 
     it("returns a fresh copy on each call", function()

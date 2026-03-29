@@ -93,12 +93,12 @@ describe("mods.tbl", function()
 
   it("keys() returns a mods.List", function()
     local res = tbl.keys({ a = 1, b = 2 })
-    assert.are_equal(List, getmetatable(res))
+    assert.is_list(res)
   end)
 
   it("values() returns a mods.List", function()
     local res = tbl.values({ a = 1, b = 2 })
-    assert.are_equal(List, getmetatable(res))
+    assert.is_list(res)
   end)
 
   it("foreach() calls function for each entry", function()
