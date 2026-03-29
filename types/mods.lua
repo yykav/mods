@@ -7,6 +7,7 @@ local template ---@module "mods.template"
 ---Entry point that exposes all modules under one 💤 lazily loaded table.
 ---
 ---@class mods
+---@field calendar mods.calendar
 ---@field fs mods.fs
 ---@field glob mods.glob
 ---@field is mods.is

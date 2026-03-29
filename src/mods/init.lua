@@ -1,6 +1,7 @@
 local mods = {}
 
 local module_names = {
+  "calendar",
   "fs",
   "glob",
   "is",
