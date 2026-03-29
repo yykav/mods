@@ -1,5 +1,8 @@
 ---@meta mods.Set
 
+---@module "mods.tbl"
+local tbl
+
 ---
 ---A set class for creating, combining, and querying unique values.
 ---
@@ -21,6 +24,9 @@
 ---@overload fun(t?:any[]|mods.List):mods.Set
 local Set = {}
 Set.__index = Set
+
+---@private
+Set._tolist = tbl.keys
 
 ---
 ---Add an element to the set.
@@ -349,8 +355,18 @@ function Set:map(fn) end
 ---Return a list of all values in the set.
 ---
 ---```lua
----values = Set({ "a", "b" }):values() --> { "a", "b" }
+---local values = Set({ "a", "b", "c" }):values()
+---print(values:sort():equals(List({ "a", "b", "c" }))) --> true
 ---```
+---
+---> [!NOTE]
+--->
+---> Sets also support direct conversion through `List(...)`:
+--->
+---> ```lua
+---> local values = List(Set({ "a", "b", "c" }))
+---> print(values:sort():equals(List({ "a", "b", "c" }))) --> true
+---> ```
 ---
 ---@section Transforms
 ---@param self mods.Set|table<any,true> Current set.

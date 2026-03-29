@@ -1,11 +1,15 @@
+---@diagnostic disable: duplicate-set-field
+
 local mods = require "mods"
 
-local quote = mods.utils.quote
 local tbl = mods.tbl
+
+local tbl_same = tbl.same
+local quote = mods.utils.quote
 
 local concat = table.concat
 
----@type mods.Set
+---@class mods.Set
 local Set = {}
 Set.__index = Set
 
@@ -156,9 +160,10 @@ function Set:update(t)
 end
 
 function Set:equals(t)
-  return tbl.same(self, as_set(t))
+  return tbl_same(self, as_set(t))
 end
 
+Set._tolist = tbl.keys
 Set.copy = copy_set
 Set.isempty = tbl.isempty
 Set.join = join_values
@@ -180,13 +185,21 @@ Set.__tostring = stringify
 
 return setmetatable(Set, {
   __call = function(_, t)
-    local set = setmetatable({}, Set)
-    if t == nil then
-      return set
+    local tp = type(t)
+    if tp == "nil" then
+      return setmetatable({}, Set)
+    elseif type(t) == "table" then
+      local mt = getmetatable(t)
+      local toset = mt and mt._toset
+      if toset then
+        return toset(t)
+      end
     end
+
+    local set = {}
     for i = 1, #t do
       set[t[i]] = true
     end
-    return set
+    return setmetatable(set, Set)
   end,
 })
