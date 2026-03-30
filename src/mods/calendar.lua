@@ -97,6 +97,35 @@ local function days_from_civil(year, month, day)
   return era * 146097 + doe - 719468
 end
 
+local function civil_from_days(days)
+  days = days + 719468
+  local era = floor_div(days >= 0 and days or days - 146096, 146097)
+  local doe = days - era * 146097
+  local yoe = floor((doe - floor(doe / 1460) + floor(doe / 36524) - floor(doe / 146096)) / 365)
+  local year = yoe + era * 400
+  local doy = doe - (365 * yoe + floor(yoe / 4) - floor(yoe / 100))
+  local mp = floor((5 * doy + 2) / 153)
+  local day = doy - floor((153 * mp + 2) / 5) + 1
+  local month = mp + (mp < 10 and 3 or -9)
+  year = month <= 2 and year + 1 or year
+  return year, month, day
+end
+
+local function weekday_from_serial(serial)
+  return posmod(serial + 3, 7) + 1
+end
+
+local function month_grid_bounds(year, month, firstweekday)
+  local first_wday = M.weekday(year, month, 1)
+  local ndays = monthlen(year, month)
+  local leading = posmod(first_wday - firstweekday, 7)
+  local total = leading + ndays
+  local trailing = posmod(7 - (total % 7), 7)
+  local start_serial = days_from_civil(year, month, 1) - leading
+
+  return start_serial, start_serial + total + trailing - 1
+end
+
 function M.getfirstweekday()
   return default_firstweekday
 end
@@ -137,6 +166,25 @@ function M.monthrange(year, month)
   assert_arg(2, month, "integer")
   validate_month(month)
   return M.weekday(year, month, 1), monthlen(year, month)
+end
+
+function M.monthdays(year, month, firstweekday)
+  assert_arg(1, year, "integer")
+  assert_arg(2, month, "integer")
+  assert_arg(3, firstweekday, "integer", true)
+  validate_month(month)
+  firstweekday = resolve_firstweekday(firstweekday)
+  local serial, stop_serial = month_grid_bounds(year, month, firstweekday)
+
+  return function()
+    if serial > stop_serial then
+      return nil
+    end
+    local y, m, d = civil_from_days(serial)
+    local wd = weekday_from_serial(serial)
+    serial = serial + 1
+    return y, m, d, wd
+  end
 end
 
 function M.weekheader(width, firstweekday)

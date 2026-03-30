@@ -98,6 +98,47 @@ describe("mods.calendar", function()
     end)
   end)
 
+  describe("monthdays()", function()
+    it("returns (year, month, day, weekday) tuples", function()
+      local items = {}
+      for year, month, day, weekday in cal.monthdays(2026, 2) do
+        items[#items + 1] = { year, month, day, weekday }
+      end
+      assert.are_same({ 2026, 1, 26, cal.MONDAY }, items[1])
+      assert.are_same({ 2026, 2, 1, cal.SUNDAY }, items[7])
+      assert.are_same({ 2026, 3, 1, cal.SUNDAY }, items[35])
+    end)
+
+    it("pads February 2026 to full Monday-first weeks by default", function()
+      local items = {}
+      for year, month, day in cal.monthdays(2026, 2) do
+        items[#items + 1] = ("%04d-%02d-%02d"):format(year, month, day)
+      end
+      -- stylua: ignore
+      assert.are_same({
+        "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-01-31", "2026-02-01",
+        "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07", "2026-02-08",
+        "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14", "2026-02-15",
+        "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21", "2026-02-22",
+        "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28", "2026-03-01",
+      }, items)
+    end)
+
+    it("respects the requested first weekday", function()
+      local items = {}
+      for year, month, day in cal.monthdays(2026, 2, cal.SUNDAY) do
+        items[#items + 1] = ("%04d-%02d-%02d"):format(year, month, day)
+      end
+      -- stylua: ignore
+      assert.are_same({
+        "2026-02-01", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-07",
+        "2026-02-08", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-14",
+        "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-21",
+        "2026-02-22", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-02-28",
+      }, items)
+    end)
+  end)
+
   it("weekheader() returns headers for Sunday-first weeks", function()
     assert.are_equal("Su Mo Tu We Th Fr Sa", cal.weekheader(2, cal.SUNDAY))
   end)
@@ -131,6 +172,7 @@ describe("mods.calendar", function()
     -- Argument #1 validation.
 
     assert.Error(function() cal.isleap(true)          end, "bad argument #1 to 'isleap' (integer value expected, got true)")
+    assert.Error(function() cal.monthdays(false, 2)   end, "bad argument #1 to 'monthdays' (integer value expected, got false)")
     assert.Error(function() cal.monthrange(2026.5, 3) end, "bad argument #1 to 'monthrange' (integer value expected, got 2026.5)")
     assert.Error(function() cal.setfirstweekday(7.5)  end, "bad argument #1 to 'setfirstweekday' (integer value expected, got 7.5)")
     assert.Error(function() cal.setfirstweekday(true) end, "bad argument #1 to 'setfirstweekday' (integer value expected, got true)")
@@ -140,20 +182,28 @@ describe("mods.calendar", function()
     -- Argument #2 validation.
 
     assert.Error(function() cal.leapdays(2000, false) end, "bad argument #2 to 'leapdays' (integer value expected, got false)")
+    assert.Error(function() cal.monthdays(2026, "2")  end, [[bad argument #2 to 'monthdays' (integer value expected, got "2")]])
     assert.Error(function() cal.monthrange(2026)      end, "bad argument #2 to 'monthrange' (integer value expected, got no value)")
     assert.Error(function() cal.weekday(2026, "3", 1) end, [[bad argument #2 to 'weekday' (integer value expected, got "3")]])
     assert.Error(function() cal.weekheader(2, "7")    end, [[bad argument #2 to 'weekheader' (integer value expected, got "7")]])
+
+    -- Argument #3 validation.
+
+    assert.Error(function() cal.monthdays(2026, 2, "7") end, [[bad argument #3 to 'monthdays' (integer value expected, got "7")]])
   end)
 
   -- stylua: ignore
   it("errors on out-of-range values", function()
-    assert.Error(function() cal.monthrange(2026, 0)  end, "bad month number 0; must be 1-12")
-    assert.Error(function() cal.monthrange(2026, 13) end, "bad month number 13; must be 1-12")
-    assert.Error(function() cal.setfirstweekday(0)   end, "bad weekday number 0; must be 1 (Monday) to 7 (Sunday)")
-    assert.Error(function() cal.setfirstweekday(8)   end, "bad weekday number 8; must be 1 (Monday) to 7 (Sunday)")
-    assert.Error(function() cal.weekday(2026, 2, 29) end, "bad day number 29 for 2026-02")
-    assert.Error(function() cal.weekdays(0)          end, "bad weekday number 0; must be 1 (Monday) to 7 (Sunday)")
-    assert.Error(function() cal.weekheader(0)        end, "bad argument #1 to 'weekheader' (width must be a positive integer)")
-    assert.Error(function() cal.weekheader(2, 8)     end, "bad weekday number 8; must be 1 (Monday) to 7 (Sunday)")
+    assert.Error(function() cal.monthrange(2026, 0)   end, "bad month number 0; must be 1-12")
+    assert.Error(function() cal.monthrange(2026, 13)  end, "bad month number 13; must be 1-12")
+    assert.Error(function() cal.monthdays(2026, 0)    end, "bad month number 0; must be 1-12")
+    assert.Error(function() cal.monthdays(2026, 13)   end, "bad month number 13; must be 1-12")
+    assert.Error(function() cal.monthdays(2026, 2, 8) end, "bad weekday number 8; must be 1 (Monday) to 7 (Sunday)")
+    assert.Error(function() cal.setfirstweekday(0)    end, "bad weekday number 0; must be 1 (Monday) to 7 (Sunday)")
+    assert.Error(function() cal.setfirstweekday(8)    end, "bad weekday number 8; must be 1 (Monday) to 7 (Sunday)")
+    assert.Error(function() cal.weekday(2026, 2, 29)  end, "bad day number 29 for 2026-02")
+    assert.Error(function() cal.weekdays(0)           end, "bad weekday number 0; must be 1 (Monday) to 7 (Sunday)")
+    assert.Error(function() cal.weekheader(0)         end, "bad argument #1 to 'weekheader' (width must be a positive integer)")
+    assert.Error(function() cal.weekheader(2, 8)      end, "bad weekday number 8; must be 1 (Monday) to 7 (Sunday)")
   end)
 end)

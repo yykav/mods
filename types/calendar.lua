@@ -174,6 +174,48 @@ function M.weekday(year, month, day) end
 ---@nodiscard
 function M.monthrange(year, month) end
 
+---Iterate `(year, month, day, weekday)` tuples for a full calendar grid.
+---
+---```lua
+---local mods = require "mods"
+---
+---local List = mods.List
+---local cal = mods.calendar
+---local str = mods.str
+---
+---local header = cal.weekheader(2)
+---local lines = List({
+---  str.center(("%s %d"):format(cal.months[cal.FEBRUARY], 2026), #header),
+---  header,
+---})
+---
+---local cells = List()
+---for _, m, d, _ in cal.monthdays(2026, cal.FEBRUARY) do
+---  cells:append(m == cal.FEBRUARY and ("%2d"):format(d) or "  ")
+---  if #cells == 7 then
+---    lines:append(cells:join(" "))
+---    cells = List()
+---  end
+---end
+---
+---print(lines:join("\n"))
+-----    February 2026
+----- Mo Tu We Th Fr Sa Su
+-----                    1
+-----  2  3  4  5  6  7  8
+-----  9 10 11 12 13 14 15
+----- 16 17 18 19 20 21 22
+----- 23 24 25 26 27 28
+---```
+---
+---@section Iterators
+---@param year integer
+---@param month modsCalendarMonth
+---@param firstweekday? modsCalendarWeekday
+---@return fun():year:integer,month:modsCalendarMonth,day:modsCalendarMonthday,weekday:modsCalendarWeekday iter
+---@nodiscard
+function M.monthdays(year, month, firstweekday) end
+
 ---
 ---Return the formatted weekday header string.
 ---
